@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -83,11 +84,22 @@ fun Main(controller: NavController) {
             textAlign = TextAlign.End,
             text = "Hitorico"
         )
-        Spacer(modifier = Modifier.height(35.dp))
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+            text = "Ultimas entradas e saídas"
+        )
         LazyColumn(content = {
-            items(5, itemContent = {
-                Row (modifier = Modifier.fillMaxSize().padding(0.dp, 15.dp).border(2.dp, Color(0xffd8d5f0)),
-                    horizontalArrangement = Arrangement.SpaceBetween){
+            items(6, itemContent = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp, 10.dp)
+                        .border(2.dp, Color(0xffd8d5f0), RoundedCornerShape(25))
+                        .padding(all = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(text = if ((it % 2) == 0) "Entrada $it" else "saida $it")
                     Text(text = "Valor de R$ 5$it")
                 }
