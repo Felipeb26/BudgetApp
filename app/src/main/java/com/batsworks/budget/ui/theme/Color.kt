@@ -1,12 +1,35 @@
 package com.batsworks.budget.ui.theme
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Color50 = Color(0xFFf3f2fb)
+val Color100 = Color(0xFFeae8f7)
+val Color200 = Color(0xFFd8d5f0)
+val Color300 = Color(0xFFc0bae7)
+val Color400 = Color(0xFFaa9edb)
+val Color500 = Color(0xFF9a86ce)
+val Color600 = Color(0xFF8b6dbe)
+val Color700 = Color(0xFF785ca6)
+val Color800 = Color(0xFF5c487f)
+val Color950 = Color(0xFF51426d)
+val Color900 = Color(0xFF2f273f)
 
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+@Composable
+fun GradientBrush(
+    isVerticalGratient: Boolean = false,
+    colors: List<Color> = listOf(Color400, Color600, Color700, Color800)
+): Brush {
+
+    val endOffset = if (isVerticalGratient)
+        Offset(0f, Float.POSITIVE_INFINITY)
+    else Offset(Float.POSITIVE_INFINITY, 0f)
+
+    return Brush.linearGradient(colors, start = Offset.Zero, endOffset)
+}
