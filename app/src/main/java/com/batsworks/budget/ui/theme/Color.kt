@@ -1,9 +1,8 @@
 package com.batsworks.budget.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -20,11 +19,21 @@ val Color800 = Color(0xFF5c487f)
 val Color950 = Color(0xFF51426d)
 val Color900 = Color(0xFF2f273f)
 
+val customBackground
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.9f) else Color.White
+val ColorScheme.outOfFocusText
+    @Composable
+    get() = if(isSystemInDarkTheme()) Color100 else Color50
+
+val textColor
+    @Composable
+    get() = if(isSystemInDarkTheme()) Color50 else Color950
 
 @Composable
 fun GradientBrush(
-    isVerticalGratient: Boolean = false,
-    colors: List<Color> = listOf(Color400, Color600, Color700, Color800)
+    isVerticalGratient: Boolean = true,
+    colors: List<Color> = listOf(Color800, Color700, Color400),
 ): Brush {
 
     val endOffset = if (isVerticalGratient)

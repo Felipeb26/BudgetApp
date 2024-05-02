@@ -1,162 +1,109 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.R
+import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
+import com.batsworks.budget.ui.theme.Color500
+import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.GradientBrush
+import com.batsworks.budget.ui.theme.Color900
+import com.batsworks.budget.ui.theme.Color950
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Main(controller: NavController) {
-    Box(
-        Modifier
-            .height(160.dp)
-            .fillMaxWidth()
-            .background(brush = GradientBrush())
-    ) {}
-
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(15.dp)
-            .fillMaxHeight()
-    ) {
-        Spacer(modifier = Modifier.height(35.dp))
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(170.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color800,
-                contentColor = Color50
-            )
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(25.dp, 30.dp, 25.dp, 15.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Hello catatau!",
-                    modifier = Modifier.clickable {
-                        controller.navigate(Screen.LoginScreen.route)
-                    }
-                )
-                Text(
-                    text = "Hello catatau!",
-                    modifier = Modifier.clickable {
-                        controller.navigate(Screen.LoginScreen.route)
-                    }
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(25.dp, 25.dp, 25.dp, 0.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Hello catatau!",
-                    modifier = Modifier.clickable {
-                        controller.navigate(Screen.LoginScreen.route)
-                    }
-                )
-                Text(
-                    text = "Hello catatau!",
-                    modifier = Modifier.clickable {
-                        controller.navigate(Screen.LoginScreen.route)
-                    }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(35.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.End,
-            text = "Hitorico",
-            textDecoration = TextDecoration.Underline,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start,
-            text = "Ultimas entradas e saídas"
-        )
-        LazyColumn(content = {
-            items(6, itemContent = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(0.dp, 10.dp)
-                        .border(2.dp, Color(0xffd8d5f0), RoundedCornerShape(25))
-                        .padding(all = 10.dp),
-                ) {
-                    Image(
-                        painter = painterResource(if ((it % 2) == 0) R.drawable.icons8_arrowup else R.drawable.icons8_arrowdown),
-                        contentDescription = ""
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = if ((it % 2) == 0) "Entrada $it" else "saida $it")
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(text = "Valor de R$ 5$it")
-                }
-            })
-        })
+fun Main() {
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = { BottomBar(navController) }) { paddingValues ->
+        Navigate(navController, Screen.HomeScreen, paddingValues)
     }
 }
 
-@Preview(
-    uiMode = UI_MODE_NIGHT_NO,
-    showSystemUi = true
-)
 @Composable
-fun MainWhite() {
-    Main(controller = rememberNavController())
+fun BottomBar(navController: NavController) {
+    val screens =
+        listOf(Screen.HomeScreen, Screen.HistoricoScreen, Screen.ProfileScreen, Screen.SettingScreen)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    NavigationBar(containerColor = Color700) {
+        screens.forEachIndexed { index, screen ->
+            if (index == 2) FloatingButton(navController)
+
+            NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color900,
+                    selectedTextColor = Color900,
+                    indicatorColor = Color500,
+                    unselectedTextColor = Color50,
+                    unselectedIconColor = Color50
+                ),
+                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                icon = { Icon(imageVector = screen.icon, contentDescription = "") },
+                label = {
+                    Text(
+                        text = formatScreenTitle(screen.route),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                onClick = {
+                    Log.d("12", screen.route)
+                    navController.navigate(screen.route) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                })
+        }
+    }
 }
 
-@Preview(
-    uiMode = UI_MODE_NIGHT_YES,
-    showSystemUi = true
-)
 @Composable
-fun MainDark() {
-    Main(controller = rememberNavController())
+fun FloatingButton(navController: NavController) {
+    FloatingActionButton(
+        modifier = Modifier.border(2.dp, Color800, RoundedCornerShape(30.dp)),
+        shape = RoundedCornerShape(30.dp),
+        containerColor = Color300,
+        contentColor = Color950,
+        onClick = { easyNavigate(navController, Screen.AdicionarScreen.route) }) {
+        Icon(imageVector = Icons.Filled.Add, contentDescription = "", tint = Color50)
+    }
+}
+
+fun formatScreenTitle(title: String): String {
+    return title.replace("_screen", "").toUpperCase(Locale.current)
+}
+
+fun easyNavigate(navController: NavController, route: String) {
+    navController.navigate(route) {
+        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
+    }
 }
