@@ -1,6 +1,7 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,6 +40,7 @@ import com.batsworks.budget.ui.theme.textColor
 @Composable
 fun SignUp(navController: NavHostController) {
 	val (checked, setChecked) = remember { mutableStateOf(false) }
+	val context = LocalContext.current
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,10 +56,14 @@ fun SignUp(navController: NavHostController) {
 			horizontalArrangement = Arrangement.Center,
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			Checkbox(checked = checked, onCheckedChange = { setChecked(it) }, colors = CheckboxDefaults.colors(
-				checkmarkColor = Color800,
-				checkedColor = Color600
-			))
+			Checkbox(
+				checked = checked,
+				onCheckedChange = { setChecked(it) },
+				colors = CheckboxDefaults.colors(
+					checkmarkColor = Color800,
+					checkedColor = Color600
+				)
+			)
 			ClickableText(
 				text = annotedString(
 					"Eu concordo com", " e ",
@@ -64,12 +71,13 @@ fun SignUp(navController: NavHostController) {
 				)
 			) {
 				setChecked(!checked)
-
+				Toast.makeText(context, "notificao", Toast.LENGTH_SHORT)
 			}
 		}
 	}
 }
 
+//https://www.youtube.com/watch?v=OlO58LDfN14
 @Composable
 fun Content() {
 	val (nome, setNome) = remember { mutableStateOf("") }
