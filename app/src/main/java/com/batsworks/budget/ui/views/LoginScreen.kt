@@ -3,44 +3,45 @@ package com.batsworks.budget.ui.views
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
+import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
-import com.batsworks.budget.ui.theme.Color50
-import com.batsworks.budget.ui.theme.Color500
-import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.Color950
+import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.ui.state.LoginViewModel
+import com.batsworks.budget.ui.state.factoryProvider
 import com.batsworks.budget.ui.theme.customBackground
+import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
 
 @Composable
@@ -49,7 +50,7 @@ fun Login(navController: NavController) {
 		modifier = Modifier
 			.fillMaxSize()
 			.background(customBackground)
-			.padding(20.dp, 50.dp, 20.dp, 20.dp),
+			.padding(paddingScreen()),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		Image(
@@ -61,7 +62,10 @@ fun Login(navController: NavController) {
 		)
 		Spacer(modifier = Modifier.height(50.dp))
 
-		LoginExecution()
+		val viewModel = viewModel<LoginViewModel>(
+			factory = LoginViewModel::class.qualifiedName?.let { factoryProvider(it) }
+		)
+		LoginExecution(navController, viewModel)
 		Row(
 			Modifier
 				.height(IntrinsicSize.Min)
@@ -69,64 +73,71 @@ fun Login(navController: NavController) {
 			horizontalArrangement = Arrangement.Center
 
 		) {
-			Text("cadastrar")
+			CustomText(text = "cadastrar", textDecoration = TextDecoration.Underline)
 			Spacer(modifier = Modifier.width(10.dp))
-			HorizontalDivider(
-				modifier = Modifier
-					.fillMaxHeight()
-					.width(2.dp),
-				color = Color950
-			)
+			VerticalDivider(color = textColor)
 			Spacer(modifier = Modifier.padding(5.dp))
-			Text("esqueci a senha")
+			CustomText(
+				modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
+				text = "esqueci a senha", textDecoration = TextDecoration.Underline)
 		}
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginExecution() {
-	var username by remember { mutableStateOf("") }
-	var password by remember { mutableStateOf("") }
+fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
+	val (username, setUsername) = remember { mutableStateOf("") }
+	val (password, setPassword) = remember { mutableStateOf("") }
 
-	Text(modifier = Modifier.fillMaxWidth(0.8f), text = "username", color = textColor)
+	CustomText(
+		modifier = Modifier.fillMaxWidth(0.8f), text = "username", capitalize = true,
+		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+	)
 	Spacer(modifier = Modifier.height(10.dp))
-	OutlinedTextField(
-		modifier = Modifier.fillMaxWidth(0.8f),
-		value = username,
-		onValueChange = { username = it })
-
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.8f),
-		defaultText = username,
-		onValueChange = { username = it })
+		defaultText = username, labelText = "Email",
+		onValueChange = { setUsername(it) }, trailingIcon = Icons.Filled.Email
+	)
 
-	Spacer(modifier = Modifier.height(20.dp))
-	Text(modifier = Modifier.fillMaxWidth(0.8f), text = "password", color = textColor)
+	CustomText(
+		modifier = Modifier.fillMaxWidth(0.8f), text = "password", capitalize = true,
+		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+	)
 	Spacer(modifier = Modifier.height(10.dp))
-	OutlinedTextField(
+	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.8f),
-		value = password,
-		onValueChange = { password = it })
+		passwordField = true,
+		trailingIcon = Icons.Filled.Lock,
+		defaultText = password, labelText = "Password",
+		onValueChange = { setPassword(it) })
 
-	Button(colors = ButtonDefaults.buttonColors(
-		containerColor = Color800,
-		contentColor = Color50,
-		disabledContainerColor = Color500
-	),
-		modifier = Modifier
-			.fillMaxWidth(0.6f)
-			.padding(0.dp)
-			.padding(20.dp),
-		enabled = false,
-		onClick = { /*TODO*/ }) {
-		Text(text = "entrar")
-	}
+	CustomButton(modifier = Modifier
+		.fillMaxWidth(0.6f)
+		.padding(0.dp)
+		.padding(20.dp), enable = true, onClick = {
+		viewModel.log()
+		navController.navigate(Screen.MainScreen.route) {
+			popUpTo(gotoRoute(Screen.MainScreen.route))
+		}
+	})
+}
+
+private fun gotoRoute(text: String): String {
+	return text.substring(0, text.indexOf("_")).toLowerCase(Locale.current)
+}
+
+@Preview(
+	uiMode = Configuration.UI_MODE_NIGHT_YES,
+	showBackground = true
+)
+@Composable
+fun LoginDark() {
+	Login(rememberNavController())
 }
 
 @Preview(
 	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showSystemUi = true,
 	showBackground = true
 )
 @Composable
@@ -134,12 +145,3 @@ fun LoginWhite() {
 	Login(rememberNavController())
 }
 
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showSystemUi = true,
-	showBackground = true
-)
-@Composable
-fun LoginDark() {
-	Login(rememberNavController())
-}

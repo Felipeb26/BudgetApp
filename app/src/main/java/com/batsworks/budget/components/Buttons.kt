@@ -1,0 +1,38 @@
+package com.batsworks.budget.components
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
+import com.batsworks.budget.ui.theme.Color50
+import com.batsworks.budget.ui.theme.Color500
+import com.batsworks.budget.ui.theme.Color600
+import com.batsworks.budget.ui.theme.Color800
+
+@Composable
+fun CustomButton(
+	modifier: Modifier = Modifier,
+	onClick: () -> Unit, text: String = "empty", enable: Boolean = false,
+) {
+	Button(
+		modifier = modifier, border = BorderStroke(2.dp, Color600),
+		colors = ButtonDefaults.buttonColors(
+			containerColor = Color800,
+			contentColor = Color50,
+			disabledContainerColor = Color500,
+			disabledContentColor = Color600
+		), onClick = onClick, enabled = enable
+	) {
+		CustomText(
+			text = text.toUpperCase(Locale.current),
+			color = if (!enable) Color600 else Color.White,
+			textWeight = FontWeight.Bold
+		)
+	}
+}
