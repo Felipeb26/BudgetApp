@@ -8,9 +8,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.batsworks.budget.ui.state.LoginViewModel
+import com.batsworks.budget.ui.state.login.LoginViewModel
 import com.batsworks.budget.ui.views.Accounts
-import com.batsworks.budget.ui.views.Adicionar
+import com.batsworks.budget.ui.views.Add
 import com.batsworks.budget.ui.views.Historico
 import com.batsworks.budget.ui.views.Home
 import com.batsworks.budget.ui.views.Login
@@ -40,7 +40,7 @@ fun Navigate(
         composable(Screen.AccountsScreen.route) { Accounts(navController) }
         composable(Screen.PlusScreen.route) { PlusScreen(navController) }
         composable(Screen.SettingScreen.route) { Setting(navController) }
-        composable(Screen.AdicionarScreen.route) { Adicionar(navController) }
+        composable(Screen.AdicionarScreen.route) { Add(navController) }
         composable(Screen.HistoricoScreen.route) { Historico(navController) }
     }
 }

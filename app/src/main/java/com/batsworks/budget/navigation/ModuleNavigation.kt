@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.batsworks.budget.ui.state.LoginViewModel
+import com.batsworks.budget.ui.state.login.LoginViewModel
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main
@@ -16,21 +16,24 @@ import com.batsworks.budget.ui.views.SignUp
 
 @Composable
 fun StartNavigate(
-    navController: NavHostController,
-    screen: Screen,
+	navController: NavHostController,
+	screen: Screen,
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = screen.route,
-        modifier = Modifier.background(customBackground)
-    ) {
-        composable(Screen.LoginScreen.route) {
-            val model = viewModel<LoginViewModel>()
-            Login(navController, model)
-        }
-        composable(Screen.SignUpScreen.route) { SignUp(navController) }
-        navigation(Screen.MainScreen.route, route = "main") {
-            composable(Screen.MainScreen.route) { Main() }
-        }
-    }
+	NavHost(
+		navController = navController,
+		startDestination = screen.route,
+		modifier = Modifier.background(customBackground)
+	) {
+		composable(Screen.LoginScreen.route) {
+			val model = viewModel<LoginViewModel>()
+			Login(navController, model)
+		}
+		composable(Screen.SignUpScreen.route) {
+			val model = viewModel<LoginViewModel>()
+			SignUp(navController, model)
+		}
+		navigation(Screen.MainScreen.route, route = "main") {
+			composable(Screen.MainScreen.route) { Main() }
+		}
+	}
 }

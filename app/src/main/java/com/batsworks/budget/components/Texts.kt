@@ -9,7 +9,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +26,7 @@ fun CustomText(
 	textStyle: TextStyle = MaterialTheme.typography.labelLarge,
 	capitalize: Boolean = false,
 	color: Color = textColor,
-	textWeight: FontWeight = FontWeight.Normal
+	textWeight: FontWeight = FontWeight.Normal,
 ) {
 	Text(
 		modifier = modifier,
@@ -41,8 +40,9 @@ fun CustomText(
 }
 
 
-private fun capitalizeString(text: String): String {
-	val firstChar = text.substring(0, 1)
+fun capitalizeString(text: String?): String {
+	if (text.isNullOrEmpty()) return ""
+	val firstChar = text.substring(0, 1);
 	val restOfChars = text.substring(1)
 	return firstChar.toUpperCase(Locale.current).plus(restOfChars)
 }
