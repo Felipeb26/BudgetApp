@@ -5,13 +5,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.text.withStyle
 import com.batsworks.budget.ui.theme.textColor
 
 @Composable
@@ -41,4 +45,23 @@ private fun capitalizeString(text: String): String {
 	val firstChar = text.substring(0, 1)
 	val restOfChars = text.substring(1)
 	return firstChar.toUpperCase(Locale.current).plus(restOfChars)
+}
+
+@Composable
+fun annotedString(text1: String, text2: String, vararg values: String): AnnotatedString {
+	return buildAnnotatedString {
+		withStyle(SpanStyle(color = textColor)) {
+			append(text1)
+		}
+		append(" ")
+		values.forEachIndexed { index, value ->
+			withStyle(SpanStyle(color = textColor)) {
+				if (index == 1) append(text2) else append(" ")
+			}
+			withStyle(SpanStyle(color = Color.Red.copy(0.7f))) {
+				pushStringAnnotation(tag = value, value)
+				append(value)
+			}
+		}
+	}
 }

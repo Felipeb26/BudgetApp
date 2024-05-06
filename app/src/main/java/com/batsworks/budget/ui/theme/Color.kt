@@ -16,12 +16,16 @@ val Color500 = Color(0xFF9a86ce)
 val Color600 = Color(0xFF8b6dbe)
 val Color700 = Color(0xFF785ca6)
 val Color800 = Color(0xFF5c487f)
-val Color950 = Color(0xFF51426d)
 val Color900 = Color(0xFF2f273f)
+val Color950 = Color(0xFF51426d)
+val ColorDark = Color(0xFF141404)
 
+val customDarkBackground
+    @Composable
+    get() = if (isSystemInDarkTheme()) ColorDark else Color.White
 val customBackground
     @Composable
-    get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.9f) else Color.White
+    get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.7f) else Color.White
 val ColorScheme.outOfFocusText
     @Composable
     get() = if(isSystemInDarkTheme()) Color100 else Color50
@@ -30,7 +34,6 @@ val textColor
     @Composable
     get() = if(isSystemInDarkTheme()) Color50 else Color950
 
-@Composable
 fun GradientBrush(
     isVerticalGratient: Boolean = true,
     colors: List<Color> = listOf(Color800, Color700, Color400),

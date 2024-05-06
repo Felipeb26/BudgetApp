@@ -39,109 +39,109 @@ import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.ui.state.LoginViewModel
-import com.batsworks.budget.ui.state.factoryProvider
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
 
+
 @Composable
-fun Login(navController: NavController) {
-	Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(customBackground)
-			.padding(paddingScreen()),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		Image(
-			modifier = Modifier
-				.padding(0.dp)
-				.padding(0.dp, 45.dp),
-			painter = painterResource(id = R.drawable.logo),
-			contentDescription = ""
-		)
-		Spacer(modifier = Modifier.height(50.dp))
+fun Login(navController: NavController = rememberNavController(), viewModel: LoginViewModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(customBackground)
+            .padding(paddingScreen()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(0.dp)
+                .padding(0.dp, 45.dp),
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = ""
+        )
+        Spacer(modifier = Modifier.height(50.dp))
 
-		val viewModel = viewModel<LoginViewModel>(
-			factory = LoginViewModel::class.qualifiedName?.let { factoryProvider(it) }
-		)
-		LoginExecution(navController, viewModel)
-		Row(
-			Modifier
-				.height(IntrinsicSize.Min)
-				.fillMaxWidth(),
-			horizontalArrangement = Arrangement.Center
+        LoginExecution(navController, viewModel)
+        Row(
+            Modifier
+                .height(IntrinsicSize.Min)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
 
-		) {
-			CustomText(text = "cadastrar", textDecoration = TextDecoration.Underline)
-			Spacer(modifier = Modifier.width(10.dp))
-			VerticalDivider(color = textColor)
-			Spacer(modifier = Modifier.padding(5.dp))
-			CustomText(
-				modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
-				text = "esqueci a senha", textDecoration = TextDecoration.Underline)
-		}
-	}
+        ) {
+            CustomText(
+                modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
+                text = "cadastrar", textDecoration = TextDecoration.Underline
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            VerticalDivider(color = textColor)
+            Spacer(modifier = Modifier.padding(5.dp))
+            CustomText(text = "esqueci a senha", textDecoration = TextDecoration.Underline)
+        }
+    }
 }
 
 @Composable
 fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
-	val (username, setUsername) = remember { mutableStateOf("") }
-	val (password, setPassword) = remember { mutableStateOf("") }
+    val (username, setUsername) = remember { mutableStateOf("") }
+    val (password, setPassword) = remember { mutableStateOf("") }
 
-	CustomText(
-		modifier = Modifier.fillMaxWidth(0.8f), text = "username", capitalize = true,
-		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
-	)
-	Spacer(modifier = Modifier.height(10.dp))
-	CustomOutlineTextField(
-		modifier = Modifier.fillMaxWidth(0.8f),
-		defaultText = username, labelText = "Email",
-		onValueChange = { setUsername(it) }, trailingIcon = Icons.Filled.Email
-	)
+    CustomText(
+        modifier = Modifier.fillMaxWidth(0.8f), text = "username", capitalize = true,
+        textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+    CustomOutlineTextField(
+        modifier = Modifier.fillMaxWidth(0.8f),
+        defaultText = username, labelText = "Email",
+        onValueChange = { setUsername(it) }, trailingIcon = Icons.Filled.Email
+    )
 
-	CustomText(
-		modifier = Modifier.fillMaxWidth(0.8f), text = "password", capitalize = true,
-		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
-	)
-	Spacer(modifier = Modifier.height(10.dp))
-	CustomOutlineTextField(
-		modifier = Modifier.fillMaxWidth(0.8f),
-		passwordField = true,
-		trailingIcon = Icons.Filled.Lock,
-		defaultText = password, labelText = "Password",
-		onValueChange = { setPassword(it) })
+    CustomText(
+        modifier = Modifier.fillMaxWidth(0.8f), text = "password", capitalize = true,
+        textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+    CustomOutlineTextField(
+        modifier = Modifier.fillMaxWidth(0.8f),
+        passwordField = true,
+        trailingIcon = Icons.Filled.Lock,
+        defaultText = password, labelText = "Password",
+        onValueChange = { setPassword(it) })
 
-	CustomButton(modifier = Modifier
-		.fillMaxWidth(0.6f)
-		.padding(0.dp)
-		.padding(20.dp), enable = true, onClick = {
-		viewModel.log()
-		navController.navigate(Screen.MainScreen.route) {
-			popUpTo(gotoRoute(Screen.MainScreen.route))
-		}
-	})
+    CustomButton(modifier = Modifier
+        .fillMaxWidth(0.6f)
+        .padding(0.dp)
+        .padding(20.dp), enable = true, onClick = {
+        viewModel.log()
+        navController.navigate(Screen.MainScreen.route) {
+            popUpTo(gotoRoute(Screen.MainScreen.route))
+        }
+    })
 }
 
 private fun gotoRoute(text: String): String {
-	return text.substring(0, text.indexOf("_")).toLowerCase(Locale.current)
+    return text.substring(0, text.indexOf("_")).toLowerCase(Locale.current)
 }
 
 @Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showBackground = true
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true
 )
 @Composable
 fun LoginDark() {
-	Login(rememberNavController())
+    val model = viewModel<LoginViewModel>()
+    Login(rememberNavController(), model)
 }
 
 @Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showBackground = true
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
 )
 @Composable
 fun LoginWhite() {
-	Login(rememberNavController())
+    val model = viewModel<LoginViewModel>()
+    Login(rememberNavController(), model)
 }
 
