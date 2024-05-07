@@ -24,11 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +36,7 @@ import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.state.login.LoginViewModel
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
@@ -85,8 +83,6 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Log
 
 @Composable
 fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
-	val context = LocalContext.current
-
 	val (username, setUsername) = remember { mutableStateOf("") }
 	val (password, setPassword) = remember { mutableStateOf("") }
 
@@ -118,14 +114,14 @@ fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
 		.padding(0.dp)
 		.padding(20.dp), enable = true, onClick = {
 //        viewModel.log()
-//        navController.navigate(Screen.MainScreen.route) {
-//            popUpTo(gotoRoute(Screen.MainScreen.route))
-//        }
+		easyNavigate(
+			navController,
+			Screen.MainScreen.route,
+			stateSave = false,
+			restore = false,
+			include = true
+		)
 	})
-}
-
-private fun gotoRoute(text: String): String {
-	return text.substring(0, text.indexOf("_")).toLowerCase(Locale.current)
 }
 
 @Preview(

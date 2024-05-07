@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -97,25 +98,45 @@ fun Content(navController: NavHostController, viewModel: LoginViewModel) {
 	)
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.9f),
-		onValueChange = { setTelefone(it) },
 		defaultText = telefone,
-		labelText = "text"
+		labelText = "telefone",
+		onValueChange = {
+			setTelefone(it)
+			viewModel.onEvent(RegistrationFormEvent.TelefoneChanged(it))
+		}, error = state.telefoneError != null,
+		errorMessage = state.telefoneError
 	)
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.9f),
-		onValueChange = { setSenha(it) },
 		defaultText = senha,
-		labelText = "password"
+		labelText = "password",
+		passwordField = true,
+		onValueChange = {
+			setSenha(it)
+			viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it))
+		}, error = state.passwordError != null,
+		errorMessage = state.passwordError
 	)
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.9f),
-		onValueChange = { setConfirmaSenha(it) },
 		defaultText = confirmarSenha,
-		labelText = "confirm password"
+		labelText = "confirm password",
+		passwordField = true,
+		onValueChange = {
+			setConfirmaSenha(it)
+			viewModel.onEvent(RegistrationFormEvent.RepeatedPasswordChanged(it))
+		}, error = state.repeatedPasswordErro != null,
+		errorMessage = state.repeatedPasswordErro
 	)
 	Spacer(modifier = Modifier.height(15.dp))
-	TermsAndCondition(checked, setChecked)
-
+	TermsAndCondition(
+		checked = checked,
+		checkedChange = {
+			setChecked(!checked)
+			viewModel.onEvent(RegistrationFormEvent.TermsChanged(it))
+		}, error = state.acceptedTermsError != null,
+		errorMessage = state.acceptedTermsError
+	)
 	Spacer(modifier = Modifier.height(15.dp))
 	CustomButton(
 		modifier = Modifier.fillMaxWidth(0.6f),
@@ -127,16 +148,20 @@ fun Content(navController: NavHostController, viewModel: LoginViewModel) {
 }
 
 @Composable
-fun TermsAndCondition(checked: Boolean, setChecked: (Boolean) -> Unit) {
+fun TermsAndCondition(
+	checked: Boolean,
+	checkedChange: ((Boolean) -> Unit)?,
+	error: Boolean,
+	errorMessage: String? = null,
+) {
 	val context = LocalContext.current
-
 	Row(
 		horizontalArrangement = Arrangement.Center,
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Checkbox(
 			checked = checked,
-			onCheckedChange = { setChecked(it) },
+			onCheckedChange = checkedChange,
 			colors = CheckboxDefaults.colors(
 				checkmarkColor = Color800,
 				checkedColor = Color600
@@ -149,10 +174,11 @@ fun TermsAndCondition(checked: Boolean, setChecked: (Boolean) -> Unit) {
 		ClickableText(
 			text = annoted
 		) { _ ->
-			setChecked(!checked)
+			checkedChange?.invoke(!checked)
 			Toast.makeText(context, "notificao", Toast.LENGTH_SHORT).show()
 		}
 	}
+	if (error) Text(text = errorMessage ?: "")
 }
 
 

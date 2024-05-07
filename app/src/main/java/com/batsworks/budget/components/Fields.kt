@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -11,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,7 +47,7 @@ fun CustomOutlineTextField(
 		value = defaultText,
 		onValueChange = onValueChange,
 		label = { Text(text = capitalizeString(labelText), color = textColor.copy(0.4f)) },
-		supportingText = { Text(text = errorMessage ?: "") },
+		supportingText = { Text(text = errorMessage ?: "", fontWeight = FontWeight.Bold) },
 		enabled = enabled,
 		singleLine = true,
 		isError = error,
@@ -54,7 +58,8 @@ fun CustomOutlineTextField(
 			unfocusedContainerColor = customBackground.copy(0.4f),
 			cursorColor = textColor,
 			focusedBorderColor = Color500,
-			focusedLabelColor = Color500
+			focusedLabelColor = Color500,
+			errorSupportingTextColor = MaterialTheme.colorScheme.error,
 		),
 		visualTransformation = if (passwordField && show) PasswordVisualTransformation() else VisualTransformation.None,
 		shape = shape,
@@ -69,4 +74,9 @@ fun CustomOutlineTextField(
 			}
 		}
 	)
+}
+
+fun sizeWidth(){
+//	val configuration = LocalConfiguration.current
+
 }

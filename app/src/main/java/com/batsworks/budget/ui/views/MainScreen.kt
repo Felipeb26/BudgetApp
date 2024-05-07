@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
@@ -111,14 +112,6 @@ fun FloatingButton(navController: NavController, modifier: Modifier = Modifier) 
 
 fun formatScreenTitle(title: String): String {
     return title.replace("_screen", "").toUpperCase(Locale.current)
-}
-
-fun easyNavigate(navController: NavController, route: String) {
-    navController.navigate(route) {
-        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
 }
 
 @Preview

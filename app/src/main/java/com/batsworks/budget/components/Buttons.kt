@@ -4,10 +4,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
@@ -21,7 +23,8 @@ import com.batsworks.budget.ui.theme.Color800
 fun CustomButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit, text: String = "empty", enable: Boolean = false,
-    shape: Shape = RoundedCornerShape(30)
+    shape: Shape = RoundedCornerShape(30),
+    textStyle: TextStyle = MaterialTheme.typography.labelLarge
 ) {
     Button(
         modifier = modifier, border = BorderStroke(2.dp, Color600),
@@ -34,6 +37,7 @@ fun CustomButton(
         ), onClick = onClick, enabled = enable
     ) {
         CustomText(
+            textStyle = textStyle,
             text = text.toUpperCase(Locale.current),
             color = if (!enable) Color600 else Color.White,
             textWeight = FontWeight.Bold

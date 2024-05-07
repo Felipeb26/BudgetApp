@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.domain.use_cases.ValidateEmail
 import com.batsworks.budget.domain.use_cases.ValidateName
 import com.batsworks.budget.domain.use_cases.ValidatePassword
+import com.batsworks.budget.domain.use_cases.ValidatePhone
 import com.batsworks.budget.domain.use_cases.ValidateRepeatedPassword
 import com.batsworks.budget.domain.use_cases.ValidateTerms
 import kotlinx.coroutines.channels.Channel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
 	private val validateName: ValidateName = ValidateName(),
+	private val validatePhone: ValidatePhone = ValidatePhone(),
 	private val validateEmail: ValidateEmail = ValidateEmail(),
 	private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
@@ -28,10 +30,6 @@ class LoginViewModel(
 
 	private val validationEventChannel = Channel<ValidationEvent>()
 	val validationEvents = validationEventChannel.receiveAsFlow()
-
-	fun log() {
-		Log.d(TAG, TAG.ifEmpty { "teste" })
-	}
 
 	fun onEvent(event: RegistrationFormEvent) {
 		when (event) {
@@ -66,28 +64,33 @@ class LoginViewModel(
 	}
 
 	private fun submitData() {
+		val nameResult = validateName.execute(state.nome)
+		val phoneResult = validatePhone.execute(state.telefone)
 		val emailResult = validateEmail.execute(state.email)
 		val passwordResult = validatePassword.execute(state.password)
 		val repeatedPasswordResult =
 			validateRepeatedPassword.execute(state.password, state.repeatedPassword)
-		val nameResult = validateName.execute(state.nome)
 		val termsResult = validateTerms.execute(state.acceptedTerms)
 
 		val hasError = listOf(
+			nameResult,
 			emailResult,
+			phoneResult,
 			passwordResult,
 			repeatedPasswordResult,
-			nameResult, termsResult
+			termsResult
 		).any { !it.successful }
 
 		if (hasError) {
 			state = state.copy(
 				nomeError = nameResult.errorMessage,
 				emailError = emailResult.errorMessage,
+				telefoneError = phoneResult.errorMessage,
 				passwordError = passwordResult.errorMessage,
 				repeatedPasswordErro = repeatedPasswordResult.errorMessage,
 				acceptedTermsError = termsResult.errorMessage
 			)
+			Log.d(TAG, "Foram encontrados erros")
 			return
 		}
 		viewModelScope.launch {
@@ -97,7 +100,7 @@ class LoginViewModel(
 	}
 
 	sealed class ValidationEvent {
-		object Sucess : ValidationEvent()
+		data object Sucess : ValidationEvent()
 	}
 
 }

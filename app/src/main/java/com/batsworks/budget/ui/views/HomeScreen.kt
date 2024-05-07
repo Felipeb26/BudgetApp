@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
-import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -54,12 +53,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.objects.HomeCard
-import com.batsworks.budget.ui.theme.AnimateIcon
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.InfiniteBlink
 import com.batsworks.budget.ui.theme.customDarkBackground
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -155,14 +155,14 @@ fun Cards(navController: NavController) {
 					containerColor = if (isSystemInDarkTheme()) {
 						card.color.copy(0.6f)
 					} else card.color.copy(0.8f)
-				)
+				), onClick = { easyNavigate(navController, card.screen.route) }
 			) {
 				Spacer(modifier = Modifier.height(10.dp))
 				Icon(
 					modifier = Modifier
 						.padding(0.dp)
 						.padding(horizontal = 10.dp),
-					imageVector = card.icon ?: ImageVector.vectorResource(id = card.resource),
+					imageVector = ImageVector.vectorResource(id = card.resource),
 					contentDescription = card.name
 				)
 				CustomText(
@@ -262,7 +262,15 @@ fun LimitedHistory() {
 						Spacer(modifier = Modifier.height(16.dp))
 						LazyColumn {
 							items(6) {
-								CurrencyItem(it, width)
+								val color = InfiniteBlink(
+									if ((it % 2) == 0) Color.Green.copy(0.6f)
+									else Color.Red.copy(0.6f)
+								)
+								CurrencyItem(
+									it,
+									width,
+									color
+								)
 							}
 						}
 					}
@@ -273,31 +281,22 @@ fun LimitedHistory() {
 }
 
 @Composable
-fun CurrencyItem(index: Int, width: Dp) {
-	val (makeShine, setMakeShine) = remember { mutableStateOf(false) }
-
+fun CurrencyItem(index: Int, width: Dp, color: Color) {
 	Row(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(bottom = 16.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		val color = remember {
-			Animatable(
-				if ((index % 2) == 0) Color.Green.copy(0.6f) else Color.Red.copy(0.6f)
-			)
-		}
-		AnimateIcon(makeShine, setMakeShine, color)
-
 		Box(
 			modifier = Modifier
 				.clip(RoundedCornerShape(5.dp))
-				.background(color.value.copy(0.2f))
+				.background(color.copy(0.3f))
 		) {
 			Image(
 				painter = painterResource(if ((index % 2) == 0) R.drawable.icons8_arrowup else R.drawable.icons8_arrowdown),
 				contentDescription = "",
-				colorFilter = ColorFilter.tint(color = color.value)
+				colorFilter = ColorFilter.tint(color = color)
 			)
 		}
 		Spacer(modifier = Modifier.width(5.dp))

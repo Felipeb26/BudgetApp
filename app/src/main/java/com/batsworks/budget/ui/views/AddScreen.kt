@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,61 +42,19 @@ fun Add(navController: NavController) {
 	val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
 	val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
 
-	val selectFile = rememberLauncherForActivityResult(
-		contract = ActivityResultContracts.GetContent(),
-		onResult = { uri -> setFile(uri) }
-	)
-
-	val selectImage = rememberLauncherForActivityResult(
-		contract = ActivityResultContracts.PickVisualMedia(),
-		onResult = { uri -> setFile(uri) }
-	)
-
 	LazyColumn(
 		modifier = Modifier
 			.fillMaxSize()
 			.background(customDarkBackground)
 	) {
-		item {
-			Spacer(modifier = Modifier.height(10.dp))
-			Column(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(0.dp)
-					.padding(horizontal = 15.dp),
-				horizontalAlignment = Alignment.Start
-			) {
-				Content()
-			}
-		}
-		item {
-			Row(
-				modifier = Modifier.fillMaxWidth(),
-				horizontalArrangement = Arrangement.SpaceAround
-			) {
-				CustomButton(
-					onClick = { selectFile.launch("application/pdf") },
-					enable = true,
-					text = "arquivo"
-				)
-				CustomButton(
-					onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-					enable = true,
-					text = "imagem"
-				)
-				CustomButton(
-					onClick = { setShowPreview(!showPreview) },
-					text = "preview file",
-					enable = file != null
-				)
-			}
-		}
+		item { Content() }
+		item { ActionButtons(file, setFile, showPreview, setShowPreview) }
 		item {
 			Row(
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(0.dp)
-					.padding(vertical = 20.dp),
+					.padding(vertical = 20.dp, horizontal = 10.dp),
 				horizontalArrangement = Arrangement.Center
 			) {
 				if (showPreview) {
@@ -109,8 +68,12 @@ fun Add(navController: NavController) {
 						contentScale = ContentScale.Crop
 					)
 					Spacer(modifier = Modifier.width(10.dp))
-					CustomButton(onClick = { /*TODO*/ }, text = "Salvar")
 				}
+				if (file != null) CustomButton(
+					modifier = Modifier.weight(1f),
+					onClick = { /*TODO*/ },
+					text = "Salvar"
+				)
 			}
 		}
 	}
@@ -118,8 +81,58 @@ fun Add(navController: NavController) {
 
 @Composable
 fun Content() {
-	CustomOutlineTextField(onValueChange = {}, labelText = "Nome da despesa")
-	CustomOutlineTextField(onValueChange = {}, labelText = "Valor da despesa")
+	Spacer(modifier = Modifier.height(10.dp))
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(0.dp)
+			.padding(horizontal = 15.dp),
+		horizontalAlignment = Alignment.Start
+	) {
+		CustomOutlineTextField(onValueChange = {}, labelText = "Nome da despesa")
+		CustomOutlineTextField(onValueChange = {}, labelText = "Valor da despesa")
+	}
+}
+
+@Composable
+fun ActionButtons(
+	file: Uri? = null,
+	setFile: (Uri?) -> Unit,
+	showPreview: Boolean,
+	setShowPreview: (Boolean) -> Unit,
+) {
+	val selectFile = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.GetContent(),
+		onResult = { uri -> setFile(uri) }
+	)
+
+	val selectImage = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.PickVisualMedia(),
+		onResult = { uri -> setFile(uri) }
+	)
+	Row(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalArrangement = Arrangement.SpaceAround
+	) {
+		CustomButton(
+			onClick = { selectFile.launch("application/pdf") },
+			enable = true,
+			text = "select file",
+			textStyle = MaterialTheme.typography.labelMedium
+		)
+		CustomButton(
+			onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+			enable = true,
+			text = "select image",
+			textStyle = MaterialTheme.typography.labelMedium
+		)
+		CustomButton(
+			textStyle = MaterialTheme.typography.labelMedium,
+			onClick = { setShowPreview(!showPreview) },
+			text = if (showPreview) "hide file" else "show file",
+			enable = file != null
+		)
+	}
 }
 
 @Preview(
