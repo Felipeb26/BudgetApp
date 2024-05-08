@@ -6,12 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.batsworks.budget.components.Resource
+import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.domain.use_cases.ValidateEmail
 import com.batsworks.budget.domain.use_cases.ValidateName
 import com.batsworks.budget.domain.use_cases.ValidatePassword
 import com.batsworks.budget.domain.use_cases.ValidatePhone
 import com.batsworks.budget.domain.use_cases.ValidateRepeatedPassword
 import com.batsworks.budget.domain.use_cases.ValidateTerms
+import com.google.firebase.firestore.Filter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -23,13 +27,14 @@ class LoginViewModel(
 	private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
 	private val validateTerms: ValidateTerms = ValidateTerms(),
+	private val repository: CustomRepository<UserEntity>? = null,
 ) : ViewModel() {
 
 	private val TAG = LoginViewModel::class.simpleName!!
 	var state by mutableStateOf(RegistrationFormState())
 
-	private val validationEventChannel = Channel<ValidationEvent>()
-	val validationEvents = validationEventChannel.receiveAsFlow()
+	private val resourceEventChannel = Channel<Resource<Any>>()
+	val resourceEventFlow = resourceEventChannel.receiveAsFlow()
 
 	fun onEvent(event: RegistrationFormEvent) {
 		when (event) {
@@ -41,25 +46,25 @@ class LoginViewModel(
 				state = state.copy(email = event.email)
 			}
 
-			is RegistrationFormEvent.TelefoneChanged -> {
-				state = state.copy(telefone = event.telefone)
-			}
+			is RegistrationFormEvent.TelefoneChanged -> state =
+				state.copy(telefone = event.telefone)
 
 			is RegistrationFormEvent.PasswordChanged -> {
 				state = state.copy(password = event.password)
+				submitData()
 			}
 
 			is RegistrationFormEvent.RepeatedPasswordChanged -> {
 				state = state.copy(repeatedPassword = event.repeatedPassword)
+				submitData()
 			}
 
 			is RegistrationFormEvent.TermsChanged -> {
 				state = state.copy(acceptedTerms = event.accepted)
-			}
-
-			is RegistrationFormEvent.Submit -> {
 				submitData()
 			}
+
+			else -> submitData()
 		}
 	}
 
@@ -93,14 +98,36 @@ class LoginViewModel(
 			Log.d(TAG, "Foram encontrados erros")
 			return
 		}
-		viewModelScope.launch {
-			validationEventChannel.send(ValidationEvent.Sucess)
-		}
-
 	}
 
-	sealed class ValidationEvent {
-		data object Sucess : ValidationEvent()
+	fun registerUser() {
+		viewModelScope.launch {
+			if (repository == null) {
+				resourceEventChannel.send(Resource.Failure("repository must not be null"))
+				return@launch
+			}
+			val user = UserEntity(
+				state.nome,
+				state.email,
+				state.telefone,
+				state.password.toInt()
+			)
+			val querySnapshot = repository.findByParam(Filter.equalTo("email", user.email))
+			if (!querySnapshot.isEmpty && querySnapshot.size() > 1) {
+				resourceEventChannel.send(Resource.Failure("Email já cadastrado"))
+				return@launch
+			}
+
+			repository.save(user).addOnCompleteListener { complete ->
+				if (complete.isCanceled)
+					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
+				if (complete.isSuccessful)
+					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
+				if (complete.isComplete)
+					viewModelScope.launch { resourceEventChannel.send(Resource.Sucess("")) }
+			}
+			resourceEventChannel.send(Resource.Loading(true))
+		}
 	}
 
 }

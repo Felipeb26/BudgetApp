@@ -1,6 +1,7 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,10 +21,12 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,14 +40,15 @@ import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.state.login.LoginViewModel
+import com.batsworks.budget.ui.state.SignInViewModel
+import com.batsworks.budget.ui.state.login.RegistrationFormEvent
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
 
 
 @Composable
-fun Login(navController: NavController = rememberNavController(), viewModel: LoginViewModel) {
+fun Login(navController: NavController = rememberNavController(), viewModel: SignInViewModel) {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -82,9 +86,28 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Log
 }
 
 @Composable
-fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
+fun LoginExecution(navController: NavController, viewModel: SignInViewModel) {
 	val (username, setUsername) = remember { mutableStateOf("") }
 	val (password, setPassword) = remember { mutableStateOf("") }
+	val propsState = viewModel.state
+	val context = LocalContext.current
+
+	LaunchedEffect(key1 = context) {
+		viewModel.validationEvents.collect { event ->
+			when (event) {
+				is SignInViewModel.ValidationEvent.Sucess -> {
+					Toast.makeText(context, "deu certo", Toast.LENGTH_SHORT).show()
+					easyNavigate(
+						navController,
+						Screen.MainScreen.route,
+						stateSave = false,
+						restore = false,
+						include = true
+					)
+				}
+			}
+		}
+	}
 
 	CustomText(
 		modifier = Modifier.fillMaxWidth(0.8f), text = "username", capitalize = true,
@@ -94,7 +117,12 @@ fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.8f),
 		defaultText = username, labelText = "Email",
-		onValueChange = { setUsername(it) }, trailingIcon = Icons.Filled.Email
+		onValueChange = {
+			setUsername(it)
+			viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
+		}, trailingIcon = Icons.Filled.Email,
+		error = propsState.emailError != null,
+		errorMessage = propsState.emailError
 	)
 
 	CustomText(
@@ -107,21 +135,21 @@ fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
 		passwordField = true,
 		trailingIcon = Icons.Filled.Lock,
 		defaultText = password, labelText = "Password",
-		onValueChange = { setPassword(it) })
+		onValueChange = {
+			setPassword(it)
+			viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it))
+		}, error = propsState.passwordError != null,
+		errorMessage = propsState.passwordError
+	)
 
 	CustomButton(modifier = Modifier
 		.fillMaxWidth(0.6f)
 		.padding(0.dp)
-		.padding(20.dp), enable = true, onClick = {
-//        viewModel.log()
-		easyNavigate(
-			navController,
-			Screen.MainScreen.route,
-			stateSave = false,
-			restore = false,
-			include = true
-		)
-	})
+		.padding(20.dp), enable = true,
+		text = "enter",
+		onClick = {
+			viewModel.onEvent(RegistrationFormEvent.Submit)
+		})
 }
 
 @Preview(
@@ -130,7 +158,7 @@ fun LoginExecution(navController: NavController, viewModel: LoginViewModel) {
 )
 @Composable
 fun LoginDark() {
-	val model = viewModel<LoginViewModel>()
+	val model = viewModel<SignInViewModel>()
 	Login(rememberNavController(), model)
 }
 
@@ -140,7 +168,7 @@ fun LoginDark() {
 )
 @Composable
 fun LoginWhite() {
-	val model = viewModel<LoginViewModel>()
+	val model = viewModel<SignInViewModel>()
 	Login(rememberNavController(), model)
 }
 

@@ -85,4 +85,8 @@ dependencies {
 
 	//Lottie
 	implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+	//Firebase
+	implementation("com.google.firebase:firebase-firestore:24.10.4")
+
 }

@@ -10,6 +10,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.ui.state.SignInViewModel
+import com.batsworks.budget.ui.state.factoryProvider
 import com.batsworks.budget.ui.state.login.LoginViewModel
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
@@ -34,7 +38,9 @@ fun Navigate(
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
 		composable(Screen.LoginScreen.route) {
-			val model = viewModel<LoginViewModel>()
+			val model = viewModel<SignInViewModel>(
+				factory = factoryProvider(SignInViewModel(CustomRepository("users", UserEntity::class.java)))
+			)
 			Login(viewModel = model)
 		}
 		composable(Screen.MainScreen.route) { Main(navController) }

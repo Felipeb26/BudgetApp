@@ -1,12 +1,13 @@
 package com.batsworks.budget.ui.state
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-fun factoryProvider(className: String, vararg args: Any): ViewModelProvider.Factory {
+fun factoryProvider(viewmodel: ViewModel): ViewModelProvider.Factory {
 	return object : ViewModelProvider.Factory {
 		override fun <T : ViewModel> create(modelClass: Class<T>): T {
-			return Class.forName(className).getConstructor().newInstance(args) as T
+			return viewmodel as T
 		}
 	}
 }
