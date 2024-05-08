@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.batsworks.budget" />
+                  <option name="mobileSdkAppId" value="1:198983271671:android:749e95741c35b8e7ba3ff2" />
+                  <option name="projectId" value="budget-fdab7" />
+                  <option name="projectNumber" value="198983271671" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
