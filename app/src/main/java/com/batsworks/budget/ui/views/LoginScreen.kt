@@ -38,6 +38,8 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.Loading
+import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.state.SignInViewModel
@@ -49,6 +51,8 @@ import com.batsworks.budget.ui.theme.textColor
 
 @Composable
 fun Login(navController: NavController = rememberNavController(), viewModel: SignInViewModel) {
+	val (isLoading, setLoading) = remember { mutableStateOf(false) }
+
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -65,7 +69,7 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 		)
 		Spacer(modifier = Modifier.height(50.dp))
 
-		LoginExecution(navController, viewModel)
+		LoginExecution(navController, viewModel,isLoading, setLoading)
 		Row(
 			Modifier
 				.height(IntrinsicSize.Min)
@@ -75,7 +79,7 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 		) {
 			CustomText(
 				modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
-				text = "cadastrar", textDecoration = TextDecoration.Underline
+				text = "register", textDecoration = TextDecoration.Underline
 			)
 			Spacer(modifier = Modifier.width(10.dp))
 			VerticalDivider(color = textColor)
@@ -83,10 +87,16 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 			CustomText(text = "esqueci a senha", textDecoration = TextDecoration.Underline)
 		}
 	}
+	Loading(isLoading)
 }
 
 @Composable
-fun LoginExecution(navController: NavController, viewModel: SignInViewModel) {
+fun LoginExecution(
+	navController: NavController,
+	viewModel: SignInViewModel,
+	isLoading: Boolean,
+	setLoading: (Boolean) -> Unit,
+) {
 	val (username, setUsername) = remember { mutableStateOf("") }
 	val (password, setPassword) = remember { mutableStateOf("") }
 	val propsState = viewModel.state
@@ -95,8 +105,12 @@ fun LoginExecution(navController: NavController, viewModel: SignInViewModel) {
 	LaunchedEffect(key1 = context) {
 		viewModel.validationEvents.collect { event ->
 			when (event) {
-				is SignInViewModel.ValidationEvent.Sucess -> {
-					Toast.makeText(context, "deu certo", Toast.LENGTH_SHORT).show()
+				is Resource.Loading -> {
+					setLoading(!isLoading)
+				}
+
+				is Resource.Sucess -> {
+					Toast.makeText(context, "entering", Toast.LENGTH_SHORT).show()
 					easyNavigate(
 						navController,
 						Screen.MainScreen.route,
@@ -105,17 +119,25 @@ fun LoginExecution(navController: NavController, viewModel: SignInViewModel) {
 						include = true
 					)
 				}
+
+				is Resource.Failure -> {
+					Toast.makeText(
+						context,
+						"${event.error}\n não foi possivel localizar o usuario",
+						Toast.LENGTH_SHORT
+					).show()
+				}
 			}
 		}
 	}
 
 	CustomText(
-		modifier = Modifier.fillMaxWidth(0.8f), text = "username", capitalize = true,
+		modifier = Modifier.fillMaxWidth(0.85f), text = "username", capitalize = true,
 		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
-		modifier = Modifier.fillMaxWidth(0.8f),
+		modifier = Modifier.fillMaxWidth(0.9f),
 		defaultText = username, labelText = "Email",
 		onValueChange = {
 			setUsername(it)
@@ -126,12 +148,12 @@ fun LoginExecution(navController: NavController, viewModel: SignInViewModel) {
 	)
 
 	CustomText(
-		modifier = Modifier.fillMaxWidth(0.8f), text = "password", capitalize = true,
+		modifier = Modifier.fillMaxWidth(0.85f), text = "password", capitalize = true,
 		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
-		modifier = Modifier.fillMaxWidth(0.8f),
+		modifier = Modifier.fillMaxWidth(0.9f),
 		passwordField = true,
 		trailingIcon = Icons.Filled.Lock,
 		defaultText = password, labelText = "Password",

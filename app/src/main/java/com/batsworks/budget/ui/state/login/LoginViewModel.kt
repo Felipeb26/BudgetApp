@@ -107,27 +107,27 @@ class LoginViewModel(
 				return@launch
 			}
 			val user = UserEntity(
-				state.nome,
-				state.email,
-				state.telefone,
-				state.password.toInt()
+				nome = state.nome,
+				email = state.email,
+				phone = state.telefone,
+				password = state.password.toInt()
 			)
 			val querySnapshot = repository.findByParam(Filter.equalTo("email", user.email))
-			if (!querySnapshot.isEmpty && querySnapshot.size() > 1) {
-				resourceEventChannel.send(Resource.Failure("Email já cadastrado"))
-				return@launch
+//			if (!querySnapshot.isEmpty && querySnapshot.size() > 1) {
+//				resourceEventChannel.send(Resource.Failure("Email já cadastrado"))
+//				return@launch
 			}
 
-			repository.save(user).addOnCompleteListener { complete ->
-				if (complete.isCanceled)
-					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
-				if (complete.isSuccessful)
-					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
-				if (complete.isComplete)
-					viewModelScope.launch { resourceEventChannel.send(Resource.Sucess("")) }
-			}
-			resourceEventChannel.send(Resource.Loading(true))
-		}
+//			repository.save(user).addOnCompleteListener { complete ->
+//				if (complete.isCanceled)
+//					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
+//				if (complete.isSuccessful)
+//					viewModelScope.launch { resourceEventChannel.send(Resource.Failure("Email já cadastrado")) }
+//				if (complete.isComplete)
+//					viewModelScope.launch { resourceEventChannel.send(Resource.Sucess("")) }
+//			}
+//			resourceEventChannel.send(Resource.Loading(true))
+//		}
 	}
 
 }

@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
 		)
 		setContent {
 			BudgetTheme {
+//				Navigate(navController = rememberNavController(), screen = Screen.MainScreen)
 				StartNavigate(navController = rememberNavController(), screen = Screen.LoginScreen)
 			}
 		}

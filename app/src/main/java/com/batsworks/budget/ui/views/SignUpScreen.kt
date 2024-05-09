@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -19,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,14 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.navigation.Screen
@@ -52,6 +46,7 @@ import com.batsworks.budget.ui.theme.paddingScreen
 @Composable
 fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 	val (isLoading, setLoading) = remember { mutableStateOf(false) }
+	val context = LocalContext.current
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,7 +59,29 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 		Spacer(modifier = Modifier.height(20.dp))
 		if (!isLoading) Content(viewModel)
 	}
-	Loading(LocalContext.current, viewModel, navController, isLoading, setLoading)
+
+	LaunchedEffect(key1 = context) {
+		viewModel.resourceEventFlow.collect { event ->
+			when (event) {
+				is Resource.Loading -> {
+					setLoading(!isLoading)
+					Toast.makeText(context, "carregando", Toast.LENGTH_SHORT).show()
+				}
+
+				is Resource.Failure -> {
+					Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
+				}
+
+				is Resource.Sucess -> {
+					Toast.makeText(context, "Usuario cadastrado com sucesso", Toast.LENGTH_SHORT)
+						.show()
+					easyNavigate(navController, Screen.LoginScreen.route)
+				}
+			}
+		}
+	}
+
+	Loading(isLoading)
 }
 
 @Composable
@@ -180,48 +197,6 @@ fun TermsAndCondition(
 		}
 	}
 	if (error) Text(text = errorMessage ?: "", color = MaterialTheme.colorScheme.error)
-}
-
-@Composable
-fun Loading(
-	context: Context,
-	viewModel: LoginViewModel,
-	navController: NavHostController,
-	isLoading: Boolean,
-	setLoading: (Boolean) -> Unit,
-) {
-	val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
-	LaunchedEffect(key1 = context) {
-		viewModel.resourceEventFlow.collect { event ->
-			when (event) {
-				is Resource.Loading -> {
-					setLoading(!isLoading)
-					Toast.makeText(context, "carregando", Toast.LENGTH_SHORT).show()
-				}
-
-				is Resource.Failure -> {
-					Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
-				}
-
-				is Resource.Sucess -> {
-					Toast.makeText(context, "Usuario cadastrado com sucesso", Toast.LENGTH_SHORT)
-						.show()
-					easyNavigate(navController, Screen.LoginScreen.route)
-				}
-			}
-		}
-	}
-
-	if (isLoading) {
-		LottieAnimation(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(Color800.copy(0.2f)),
-			iterations = LottieConstants.IterateForever,
-			composition = composition,
-			speed = 0.5f
-		)
-	}
 }
 
 

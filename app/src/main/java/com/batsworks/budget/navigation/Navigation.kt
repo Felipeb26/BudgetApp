@@ -37,12 +37,6 @@ fun Navigate(
 		startDestination = screen.route,
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
-		composable(Screen.LoginScreen.route) {
-			val model = viewModel<SignInViewModel>(
-				factory = factoryProvider(SignInViewModel(CustomRepository("users", UserEntity::class.java)))
-			)
-			Login(viewModel = model)
-		}
 		composable(Screen.MainScreen.route) { Main(navController) }
 		composable(Screen.HomeScreen.route) { Home(navController) }
 		composable(Screen.ProfileScreen.route) { Profile(navController) }

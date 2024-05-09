@@ -23,7 +23,7 @@ fun CustomText(
 	text: String,
 	textAlign: TextAlign = TextAlign.Start,
 	textDecoration: TextDecoration = TextDecoration.None,
-	textStyle: TextStyle = MaterialTheme.typography.labelLarge,
+	textStyle: TextStyle = MaterialTheme.typography.labelMedium,
 	capitalize: Boolean = false,
 	color: Color = textColor,
 	textWeight: FontWeight = FontWeight.Normal,
@@ -42,7 +42,7 @@ fun CustomText(
 
 fun capitalizeString(text: String?): String {
 	if (text.isNullOrEmpty()) return ""
-	val firstChar = text.substring(0, 1);
+	val firstChar = text.substring(0, 1)
 	val restOfChars = text.substring(1)
 	return firstChar.toUpperCase(Locale.current).plus(restOfChars)
 }
