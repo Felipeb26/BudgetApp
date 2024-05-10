@@ -14,7 +14,7 @@ class MainViewModel : ViewModel() {
 
 	init {
 		viewModelScope.launch {
-			delay(10000L)
+			delay(1000)
 			_isReady.emit(true)
 		}
 	}
