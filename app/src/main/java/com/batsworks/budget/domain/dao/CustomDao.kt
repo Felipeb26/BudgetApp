@@ -6,17 +6,20 @@ import androidx.room.Upsert
 import com.batsworks.budget.domain.entity.UserEntity
 
 @Dao
-interface UsersDao{
+interface UsersDao {
 
 	@Query("SELECT * FROM USERENTITY")
 	suspend fun findAll(): List<UserEntity>
 
+	@Query("SELECT * FROM USERENTITY LIMIT 1")
+	suspend fun findUser(): UserEntity
+
 	@Upsert
-	suspend fun save(user:UserEntity)
+	suspend fun save(user: UserEntity)
 
 	@Query("SELECT * FROM USERENTITY WHERE email=:email and password=:password")
-	suspend fun findByLogin(email:String, password:Int) : UserEntity?
+	suspend fun findByLogin(email: String, password: Int): UserEntity?
 
 	@Query("DELETE FROM USERENTITY WHERE id =:id")
-	suspend fun deleteUserById(id:Int)
+	suspend fun deleteUserById(id: Int)
 }

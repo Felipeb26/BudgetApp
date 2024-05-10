@@ -38,11 +38,12 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.state.SignInViewModel
+import com.batsworks.budget.ui.state.login.SignInViewModel
 import com.batsworks.budget.ui.state.login.RegistrationFormEvent
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
@@ -69,7 +70,7 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 		)
 		Spacer(modifier = Modifier.height(50.dp))
 
-		LoginExecution(navController, viewModel,isLoading, setLoading)
+		LoginExecution(navController, viewModel, setLoading)
 		Row(
 			Modifier
 				.height(IntrinsicSize.Min)
@@ -94,7 +95,6 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 fun LoginExecution(
 	navController: NavController,
 	viewModel: SignInViewModel,
-	isLoading: Boolean,
 	setLoading: (Boolean) -> Unit,
 ) {
 	val (username, setUsername) = remember { mutableStateOf("") }
@@ -106,11 +106,11 @@ fun LoginExecution(
 		viewModel.validationEvents.collect { event ->
 			when (event) {
 				is Resource.Loading -> {
-					setLoading(!isLoading)
+					setLoading(event.loading)
 				}
 
 				is Resource.Sucess -> {
-					Toast.makeText(context, "entering", Toast.LENGTH_SHORT).show()
+					CustomToast(context, "entering")
 					easyNavigate(
 						navController,
 						Screen.MainScreen.route,
@@ -121,11 +121,7 @@ fun LoginExecution(
 				}
 
 				is Resource.Failure -> {
-					Toast.makeText(
-						context,
-						"${event.error}\n não foi possivel localizar o usuario",
-						Toast.LENGTH_SHORT
-					).show()
+					CustomToast(context, "${event.error}\n não foi possivel localizar o usuario")
 				}
 			}
 		}

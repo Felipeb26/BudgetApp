@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
@@ -65,16 +66,13 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 			when (event) {
 				is Resource.Loading -> {
 					setLoading(!isLoading)
-					Toast.makeText(context, "carregando", Toast.LENGTH_SHORT).show()
+					CustomToast(context, "carregando")
 				}
 
-				is Resource.Failure -> {
-					Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
-				}
+				is Resource.Failure -> CustomToast(context, event.error)
 
 				is Resource.Sucess -> {
-					Toast.makeText(context, "Usuario cadastrado com sucesso", Toast.LENGTH_SHORT)
-						.show()
+					CustomToast(context, "Usuario cadastrado com sucesso")
 					easyNavigate(navController, Screen.LoginScreen.route)
 				}
 			}
@@ -193,7 +191,7 @@ fun TermsAndCondition(
 			text = annoted
 		) { _ ->
 			checkedChange?.invoke(!checked)
-			Toast.makeText(context, "notificao", Toast.LENGTH_SHORT).show()
+			CustomToast(context, "notificao")
 		}
 	}
 	if (error) Text(text = errorMessage ?: "", color = MaterialTheme.colorScheme.error)

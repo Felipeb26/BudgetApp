@@ -4,27 +4,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.ui.state.SignInViewModel
-import com.batsworks.budget.ui.state.factoryProvider
-import com.batsworks.budget.ui.state.login.LoginViewModel
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
 import com.batsworks.budget.ui.views.Historico
 import com.batsworks.budget.ui.views.Home
-import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
 import com.batsworks.budget.ui.views.Setting
-import kotlin.math.sin
 
 @Composable
 fun Navigate(

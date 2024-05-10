@@ -52,9 +52,6 @@ class CustomRepository<T>(
 		return db.collection(collection).whereEqualTo(param, value).get().await()
 	}
 
-	//	suspend fun findByParam(filter: Filter): QuerySnapshot {
-//		return db.collection(collection).where(filter).get().await()
-//	}
 	fun findByParam(vararg filter: Filter): Task<QuerySnapshot> {
 		val dbConst = db.collection(collection)
 		filter.forEach { dbConst.where(it) }

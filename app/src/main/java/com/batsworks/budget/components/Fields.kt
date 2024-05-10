@@ -33,6 +33,7 @@ fun CustomOutlineTextField(
 	errorMessage: String? = null,
 	error: Boolean = false,
 	trailingIcon: ImageVector? = null,
+	leadingIcon: ImageVector? = null,
 	keyboardType: KeyboardType = KeyboardType.Text,
 	shape: Shape = RoundedCornerShape(30),
 ) {
@@ -60,6 +61,9 @@ fun CustomOutlineTextField(
 		),
 		visualTransformation = if (passwordField && show) PasswordVisualTransformation() else VisualTransformation.None,
 		shape = shape,
+		leadingIcon = leadingIcon?.let {
+			{ Icon(imageVector = it, contentDescription = "", tint = textColor) }
+		},
 		trailingIcon = trailingIcon?.let {
 			{
 				Icon(
