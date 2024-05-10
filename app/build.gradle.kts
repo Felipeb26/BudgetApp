@@ -3,7 +3,6 @@ plugins {
 	id("org.jetbrains.kotlin.android")
 	id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
-	id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -92,6 +91,7 @@ dependencies {
 	//Room
 	implementation("androidx.room:room-runtime:2.6.1")
 	annotationProcessor("androidx.room:room-compiler:2.6.1")
+	implementation("androidx.room:room-ktx:2.6.1")
 	ksp("androidx.room:room-compiler:2.6.1")
 
 	//LiveData

@@ -1,23 +1,22 @@
 package com.batsworks.budget.domain.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import com.batsworks.budget.domain.entity.UserEntity
 
 @Dao
 interface UsersDao{
 
 	@Query("SELECT * FROM USERENTITY")
-	fun findAll(): LiveData<List<UserEntity>>
+	suspend fun findAll(): List<UserEntity>
 
-	@Insert
-	fun save(user:UserEntity)
+	@Upsert
+	suspend fun save(user:UserEntity)
 
 	@Query("SELECT * FROM USERENTITY WHERE email=:email and password=:password")
-	fun findByLogin(email:String, password:Int) : UserEntity?
+	suspend fun findByLogin(email:String, password:Int) : UserEntity?
 
 	@Query("DELETE FROM USERENTITY WHERE id =:id")
-	fun deleteUserById(id:Int)
+	suspend fun deleteUserById(id:Int)
 }

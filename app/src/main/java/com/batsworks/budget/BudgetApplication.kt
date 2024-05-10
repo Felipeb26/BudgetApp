@@ -16,7 +16,7 @@ class BudgetApplication : Application() {
 			applicationContext,
 			Database::class.java,
 			Database.NAME
-		).allowMainThreadQueries().build()
+		).build()
 	}
 
 }
