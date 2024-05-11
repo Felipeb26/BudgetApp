@@ -62,15 +62,15 @@ fun CustomOutlineTextField(
 		visualTransformation = if (passwordField && show) PasswordVisualTransformation() else VisualTransformation.None,
 		shape = shape,
 		leadingIcon = leadingIcon?.let {
-			{ Icon(imageVector = it, contentDescription = "", tint = textColor) }
+			{ Icon(imageVector = it, contentDescription = "", tint = if(enabled) textColor else textColor.copy(0.4f)) }
 		},
 		trailingIcon = trailingIcon?.let {
 			{
 				Icon(
-					modifier = Modifier.clickable { if (passwordField) setShow(!show) },
+					modifier = if (enabled) Modifier.clickable { if (passwordField) setShow(!show) } else Modifier,
 					imageVector = it,
 					contentDescription = "",
-					tint = textColor
+					tint = if(enabled) textColor else textColor.copy(0.4f)
 				)
 			}
 		}

@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -248,15 +249,26 @@ fun LimitedHistory() {
 						Row(modifier = Modifier.fillMaxWidth()) {
 							CustomText(
 								modifier = Modifier.width(width),
+								textWeight = FontWeight.Bold,
+								isUpperCase = true,
 								text = "Entrada/Saida"
 							)
 							CustomText(
-								modifier = Modifier.width(width),
+								modifier = Modifier
+									.width(width)
+									.padding(horizontal = 15.dp),
+								textWeight = FontWeight.Bold,
+								isUpperCase = true,
 								text = "valores"
 							)
 							CustomText(
-								modifier = Modifier.width(width),
-								text = "data"
+								modifier = Modifier
+									.width(width)
+									.padding(horizontal = 15.dp),
+								textWeight = FontWeight.Bold,
+								textAlign = TextAlign.Center,
+								isUpperCase = true,
+								text = "criado em"
 							)
 						}
 						Spacer(modifier = Modifier.height(16.dp))
@@ -307,7 +319,7 @@ fun CurrencyItem(index: Int, width: Dp, color: Color) {
 			color = Color50
 		)
 		CustomText(
-			modifier = Modifier.width((width.value / 1.2).dp),
+			modifier = Modifier.width((width.value).dp),
 			text = "R$ 5$index",
 			color = Color50
 		)

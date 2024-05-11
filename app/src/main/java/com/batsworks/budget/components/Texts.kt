@@ -3,6 +3,8 @@ package com.batsworks.budget.components
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -27,15 +29,25 @@ fun CustomText(
 	capitalize: Boolean = false,
 	color: Color = textColor,
 	textWeight: FontWeight = FontWeight.Normal,
+	isUpperCase: Boolean = false,
 ) {
+	val textTyped = remember { mutableStateOf(text) }
+	if (capitalize) {
+		textTyped.value = capitalizeString(textTyped.value)
+	}
+	if (isUpperCase) {
+		textTyped.value = textTyped.value.toUpperCase(Locale.current)
+	}
+
 	Text(
 		modifier = modifier,
-		text = if (capitalize) capitalizeString(text) else text,
+		text = textTyped.value,
 		color = color,
 		textAlign = textAlign,
 		textDecoration = textDecoration,
 		style = textStyle,
-		fontWeight = textWeight
+		fontWeight = textWeight,
+		softWrap = false
 	)
 }
 

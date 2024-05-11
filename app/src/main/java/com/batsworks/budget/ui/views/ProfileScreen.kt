@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,21 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.TextDelegate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PlainTooltip
-import androidx.compose.material3.RichTooltip
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,9 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
-import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.ui.state.profile.ProfileViewModel
-import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
 
@@ -68,28 +57,18 @@ fun Profile(
 			.padding(0.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-
-		Spacer(modifier = Modifier.height(10.dp))
+		Image(
+			modifier = Modifier
+				.border(2.dp, Color800, shape = RoundedCornerShape(10))
+				.padding(0.dp)
+				.padding(vertical = 20.dp)
+				.height(150.dp)
+				.width(250.dp),
+			painter = painterResource(id = R.drawable.logo_resource),
+			contentDescription = "profile preview"
+		)
+		Spacer(modifier = Modifier.height(30.dp))
 		ProfileContent(modifier, viewModel, enabled)
-		TooltipBox(
-			positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-			tooltip = {
-				PlainTooltip {
-					CustomText(text = "teste tooltip", color = Color50)
-					Log.d("TESTE"," DOI CARAI")
-				}
-			},
-			state = rememberTooltipState()
-		) {
-			Image(
-				modifier = Modifier
-					.border(2.dp, Color800, shape = RoundedCornerShape(10))
-					.padding(0.dp)
-					.padding(vertical = 20.dp),
-				painter = painterResource(id = R.drawable.logo),
-				contentDescription = "profile preview"
-			)
-		}
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly

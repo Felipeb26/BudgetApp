@@ -18,14 +18,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -33,136 +37,181 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
+import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.ui.theme.Color500
+import com.batsworks.budget.ui.theme.Color600
+import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
 
 @Composable
 fun Add(navController: NavController) {
-    val configuration = LocalConfiguration.current
-    val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
-    val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
+	val configuration = LocalConfiguration.current
+	val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
+	val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(customDarkBackground)
-    ) {
-        item { Content() }
-        item { ActionButtons(file, setFile, showPreview, setShowPreview) }
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp)
-                    .padding(vertical = 20.dp, horizontal = 10.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                if (showPreview) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .border(2.dp, color = Color500, RoundedCornerShape(5))
-                            .width((configuration.screenWidthDp / 1.5).dp)
-                            .height((configuration.screenHeightDp / 2).dp),
-                        model = file,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                }
-                if (file != null) CustomButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { /*TODO*/ },
-                    text = "Salvar"
-                )
-            }
-        }
-    }
+	LazyColumn(
+		modifier = Modifier
+			.fillMaxSize()
+			.background(customDarkBackground)
+	) {
+		item { Content() }
+		item { ActionButtons(file, setFile, showPreview, setShowPreview) }
+		item {
+			Row(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(0.dp)
+					.padding(vertical = 20.dp, horizontal = 10.dp),
+				horizontalArrangement = Arrangement.Center
+			) {
+				if (showPreview) {
+					AsyncImage(
+						modifier = Modifier
+							.border(2.dp, color = Color500, RoundedCornerShape(5))
+							.width((configuration.screenWidthDp / 1.5).dp)
+							.height((configuration.screenHeightDp / 2).dp),
+						model = file,
+						contentDescription = "",
+						contentScale = ContentScale.Crop
+					)
+					Spacer(modifier = Modifier.width(10.dp))
+				}
+				if (file != null) CustomButton(
+					modifier = Modifier.weight(1f),
+					onClick = { /*TODO*/ },
+					text = "Salvar"
+				)
+			}
+		}
+	}
 }
 
 @Composable
 fun Content() {
-    Spacer(modifier = Modifier.height(10.dp))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp)
-            .padding(horizontal = 15.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        CustomOutlineTextField(
-            modifier = Modifier.fillMaxWidth(0.95f),
-            onValueChange = {},
-            labelText = "Nome da despesa"
-        )
-        CustomOutlineTextField(
-            modifier = Modifier.fillMaxWidth(0.95f),
-            onValueChange = {},
-            labelText = "Valor da despesa"
-        )
-    }
+	val exchangeTypes = arrayOf("entrance", "exit")
+	val (expense, setExpense) = remember { mutableStateOf("") }
+	val (valueExpense, setValueExpense) = remember { mutableStateOf("") }
+	val entrance = remember { mutableStateOf(false) }
+
+	Spacer(modifier = Modifier.height(10.dp))
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(0.dp)
+			.padding(horizontal = 15.dp),
+		horizontalAlignment = Alignment.Start
+	) {
+		CustomOutlineTextField(
+			modifier = Modifier.fillMaxWidth(0.95f),
+			labelText = "Nome da despesa",
+			defaultText = expense,
+			onValueChange = { setExpense(it) }
+		)
+		CustomOutlineTextField(
+			modifier = Modifier.fillMaxWidth(0.95f),
+			labelText = "Valor da despesa",
+			defaultText = valueExpense,
+			onValueChange = { setValueExpense(it) }
+		)
+
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.SpaceEvenly
+		) {
+			exchangeTypes.forEachIndexed { index, exchange ->
+				if ((index % 2) != 0) {
+					EntranceButton(Modifier.weight(1f), exchange, !entrance.value, entrance)
+				} else {
+					EntranceButton(Modifier.weight(1f), exchange, entrance.value, entrance)
+				}
+			}
+		}
+	}
 }
 
 @Composable
 fun ActionButtons(
-    file: Uri? = null,
-    setFile: (Uri?) -> Unit,
-    showPreview: Boolean,
-    setShowPreview: (Boolean) -> Unit,
+	file: Uri? = null,
+	setFile: (Uri?) -> Unit,
+	showPreview: Boolean,
+	setShowPreview: (Boolean) -> Unit,
 ) {
-    val selectFile = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri -> setFile(uri) }
-    )
+	val selectFile = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.GetContent(),
+		onResult = { uri -> setFile(uri) }
+	)
 
-    val selectImage = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> setFile(uri) }
-    )
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
+	val selectImage = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.PickVisualMedia(),
+		onResult = { uri -> setFile(uri) }
+	)
+	Row(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalArrangement = Arrangement.SpaceAround
+	) {
 //        CustomButton(
 //            onClick = { selectFile.launch("application/pdf") },
 //            enable = true,
 //            text = "file",
 //            textStyle = MaterialTheme.typography.labelSmall
 //        )
-        CustomButton(
-            onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-            enable = true,
-            text = "select image",
-            textStyle = MaterialTheme.typography.labelMedium
-        )
-        CustomButton(
-            onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-            enable = true,
-            text = "remove file",
-            textStyle = MaterialTheme.typography.labelSmall
-        )
-        CustomButton(
-            textStyle = MaterialTheme.typography.labelSmall,
-            onClick = { setShowPreview(!showPreview) },
-            text = if (showPreview) "hide file" else "show file",
-            enable = file != null
-        )
-    }
+		CustomButton(
+			onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+			enable = true,
+			text = "select image",
+			textStyle = MaterialTheme.typography.labelMedium
+		)
+		CustomButton(
+			onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+			enable = true,
+			text = "remove file",
+			textStyle = MaterialTheme.typography.labelSmall
+		)
+		CustomButton(
+			textStyle = MaterialTheme.typography.labelSmall,
+			onClick = { setShowPreview(!showPreview) },
+			text = if (showPreview) "hide file" else "show file",
+			enable = file != null
+		)
+	}
+}
+
+@Composable
+fun EntranceButton(
+	modifier: Modifier,
+	exchange: String,
+	entrance: Boolean,
+	mutableEntrance: MutableState<Boolean>,
+) {
+	Row(
+		modifier = modifier,
+		horizontalArrangement = Arrangement.Center,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Checkbox(colors = CheckboxDefaults.colors(
+			checkmarkColor = Color800,
+			checkedColor = Color600
+		),
+			checked = entrance,
+			onCheckedChange = { mutableEntrance.value = !mutableEntrance.value })
+		CustomText(text = exchange, isUpperCase = true, textWeight = FontWeight.Bold)
+	}
 }
 
 @Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true
+	uiMode = Configuration.UI_MODE_NIGHT_NO,
+	showBackground = true
 )
 @Composable
 fun AddWhite() {
-    Add(rememberNavController())
+	Add(rememberNavController())
 }
 
 @Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
+	uiMode = Configuration.UI_MODE_NIGHT_YES,
+	showBackground = true
 )
 @Composable
 fun AddDark() {
-    Add(rememberNavController())
+	Add(rememberNavController())
 }
