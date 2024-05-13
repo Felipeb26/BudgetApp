@@ -1,4 +1,6 @@
-package com.batsworks.budget.domain.use_cases
+package com.batsworks.budget.domain.use_cases.login
+
+import com.batsworks.budget.domain.use_cases.ValidationResult
 
 
 class ValidatePassword {

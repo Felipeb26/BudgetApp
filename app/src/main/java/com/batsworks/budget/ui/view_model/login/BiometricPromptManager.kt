@@ -1,4 +1,4 @@
-package com.batsworks.budget.ui.state.login
+package com.batsworks.budget.ui.view_model.login
 
 import android.app.Activity
 

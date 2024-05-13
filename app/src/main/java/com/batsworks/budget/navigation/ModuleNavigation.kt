@@ -10,9 +10,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.ui.state.factoryProvider
-import com.batsworks.budget.ui.state.login.LoginViewModel
-import com.batsworks.budget.ui.state.login.SignInViewModel
+import com.batsworks.budget.ui.view_model.factoryProvider
+import com.batsworks.budget.ui.view_model.login.LoginViewModel
+import com.batsworks.budget.ui.view_model.login.SignInViewModel
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main

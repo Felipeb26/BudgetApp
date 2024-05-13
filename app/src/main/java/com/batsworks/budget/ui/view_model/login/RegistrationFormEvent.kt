@@ -1,4 +1,4 @@
-package com.batsworks.budget.ui.state.login
+package com.batsworks.budget.ui.view_model.login
 
 sealed class RegistrationFormEvent {
 	data class NameChanged(val name: String) : RegistrationFormEvent()

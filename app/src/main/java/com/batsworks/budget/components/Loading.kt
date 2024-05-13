@@ -22,7 +22,7 @@ fun Loading(
 		LottieAnimation(
 			modifier = Modifier
 				.fillMaxSize()
-				.background(Color800.copy(0.2f)),
+				.background(Color800.copy(0.6f)),
 			iterations = LottieConstants.IterateForever,
 			composition = composition,
 			speed = 0.5f

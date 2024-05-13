@@ -33,7 +33,7 @@ fun CustomText(
 ) {
 	val textTyped = remember { mutableStateOf(text) }
 	if (capitalize) {
-		textTyped.value = capitalizeString(textTyped.value)
+		textTyped.value = capitalizeStrings(textTyped.value)
 	}
 	if (isUpperCase) {
 		textTyped.value = textTyped.value.toUpperCase(Locale.current)
@@ -51,8 +51,13 @@ fun CustomText(
 	)
 }
 
+fun capitalizeStrings(text: String?): String {
+	if (text.isNullOrEmpty()) return ""
+	val values = text.split(" ").map { capitalizeString(it.trim()) }.toList()
+	return values.joinToString(" ")
+}
 
-fun capitalizeString(text: String?): String {
+private fun capitalizeString(text: String?): String {
 	if (text.isNullOrEmpty()) return ""
 	val firstChar = text.substring(0, 1)
 	val restOfChars = text.substring(1)

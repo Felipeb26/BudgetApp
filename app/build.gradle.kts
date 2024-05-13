@@ -73,9 +73,11 @@ dependencies {
 
 	implementation("androidx.compose.material3:material3:1.2.1")
 	implementation("androidx.navigation:navigation-compose:2.7.7")
+	//Lifecycle
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+	implementation("androidx.lifecycle:lifecycle-runtime-compose-ktx:2.7.0")
+	//AsyncImage
 	implementation("io.coil-kt:coil-compose:2.6.0")
-
 	//Dagger Hilt
 	implementation("com.google.dagger:hilt-android:2.50")
 	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -92,8 +94,6 @@ dependencies {
 	ksp("androidx.room:room-compiler:2.6.1")
 	//Biometric
 	implementation("androidx.biometric:biometric:1.1.0")
-	//LiveData
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 	//SplashScreen
 	implementation("androidx.core:core-splashscreen:1.0.1")
 }

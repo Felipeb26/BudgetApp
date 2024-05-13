@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,8 +42,8 @@ import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.state.login.SignInViewModel
-import com.batsworks.budget.ui.state.login.RegistrationFormEvent
+import com.batsworks.budget.ui.view_model.login.SignInViewModel
+import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor

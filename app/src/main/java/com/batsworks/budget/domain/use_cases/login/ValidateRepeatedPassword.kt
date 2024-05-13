@@ -1,6 +1,6 @@
-package com.batsworks.budget.domain.use_cases
+package com.batsworks.budget.domain.use_cases.login
 
-import android.util.Patterns
+import com.batsworks.budget.domain.use_cases.ValidationResult
 
 
 class ValidateRepeatedPassword {

@@ -44,7 +44,7 @@ fun CustomOutlineTextField(
 		modifier = modifier,
 		value = defaultText,
 		onValueChange = onValueChange,
-		label = { Text(text = capitalizeString(labelText), color = textColor.copy(0.4f)) },
+		label = { Text(text = capitalizeStrings(labelText), color = textColor.copy(0.4f)) },
 		supportingText = { Text(text = errorMessage ?: "", fontWeight = FontWeight.Bold) },
 		enabled = enabled,
 		singleLine = true,

@@ -1,0 +1,16 @@
+package com.batsworks.budget.domain.use_cases.amout
+
+import com.batsworks.budget.domain.use_cases.ValidationResult
+import java.math.BigDecimal
+
+class ValidateChargeValue {
+
+    fun execute(value: BigDecimal): ValidationResult {
+        if (value == BigDecimal.ZERO)
+            return ValidationResult(false, "value must be bigger than zero")
+        if (value < BigDecimal.ZERO)
+            return ValidationResult(false, "value must be a positive number")
+
+        return ValidationResult(true)
+    }
+}

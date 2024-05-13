@@ -22,6 +22,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,189 +30,250 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.CustomToast
+import com.batsworks.budget.components.Loading
+import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.getByteArrayFromUri
+import com.batsworks.budget.ui.view_model.add.AddViewModel
+import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
+import kotlinx.coroutines.delay
+import java.math.BigDecimal
 
 @Composable
-fun Add(navController: NavController) {
-	val configuration = LocalConfiguration.current
-	val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
-	val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
+fun Add(navController: NavController, model: AddViewModel = viewModel<AddViewModel>()) {
+    val configuration = LocalConfiguration.current
+    val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
+    val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
+    val loading = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-	LazyColumn(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(customDarkBackground)
-	) {
-		item { Content() }
-		item { ActionButtons(file, setFile, showPreview, setShowPreview) }
-		item {
-			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(0.dp)
-					.padding(vertical = 20.dp, horizontal = 10.dp),
-				horizontalArrangement = Arrangement.Center
-			) {
-				if (showPreview) {
-					AsyncImage(
-						modifier = Modifier
-							.border(2.dp, color = Color500, RoundedCornerShape(5))
-							.width((configuration.screenWidthDp / 1.5).dp)
-							.height((configuration.screenHeightDp / 2).dp),
-						model = file,
-						contentDescription = "",
-						contentScale = ContentScale.Crop
-					)
-					Spacer(modifier = Modifier.width(10.dp))
-				}
-				if (file != null) CustomButton(
-					modifier = Modifier.weight(1f),
-					onClick = { /*TODO*/ },
-					text = "Salvar"
-				)
-			}
-		}
-	}
+    LaunchedEffect(file) {
+        delay(500)
+        if (file != null) {
+            val bytes = getByteArrayFromUri(context, file)
+            model.onEvent(AmountFormEvent.FileVoucher(bytes))
+        }
+    }
+    LaunchedEffect(context) {
+        model.resourceEventFlow.collect { event ->
+            when (event) {
+                is Resource.Loading -> {
+                    CustomToast(context, "carregando")
+                    loading.value = event.loading
+                }
+
+                is Resource.Failure -> CustomToast(
+                    context,
+                    event.error ?: "Não doi possivel adicionar conta"
+                )
+
+                is Resource.Sucess -> {
+                    CustomToast(context, "conta cadastrada com sucesso")
+                }
+            }
+        }
+    }
+
+    if (!loading.value) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(customDarkBackground)
+        ) {
+            item { AddContent(model) }
+            item { ActionButtons(file, setFile, showPreview, setShowPreview, model) }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp)
+                        .padding(vertical = 20.dp, horizontal = 10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    if (showPreview) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .border(2.dp, color = Color500, RoundedCornerShape(5))
+                                .width((configuration.screenWidthDp / 1.5).dp)
+                                .height((configuration.screenHeightDp / 2).dp),
+                            model = file,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                    }
+                    CustomButton(
+                        modifier = Modifier.weight(1f),
+                        enable = true,
+                        onClick = {
+                            model.onEvent(AmountFormEvent.Submit)
+                        },
+                        text = "Salvar"
+                    )
+                }
+            }
+        }
+    }
+    Loading(isLoading = loading.value)
 }
 
 @Composable
-fun Content() {
-	val exchangeTypes = arrayOf("entrance", "exit")
-	val (expense, setExpense) = remember { mutableStateOf("") }
-	val (valueExpense, setValueExpense) = remember { mutableStateOf("") }
-	val entrance = remember { mutableStateOf(false) }
+fun AddContent(model: AddViewModel) {
+    val exchangeTypes = arrayOf("entrance", "exit")
+    val (expense, setExpense) = remember { mutableStateOf("") }
+    val (valueExpense, setValueExpense) = remember { mutableStateOf("") }
+    val entrance = remember { mutableStateOf(false) }
 
-	Spacer(modifier = Modifier.height(10.dp))
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(0.dp)
-			.padding(horizontal = 15.dp),
-		horizontalAlignment = Alignment.Start
-	) {
-		CustomOutlineTextField(
-			modifier = Modifier.fillMaxWidth(0.95f),
-			labelText = "Nome da despesa",
-			defaultText = expense,
-			onValueChange = { setExpense(it) }
-		)
-		CustomOutlineTextField(
-			modifier = Modifier.fillMaxWidth(0.95f),
-			labelText = "Valor da despesa",
-			defaultText = valueExpense,
-			onValueChange = { setValueExpense(it) }
-		)
+    Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp)
+            .padding(horizontal = 15.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        CustomOutlineTextField(
+            modifier = Modifier.fillMaxWidth(0.95f),
+            labelText = "Nome da despesa",
+            defaultText = expense,
+            onValueChange = {
+                setExpense(it)
+                model.onEvent(AmountFormEvent.ChargeNameEventChange(it))
+            }, error = model.state.chargeNameError != null,
+            errorMessage = model.state.chargeNameError
+        )
+        CustomOutlineTextField(
+            modifier = Modifier.fillMaxWidth(0.95f),
+            labelText = "Valor da despesa",
+            defaultText = valueExpense,
+            keyboardType = KeyboardType.Number,
+            onValueChange = {
+                setValueExpense(it)
+                if (it.isNotBlank()) model.onEvent(AmountFormEvent.ValueEventChange(BigDecimal(it)))
+            }, error = model.state.valueError != null,
+            errorMessage = model.state.valueError
+        )
 
-		Row(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceEvenly
-		) {
-			exchangeTypes.forEachIndexed { index, exchange ->
-				if ((index % 2) != 0) {
-					EntranceButton(Modifier.weight(1f), exchange, !entrance.value, entrance)
-				} else {
-					EntranceButton(Modifier.weight(1f), exchange, entrance.value, entrance)
-				}
-			}
-		}
-	}
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            exchangeTypes.forEachIndexed { index, exchange ->
+                if ((index % 2) != 0) {
+                    EntranceButton(Modifier.weight(1f), exchange, !entrance.value, entrance, model)
+                } else {
+                    EntranceButton(Modifier.weight(1f), exchange, entrance.value, entrance, model)
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun ActionButtons(
-	file: Uri? = null,
-	setFile: (Uri?) -> Unit,
-	showPreview: Boolean,
-	setShowPreview: (Boolean) -> Unit,
+    file: Uri? = null,
+    setFile: (Uri?) -> Unit,
+    showPreview: Boolean,
+    setShowPreview: (Boolean) -> Unit,
+    model: AddViewModel
 ) {
-	val selectFile = rememberLauncherForActivityResult(
-		contract = ActivityResultContracts.GetContent(),
-		onResult = { uri -> setFile(uri) }
-	)
+    val verifyFile = remember { mutableStateOf(false) }
 
-	val selectImage = rememberLauncherForActivityResult(
-		contract = ActivityResultContracts.PickVisualMedia(),
-		onResult = { uri -> setFile(uri) }
-	)
-	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceAround
-	) {
-//        CustomButton(
-//            onClick = { selectFile.launch("application/pdf") },
-//            enable = true,
-//            text = "file",
-//            textStyle = MaterialTheme.typography.labelSmall
-//        )
-		CustomButton(
-			onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-			enable = true,
-			text = "select image",
-			textStyle = MaterialTheme.typography.labelMedium
-		)
-		CustomButton(
-			onClick = { selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-			enable = true,
-			text = "remove file",
-			textStyle = MaterialTheme.typography.labelSmall
-		)
-		CustomButton(
-			textStyle = MaterialTheme.typography.labelSmall,
-			onClick = { setShowPreview(!showPreview) },
-			text = if (showPreview) "hide file" else "show file",
-			enable = file != null
-		)
-	}
+    val selectImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> setFile(uri) }
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        if (model.state.fileError != null) CustomText(text = model.state.fileError ?: "")
+        CustomButton(
+            onClick = {
+                selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                verifyFile.value != !verifyFile.value
+            },
+            enable = true,
+            text = "select image",
+            textStyle = MaterialTheme.typography.labelMedium
+        )
+        CustomButton(
+            onClick = {
+                setFile(null)
+                setShowPreview(false)
+            },
+            enable = true,
+            text = "remove file",
+            textStyle = MaterialTheme.typography.labelSmall
+        )
+        CustomButton(
+            textStyle = MaterialTheme.typography.labelSmall,
+            text = if (file == null) "hide file" else "show file",
+            onClick = {
+                setShowPreview.invoke(!showPreview)
+            },
+            enable = file != null
+        )
+    }
 }
 
 @Composable
 fun EntranceButton(
-	modifier: Modifier,
-	exchange: String,
-	entrance: Boolean,
-	mutableEntrance: MutableState<Boolean>,
+    modifier: Modifier,
+    exchange: String,
+    entrance: Boolean,
+    mutableEntrance: MutableState<Boolean>,
+    model: AddViewModel
 ) {
-	Row(
-		modifier = modifier,
-		horizontalArrangement = Arrangement.Center,
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Checkbox(colors = CheckboxDefaults.colors(
-			checkmarkColor = Color800,
-			checkedColor = Color600
-		),
-			checked = entrance,
-			onCheckedChange = { mutableEntrance.value = !mutableEntrance.value })
-		CustomText(text = exchange, isUpperCase = true, textWeight = FontWeight.Bold)
-	}
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(colors = CheckboxDefaults.colors(
+            checkmarkColor = Color800,
+            checkedColor = Color600
+        ),
+            checked = entrance,
+            onCheckedChange = {
+                mutableEntrance.value = !mutableEntrance.value
+                model.onEvent(AmountFormEvent.EntranceEventChange(mutableEntrance.value))
+            })
+        CustomText(text = exchange, isUpperCase = true, textWeight = FontWeight.Bold)
+    }
+    CustomText(text = model.state.entranceError ?: "")
 }
 
 @Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showBackground = true
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
 )
 @Composable
 fun AddWhite() {
-	Add(rememberNavController())
+    Add(rememberNavController())
 }
 
 @Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showBackground = true
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true
 )
 @Composable
 fun AddDark() {
-	Add(rememberNavController())
+    Add(rememberNavController())
 }

@@ -1,6 +1,5 @@
-package com.batsworks.budget.ui.state
+package com.batsworks.budget.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 

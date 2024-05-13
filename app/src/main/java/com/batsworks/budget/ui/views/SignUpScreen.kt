@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,8 +36,8 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.state.login.LoginViewModel
-import com.batsworks.budget.ui.state.login.RegistrationFormEvent
+import com.batsworks.budget.ui.view_model.login.LoginViewModel
+import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customBackground
@@ -69,7 +68,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 					CustomToast(context, "carregando")
 				}
 
-				is Resource.Failure -> CustomToast(context, event.error)
+				is Resource.Failure -> CustomToast(context, event.error?:"houve um erro ao criar o usuario")
 
 				is Resource.Sucess -> {
 					CustomToast(context, "Usuario cadastrado com sucesso")
@@ -83,7 +82,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 }
 
 @Composable
-fun Content(viewModel: LoginViewModel) {
+private fun Content(viewModel: LoginViewModel) {
 	val (nome, setNome) = remember { mutableStateOf("") }
 	val (email, setEmail) = remember { mutableStateOf("") }
 	val (telefone, setTelefone) = remember { mutableStateOf("") }

@@ -89,7 +89,6 @@ fun BottomBar(navController: NavController) {
                     )
                 },
                 onClick = {
-                    Log.d("12", screen.route)
                     easyNavigate(navController, screen.route)
                 })
         }

@@ -1,9 +1,6 @@
 package com.batsworks.budget
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.View
-import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -11,13 +8,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
-import com.batsworks.budget.ui.state.profile.ProfileViewModel
+import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 

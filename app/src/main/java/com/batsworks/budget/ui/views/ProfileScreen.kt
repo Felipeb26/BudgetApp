@@ -35,7 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
-import com.batsworks.budget.ui.state.profile.ProfileViewModel
+import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
 
@@ -130,13 +130,11 @@ fun ProfileContent(modifier: Modifier, viewModel: ProfileViewModel, enabled: Boo
 @Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ProfileDark() {
-	val model = viewModel<ProfileViewModel>()
 	Profile(navController = rememberNavController())
 }
 
 @Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun ProfileWhite() {
-	val model = viewModel<ProfileViewModel>()
 	Profile(navController = rememberNavController())
 }

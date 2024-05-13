@@ -1,4 +1,4 @@
-package com.batsworks.budget.ui.state.profile
+package com.batsworks.budget.ui.view_model.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
