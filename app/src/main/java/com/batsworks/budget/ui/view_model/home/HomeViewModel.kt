@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
+import com.batsworks.budget.components.ajustTag
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -41,7 +42,7 @@ class HomeViewModel(
 		while (true) {
 			delay(Duration.ofSeconds(10))
 			emit(repository.findLastAmounts())
-			Log.d(tag, "rodou findAll")
+			Log.d(ajustTag(tag), "rodou findAll")
 		}
 	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(15000L), emptyList())
 

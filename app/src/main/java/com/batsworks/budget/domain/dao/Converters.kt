@@ -2,18 +2,29 @@ package com.batsworks.budget.domain.dao
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Converters {
 
 	@TypeConverter
-	fun fromDate(now: LocalDateTime): String {
+	fun fromDate(now: LocalDate): String {
+		return now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+	}
+
+	@TypeConverter
+	fun toDate(date: String): LocalDate {
+		return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+	}
+
+	@TypeConverter
+	fun fromDateTime(now: LocalDateTime): String {
 		return now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
 	}
 
 	@TypeConverter
-	fun toDate(date: String): LocalDateTime {
+	fun toDateTime(date: String): LocalDateTime {
 		return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
 	}
 

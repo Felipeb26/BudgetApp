@@ -52,7 +52,7 @@ fun BottomBar(navController: NavController) {
     val screens =
         listOf(
             Screen.HomeScreen,
-            Screen.HistoricoScreen,
+            Screen.HistoryScreen,
             Screen.ProfileScreen,
             Screen.PlusScreen
         )

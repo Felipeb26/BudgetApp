@@ -16,7 +16,7 @@ sealed class Screen(val route: String, val icon: ImageVector?, val resource: Int
    data object MainScreen : Screen("main_screen", Icons.Filled.Home)
    data object SettingScreen : Screen("settings_screen", Icons.Filled.Settings)
    data object HomeScreen : Screen("home_screen", Icons.Filled.Home)
-   data object HistoricoScreen : Screen("history_screen", Icons.AutoMirrored.Filled.List)
+   data object HistoryScreen : Screen("history_screen", Icons.AutoMirrored.Filled.List)
    data object AdicionarScreen : Screen("add_screen", Icons.Filled.Add)
    data object ProfileScreen : Screen("profile_screen", Icons.Filled.AccountCircle)
    data object PlusScreen : Screen("plus_screen", null, R.drawable.baseline_more_horiz_24)
