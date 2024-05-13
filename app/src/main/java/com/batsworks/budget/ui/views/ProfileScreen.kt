@@ -39,7 +39,6 @@ import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Profile(
 	navController: NavHostController,

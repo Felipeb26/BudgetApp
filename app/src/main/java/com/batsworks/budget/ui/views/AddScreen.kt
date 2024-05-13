@@ -24,8 +24,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,11 +54,14 @@ import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
-fun Add(navController: NavController, model: AddViewModel = viewModel<AddViewModel>()) {
+fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
     val configuration = LocalConfiguration.current
     val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
     val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
@@ -123,6 +128,7 @@ fun Add(navController: NavController, model: AddViewModel = viewModel<AddViewMod
                         enable = true,
                         onClick = {
                             model.onEvent(AmountFormEvent.Submit)
+                            setFile(null)
                         },
                         text = "Salvar"
                     )
@@ -230,7 +236,19 @@ fun ActionButtons(
             },
             enable = file != null
         )
+        CalendarPick()
     }
+}
+
+@Composable
+fun CalendarPick(){
+    var pickedDate by remember { mutableStateOf(LocalDate.now()) }
+    var pickedTime by remember { mutableStateOf(LocalTime.NOON) }
+
+    val dateDialogState = rememberMaterialDialogState()
+    val timeDialog = rememberMaterialDialogState()
+
+    CustomButton(onClick = { dateDialogState.show() }, enable = true, text = "teste calendar")
 }
 
 @Composable
@@ -266,7 +284,7 @@ fun EntranceButton(
 )
 @Composable
 fun AddWhite() {
-    Add(rememberNavController())
+    Add()
 }
 
 @Preview(
@@ -275,5 +293,5 @@ fun AddWhite() {
 )
 @Composable
 fun AddDark() {
-    Add(rememberNavController())
+    Add()
 }

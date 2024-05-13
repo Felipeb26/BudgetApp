@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomButton
+import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
@@ -36,12 +35,10 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.view_model.login.LoginViewModel
-import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
-import com.batsworks.budget.ui.theme.Color600
-import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
+import com.batsworks.budget.ui.view_model.login.LoginViewModel
+import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 
 @Composable
 fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
@@ -68,7 +65,10 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 					CustomToast(context, "carregando")
 				}
 
-				is Resource.Failure -> CustomToast(context, event.error?:"houve um erro ao criar o usuario")
+				is Resource.Failure -> CustomToast(
+					context,
+					event.error ?: "houve um erro ao criar o usuario"
+				)
 
 				is Resource.Sucess -> {
 					CustomToast(context, "Usuario cadastrado com sucesso")
@@ -174,14 +174,8 @@ fun TermsAndCondition(
 		horizontalArrangement = Arrangement.Center,
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		Checkbox(
-			checked = checked,
-			onCheckedChange = checkedChange,
-			colors = CheckboxDefaults.colors(
-				checkmarkColor = Color800,
-				checkedColor = Color600
-			)
-		)
+		CustomCheckBox(checked = checked, onCheckedChange = checkedChange)
+
 		val annoted = annotedString(
 			"Eu concordo com", " e ",
 			"a privacidade", "a politica"

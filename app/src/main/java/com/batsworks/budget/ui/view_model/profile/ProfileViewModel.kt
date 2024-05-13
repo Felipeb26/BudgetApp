@@ -24,4 +24,12 @@ class ProfileViewModel(
 		}
 	}
 
+	fun dontLoginWhenStart() {
+		viewModelScope.launch {
+			var user: UserEntity = localRepository.findUser()
+			user = user.withLoginWhenEnter(false)
+			localRepository.save(user)
+		}
+	}
+
 }

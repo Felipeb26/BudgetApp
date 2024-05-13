@@ -25,8 +25,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
+import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
@@ -42,16 +46,23 @@ import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.view_model.login.SignInViewModel
-import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
+import com.batsworks.budget.ui.theme.Color200
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
+import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
+import com.batsworks.budget.ui.view_model.login.SignInViewModel
 
 
 @Composable
-fun Login(navController: NavController = rememberNavController(), viewModel: SignInViewModel) {
+fun Login(
+	navController: NavController = rememberNavController(),
+	viewModel: SignInViewModel? = null,
+) {
+	var model = viewModel
+	if (viewModel == null) model = viewModel<SignInViewModel>()
 	val (isLoading, setLoading) = remember { mutableStateOf(false) }
+
 
 	Column(
 		modifier = Modifier
@@ -69,7 +80,7 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 		)
 		Spacer(modifier = Modifier.height(50.dp))
 
-		LoginExecution(navController, viewModel, setLoading)
+		LoginExecution(navController, model!!, setLoading)
 		Row(
 			Modifier
 				.height(IntrinsicSize.Min)
@@ -93,16 +104,17 @@ fun Login(navController: NavController = rememberNavController(), viewModel: Sig
 @Composable
 fun LoginExecution(
 	navController: NavController,
-	viewModel: SignInViewModel,
+	model: SignInViewModel,
 	setLoading: (Boolean) -> Unit,
 ) {
 	val (username, setUsername) = remember { mutableStateOf("") }
 	val (password, setPassword) = remember { mutableStateOf("") }
-	val propsState = viewModel.state
+	val (enterWhenLogin, setEnterWhenLogin) = remember { mutableStateOf(false) }
+	val propsState = model.state
 	val context = LocalContext.current
 
 	LaunchedEffect(key1 = context) {
-		viewModel.validationEvents.collect { event ->
+		model.validationEvents.collect { event ->
 			when (event) {
 				is Resource.Loading -> {
 					setLoading(event.loading)
@@ -128,7 +140,8 @@ fun LoginExecution(
 
 	CustomText(
 		modifier = Modifier.fillMaxWidth(0.85f), text = "username", capitalize = true,
-		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
+		textWeight = FontWeight.Bold
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
@@ -136,7 +149,7 @@ fun LoginExecution(
 		defaultText = username, labelText = "Email",
 		onValueChange = {
 			setUsername(it)
-			viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
+			model.onEvent(RegistrationFormEvent.EmailChanged(it))
 		}, trailingIcon = Icons.Filled.Email,
 		error = propsState.emailError != null,
 		errorMessage = propsState.emailError
@@ -144,7 +157,8 @@ fun LoginExecution(
 
 	CustomText(
 		modifier = Modifier.fillMaxWidth(0.85f), text = "password", capitalize = true,
-		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline
+		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
+		textWeight = FontWeight.Bold
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
@@ -154,10 +168,32 @@ fun LoginExecution(
 		defaultText = password, labelText = "Password",
 		onValueChange = {
 			setPassword(it)
-			viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it))
+			model.onEvent(RegistrationFormEvent.PasswordChanged(it))
 		}, error = propsState.passwordError != null,
 		errorMessage = propsState.passwordError
 	)
+	Row(
+		modifier = Modifier
+			.fillMaxWidth(0.9f)
+			.drawBehind {
+				val strokeWidth = 2 * density
+				val y = size.height - 1
+
+				drawLine(
+					Color200,
+					Offset(35f, y),
+					Offset(size.width - 40, y),
+					strokeWidth
+				)
+			},
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		CustomCheckBox(checked = enterWhenLogin, onCheckedChange = {
+			model.onEvent(RegistrationFormEvent.TermsChanged(it))
+			setEnterWhenLogin(!enterWhenLogin)
+		})
+		CustomText(text = "Logar ao entrar?", textStyle = MaterialTheme.typography.labelLarge)
+	}
 
 	CustomButton(modifier = Modifier
 		.fillMaxWidth(0.6f)
@@ -165,7 +201,7 @@ fun LoginExecution(
 		.padding(20.dp), enable = true,
 		text = "enter",
 		onClick = {
-			viewModel.onEvent(RegistrationFormEvent.Submit)
+			model.onEvent(RegistrationFormEvent.Submit)
 		})
 }
 

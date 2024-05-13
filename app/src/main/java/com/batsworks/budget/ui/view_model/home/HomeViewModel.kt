@@ -1,57 +1,70 @@
 package com.batsworks.budget.ui.view_model.home
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
+import com.batsworks.budget.components.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 import java.math.BigDecimal
+import java.time.Duration
 
 class HomeViewModel(
-    private val repository: AmountDao = BudgetApplication.database.getAmountDao()
+	private var repository: AmountDao = BudgetApplication.database.getAmountDao(),
 ) : ViewModel() {
 
-    private val tag = HomeViewModel::class.java.name
-    val amounts = mutableStateOf(emptyList<AmountEntity>())
+	private val tag = HomeViewModel::class.java.name
+	private val _amountsMutableFlow = MutableStateFlow(emptyList<AmountEntity>())
+	private val amounts = _amountsMutableFlow.asStateFlow()
 
-    val valores = mutableStateOf(emptyList<AmountEntity>())
+	private val _profileCardValues = MutableStateFlow<Map<String, BigDecimal>>(HashMap())
+	val totalAmount = _profileCardValues.asStateFlow()
+
+	init {
+		viewModelScope.launch {
+			_amountsMutableFlow.emit(repository.findAll())
+			calculateAmount()
+		}
+	}
 
 
-    val _balance = MutableStateFlow<HashMap<String, BigDecimal>?>(null)
-    val balance = _balance.asStateFlow()
+	val lastAmounts = flow {
+		while (true) {
+			delay(Duration.ofSeconds(10))
+			emit(repository.findLastAmounts())
+			Log.d(tag, "rodou findAll")
+		}
+	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(15000L), emptyList())
 
-    fun init() = viewModelScope.launch {
-        val amountList =  repository.findLastAmounts()
-        amounts.value = amountList
-        valores.value = amountList
-    }
 
-    fun balance() = viewModelScope.launch {
-        val amounts = repository.findAll()
-        val goodValue = amounts.filter { it.entrance }.map(AmountEntity::value)
-            .fold(BigDecimal.ZERO, BigDecimal::add)
-        val downValue = amounts.filter { !it.entrance }.map(AmountEntity::value).sumOf { it }
-        val map = HashMap<String, BigDecimal>()
-        map["entrance"] = goodValue
+	private fun calculateAmount() = viewModelScope.launch {
+		val map = HashMap<String, BigDecimal>()
+		val entrace = findValues(amounts.value, true)
+		val output = findValues(amounts.value, false)
+		val remaining = entrace.minus(output)
 
-//        valores = listOf(Balance(true, valor = goodValue))
+		map["entrance"] = entrace
+		map["output"] = output
+		map["remaining"] = remaining
+		_profileCardValues.emit(map)
+	}
 
-        _balance.emit(map)
-        Log.d(tag, "$goodValue")
-    }
+	fun showAmount(value: BigDecimal?, show: Boolean, word: MutableState<String>): String {
+		word.value = if (show) currency(value) else ". . ."
+		return word.value
+	}
 
-    data class Balance(
-        val atual: Boolean = false,
-        val futuro: Boolean = false,
-        val gastos: Boolean = false,
-        val valor: BigDecimal = BigDecimal.ZERO
-    )
+	private fun findValues(amounts: List<AmountEntity>, entrance: Boolean): BigDecimal {
+		return amounts.filter { it.entrance == entrance }.map(AmountEntity::value).sumOf { it }
+	}
 
 }

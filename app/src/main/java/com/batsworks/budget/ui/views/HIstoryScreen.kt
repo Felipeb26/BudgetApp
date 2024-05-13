@@ -23,6 +23,7 @@ import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.SwipeToDeleteContainer
+import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.formatter
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
@@ -81,7 +82,7 @@ private fun Content(amount: AmountEntity) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style)
-        CustomText(text = "${amount.value}", textStyle = style)
+        CustomText(text = currency(amount.value), textStyle = style)
         CustomText(text = amount.creatAt.format(formatter()), textStyle = style)
         if (amount.file != null) CustomButton(
             modifier = Modifier.height(30.dp),

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.ajustTag
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
@@ -20,14 +21,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val repository: CustomRepository<UserEntity>? = null,
-    private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
-    private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: ValidatePassword = ValidatePassword(),
+	private val repository: CustomRepository<UserEntity>? = null,
+	private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
+	private val validateEmail: ValidateEmail = ValidateEmail(),
+	private val validatePassword: ValidatePassword = ValidatePassword(),
 ) : ViewModel() {
 
 
-	private val TAG = SignInViewModel::class.java.name
+	private val tag = SignInViewModel::class.java.name
 
 	private val validationEventChannel = Channel<Resource<Any>>()
 	val validationEvents = validationEventChannel.receiveAsFlow()
@@ -43,6 +44,10 @@ class SignInViewModel(
 
 			is RegistrationFormEvent.PasswordChanged -> {
 				state = state.copy(password = event.password)
+			}
+
+			is RegistrationFormEvent.TermsChanged -> {
+				state = state.copy(acceptedTerms = event.accepted)
 			}
 
 			is RegistrationFormEvent.Submit -> {
@@ -64,7 +69,7 @@ class SignInViewModel(
 				emailError = emailResult.errorMessage,
 				passwordError = passwordResult.errorMessage
 			)
-			Log.d(TAG, "Erros foram localizados")
+			Log.d(ajustTag(tag), "Erros foram localizados")
 			return
 		}
 		viewModelScope.launch {
@@ -73,6 +78,7 @@ class SignInViewModel(
 
 
 			val user = localRepository.findByLogin(state.email, state.password.toInt())
+
 			if (user == null) {
 				repository.findByParam(
 					Filter.equalTo("email", state.email),
@@ -83,7 +89,13 @@ class SignInViewModel(
 							viewModelScope.launch {
 								val userDTO = querySnapshotToEntity(document.data, document.id)
 								if (userDTO.email == state.email) {
-									localRepository.save(querySnapshotToEntity(document.data, document.id))
+									localRepository.save(
+										querySnapshotToEntity(
+											document.data,
+											document.id,
+											state.acceptedTerms
+										)
+									)
 									validationEventChannel.send(Resource.Loading(false))
 									validationEventChannel.send(Resource.Sucess(""))
 								}
@@ -99,8 +111,11 @@ class SignInViewModel(
 							)
 						}
 					}
-			}
-			else{
+			} else {
+				if(user.loginWhenEnter != state.acceptedTerms){
+					localRepository.save(user.withLoginWhenEnter(state.acceptedTerms))
+				}
+
 				validationEventChannel.send(Resource.Loading(false))
 				validationEventChannel.send(Resource.Sucess(""))
 			}

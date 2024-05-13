@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -43,14 +44,17 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 @Composable
-fun PlusScreen(navController: NavHostController) {
+fun PlusScreen(
+	navController: NavHostController,
+	model: ProfileViewModel = viewModel<ProfileViewModel>(),
+) {
 	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
 	val (exit, makeExit) = remember { mutableStateOf(false) }
-
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -66,7 +70,10 @@ fun PlusScreen(navController: NavHostController) {
 			navController,
 			screenRoute = "exit",
 			icon = Icons.AutoMirrored.Filled.ExitToApp,
-			function = { makeExit(!exit) })
+			function = {
+				model.dontLoginWhenStart()
+				makeExit(!exit)
+			})
 	}
 	if (exit) ExitAnimation()
 }

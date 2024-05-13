@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.ajustTag
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -81,7 +82,7 @@ class AddViewModel(
                 entranceError = entranceResult.errorMessage,
                 fileError = fileResult.errorMessage,
             )
-            Log.d(TAG, "Foram encontrados erros")
+            Log.d(ajustTag(TAG), "Foram encontrados erros")
             return@launch
         }
         resourceEventChannel.send(Resource.Loading(true))

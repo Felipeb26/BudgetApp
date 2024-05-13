@@ -11,18 +11,18 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun InfiniteBlink(
-    initialColor: Color,
-    finalColor: Color = initialColor.copy(0.5f),
-    transitionTime: Int = 2000,
+	initialColor: Color,
+	finalColor: Color = initialColor.copy(0.5f),
+	transitionTime: Int = 2000,
 ): Color {
-    val transition = rememberInfiniteTransition(label = "infinite blink")
-    val animatedColor by transition.animateColor(
-        initialValue = initialColor,
-        targetValue = finalColor,
-        animationSpec = infiniteRepeatable(
-            animation = tween(transitionTime),
-            repeatMode = RepeatMode.Reverse,
-        ), label = ""
-    )
-    return animatedColor
+	val transition = rememberInfiniteTransition(label = "infinite blink")
+	val animatedColor by transition.animateColor(
+		initialValue = initialColor,
+		targetValue = finalColor,
+		animationSpec = infiniteRepeatable(
+			animation = tween(transitionTime),
+			repeatMode = RepeatMode.Reverse,
+		), label = ""
+	)
+	return animatedColor
 }

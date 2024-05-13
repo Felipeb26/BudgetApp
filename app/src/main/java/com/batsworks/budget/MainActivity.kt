@@ -6,16 +6,18 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
-import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -38,14 +40,24 @@ class MainActivity : ComponentActivity() {
 						navController = rememberNavController(),
 						screen = Screen.LoginScreen
 					)
-				} else {
-					StartNavigate(
-						navController = rememberNavController(),
-						screen = Screen.MainScreen,
-						true
-					)
-				}
+				} else SelectScreen(userState.value!!)
+
 			}
 		}
+	}
+}
+
+@Composable
+private fun SelectScreen(user: UserEntity) {
+	if (user.loginWhenEnter) {
+		StartNavigate(
+			navController = rememberNavController(),
+			screen = Screen.MainScreen, true
+		)
+	} else {
+		StartNavigate(
+			navController = rememberNavController(),
+			screen = Screen.LoginScreen
+		)
 	}
 }

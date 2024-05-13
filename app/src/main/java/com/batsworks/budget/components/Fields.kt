@@ -77,7 +77,3 @@ fun CustomOutlineTextField(
 	)
 }
 
-fun sizeWidth() {
-//	val configuration = LocalConfiguration.current
-
-}

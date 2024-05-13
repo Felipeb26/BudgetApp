@@ -35,7 +35,7 @@ fun Navigate(
 		composable(Screen.AccountsScreen.route) { Accounts(navController) }
 		composable(Screen.PlusScreen.route) { PlusScreen(navController) }
 		composable(Screen.SettingScreen.route) { Setting(navController) }
-		composable(Screen.AdicionarScreen.route) { Add(navController) }
+		composable(Screen.AdicionarScreen.route) { Add() }
 		composable(Screen.HistoricoScreen.route) { Historico(navController) }
 	}
 }

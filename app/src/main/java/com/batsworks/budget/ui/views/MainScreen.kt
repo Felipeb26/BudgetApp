@@ -1,6 +1,6 @@
 package com.batsworks.budget.ui.views
 
-import android.util.Log
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -112,7 +112,12 @@ fun formatScreenTitle(title: String): String {
     return title.replace("_screen", "").toUpperCase(Locale.current)
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun MainDark() {
+    Main()
+}
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun MainWhite() {
     Main()
