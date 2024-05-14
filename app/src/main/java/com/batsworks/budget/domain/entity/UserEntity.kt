@@ -3,7 +3,6 @@ package com.batsworks.budget.domain.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.auth.User
 import java.time.LocalDateTime
 
 @Entity

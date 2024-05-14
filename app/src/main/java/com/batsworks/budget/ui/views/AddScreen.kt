@@ -44,12 +44,13 @@ import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
-import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.getByteArrayFromUri
+import com.batsworks.budget.components.localDate
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
@@ -59,7 +60,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
@@ -79,17 +79,18 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 	LaunchedEffect(context) {
 		model.resourceEventFlow.collect { event ->
 			when (event) {
-				is Resource.Loading -> {
-					CustomToast(context, "carregando")
-					loading.value = event.loading
+				is Resource.Loading -> CustomToast(context, "carregando")
+
+				is Resource.Failure -> {
+					loading.value = !loading.value
+					CustomToast(
+						context,
+						event.error ?: "Não foi possivel adicionar conta"
+					)
 				}
 
-				is Resource.Failure -> CustomToast(
-					context,
-					event.error ?: "Não doi possivel adicionar conta"
-				)
-
 				is Resource.Sucess -> {
+					loading.value = !loading.value
 					CustomToast(context, "conta cadastrada com sucesso")
 				}
 			}
@@ -142,7 +143,7 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 
 @Composable
 fun AddContent(model: AddViewModel) {
-	val exchangeTypes = arrayOf("entrance", "exit")
+	val exchangeTypes = arrayOf("entrance", "output")
 	val (expense, setExpense) = remember { mutableStateOf("") }
 	val (valueExpense, setValueExpense) = remember { mutableStateOf("") }
 	val entrance = remember { mutableStateOf(false) }
@@ -176,7 +177,7 @@ fun AddContent(model: AddViewModel) {
 			}, error = model.state.valueError != null,
 			errorMessage = model.state.valueError
 		)
-		CalendarPick()
+		CalendarPick(model)
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
@@ -241,27 +242,27 @@ fun ActionButtons(
 }
 
 @Composable
-fun CalendarPick() {
+fun CalendarPick(model: AddViewModel) {
 	val context = LocalContext.current
 	var pickedDate by remember { mutableStateOf(LocalDate.now()) }
-	val formattedDate by remember {
-		derivedStateOf {
-			DateTimeFormatter.ofPattern("dd/MM/yyyy").format(pickedDate)
-		}
-	}
+	val formattedDate by remember { derivedStateOf { localDate(date = pickedDate) } }
 	val dateDialogState = rememberMaterialDialogState()
-	val style = MaterialTheme.typography.labelLarge
+
 	Row(
 		modifier = Modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceAround,
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		CustomOutlineTextField(
-			modifier = Modifier.fillMaxWidth(0.4f),
-			textStyle = style,
-			defaultText = formattedDate,
-			onValueChange = {/*TODO*/ })
+			modifier = Modifier.fillMaxWidth(0.6f),
+			enabled = true, defaultText = formattedDate,
+			onValueChange = {},
+			error = model.state.amountDateError != null,
+			errorMessage = model.state.amountDateError
+		)
+
 		Spacer(modifier = Modifier.width(20.dp))
+
 		CustomButton(
 			modifier = Modifier.fillMaxSize(),
 			onClick = { dateDialogState.show() },
@@ -279,7 +280,10 @@ fun CalendarPick() {
 			initialDate = LocalDate.now(),
 			title = "select a date",
 			yearRange = LocalDate.now().year.rangeTo(LocalDate.now().year + 3),
-		) { pickedDate = it }
+		) {
+			model.onEvent(AmountFormEvent.AmountDate(localDate(date = it)))
+			pickedDate = it
+		}
 	}
 }
 

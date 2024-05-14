@@ -62,7 +62,7 @@ fun <T> SwipeToDeleteContainer(
             backgroundContent = {
                 when (state.dismissDirection) {
                     SwipeToDismissBoxValue.StartToEnd -> {}
-                    SwipeToDismissBoxValue.EndToStart -> DeleteBackground(state)
+                    SwipeToDismissBoxValue.EndToStart -> DeleteBackground()
                     SwipeToDismissBoxValue.Settled -> {}
                 }
             }) {
@@ -71,9 +71,8 @@ fun <T> SwipeToDeleteContainer(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DeleteBackground(state: SwipeToDismissBoxState) {
+private fun DeleteBackground() {
     val color = if (isSystemInDarkTheme()) Color.Red.copy(0.4f) else Color.Red
 
     Box(

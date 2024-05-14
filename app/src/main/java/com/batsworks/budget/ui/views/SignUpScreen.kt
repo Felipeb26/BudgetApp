@@ -30,11 +30,11 @@ import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
-import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.view_model.login.LoginViewModel

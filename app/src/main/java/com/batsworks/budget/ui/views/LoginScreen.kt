@@ -26,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,11 +44,11 @@ import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.CustomToast
-import com.batsworks.budget.components.Loading
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color200
+import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
@@ -59,8 +61,7 @@ fun Login(
 	navController: NavController = rememberNavController(),
 	viewModel: SignInViewModel? = null,
 ) {
-	var model = viewModel
-	if (viewModel == null) model = viewModel<SignInViewModel>()
+	val model = viewModel ?: viewModel<SignInViewModel>()
 	val (isLoading, setLoading) = remember { mutableStateOf(false) }
 
 
@@ -80,7 +81,7 @@ fun Login(
 		)
 		Spacer(modifier = Modifier.height(50.dp))
 
-		LoginExecution(navController, model!!, setLoading)
+		LoginExecution(navController, model, setLoading)
 		Row(
 			Modifier
 				.height(IntrinsicSize.Min)
@@ -107,11 +108,13 @@ fun LoginExecution(
 	model: SignInViewModel,
 	setLoading: (Boolean) -> Unit,
 ) {
+	val propsState = model.state
+	val context = LocalContext.current
+	val focusRequester = FocusRequester()
+
 	val (username, setUsername) = remember { mutableStateOf("") }
 	val (password, setPassword) = remember { mutableStateOf("") }
 	val (enterWhenLogin, setEnterWhenLogin) = remember { mutableStateOf(false) }
-	val propsState = model.state
-	val context = LocalContext.current
 
 	LaunchedEffect(key1 = context) {
 		model.validationEvents.collect { event ->
@@ -150,9 +153,11 @@ fun LoginExecution(
 		onValueChange = {
 			setUsername(it)
 			model.onEvent(RegistrationFormEvent.EmailChanged(it))
-		}, trailingIcon = Icons.Filled.Email,
+		},
+		trailingIcon = Icons.Filled.Email,
 		error = propsState.emailError != null,
-		errorMessage = propsState.emailError
+		errorMessage = propsState.emailError,
+		onDone = { focusRequester.requestFocus() }
 	)
 
 	CustomText(
@@ -162,15 +167,18 @@ fun LoginExecution(
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
-		modifier = Modifier.fillMaxWidth(0.9f),
+		modifier = Modifier
+			.fillMaxWidth(0.9f)
+			.focusRequester(focusRequester),
 		passwordField = true,
 		trailingIcon = Icons.Filled.Lock,
 		defaultText = password, labelText = "Password",
 		onValueChange = {
 			setPassword(it)
 			model.onEvent(RegistrationFormEvent.PasswordChanged(it))
-		}, error = propsState.passwordError != null,
-		errorMessage = propsState.passwordError
+		},
+		error = propsState.passwordError != null,
+		errorMessage = propsState.passwordError,
 	)
 	Row(
 		modifier = Modifier

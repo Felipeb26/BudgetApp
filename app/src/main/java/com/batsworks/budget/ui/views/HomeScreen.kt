@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -41,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.currency
@@ -79,17 +83,21 @@ import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
+import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun Home(navController: NavController, model: HomeViewModel = viewModel<HomeViewModel>()) {
 	val configuration = LocalConfiguration.current
 	val amounts by model.lastAmounts.collectAsState()
-	val viewValues = remember { mutableStateOf(false) }
+	val profileValues = model.totalAmount.collectAsState()
+	val viewValues = remember { mutableStateOf(true) }
+
 	Column(
 		modifier = Modifier
-			.fillMaxWidth()
+			.fillMaxSize()
 			.background(customDarkBackground)
 	) {
 		Canvas(modifier = Modifier, onDraw = {
@@ -102,24 +110,27 @@ fun Home(navController: NavController, model: HomeViewModel = viewModel<HomeView
 			)
 		})
 		Spacer(modifier = Modifier.height(35.dp))
-		ProfileLowInfo(viewValues, model)
+		ProfileLowInfo(viewValues, profileValues, model)
 		Spacer(modifier = Modifier.height(35.dp))
 		Cards(navController)
 		LimitedHistory(amounts)
 	}
 }
 
-var i = 0
 
 @Composable
 fun ProfileLowInfo(
 	showValues: MutableState<Boolean>,
+	amountsState: State<Map<String, BigDecimal>>,
 	model: HomeViewModel,
 ) {
-	val amountsState = model.totalAmount.collectAsState()
 	val future = remember { mutableStateOf(". . .") }
 	val pendencia = remember { mutableStateOf(". . .") }
 	val remaining = remember { mutableStateOf(". . .") }
+
+	val title = MaterialTheme.typography.titleMedium
+	val bold = FontWeight.Bold
+	val align = TextAlign.Start
 
 	Card(
 		modifier = Modifier
@@ -132,63 +143,95 @@ fun ProfileLowInfo(
 			contentColor = Color50
 		)
 	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(25.dp, 30.dp, 25.dp, 15.dp),
-			horizontalArrangement = Arrangement.SpaceBetween
+		LazyVerticalGrid(
+			contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
+			columns = GridCells.Fixed(3),
+			horizontalArrangement = Arrangement.spacedBy(5.dp)
 		) {
-			CustomText(
-				capitalize = true,
-				text = "saldo atual\n${
-					model.showAmount(
-						amountsState.value["remaining"], showValues.value,
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saldo atual", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {}
+			item {
+				CustomText(
+					textStyle = title, text = "Show", color = Color50,
+					isUpperCase = true, textWeight = bold,
+					iconBitMap = visibilityIsOn(!showValues.value),
+					clickEvent = { showValues.value = !showValues.value }
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = model.showAmount(
+						amountsState.value["remaining"],
+						showValues.value,
 						remaining
 					)
-				}",
-				color = Color50,
-				textStyle = MaterialTheme.typography.titleMedium
-			)
-			CustomText(
-				textStyle = MaterialTheme.typography.titleMedium,
-				textWeight = FontWeight.Bold,
-				text = "show values",
-				color = Color50,
-				isUpperCase = true,
-				iconBitMap = visibilityIsOn(!showValues.value),
-				clickEvent = { showValues.value = !showValues.value }
-			)
-		}
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(25.dp, 25.dp, 25.dp, 0.dp),
-			horizontalArrangement = Arrangement.SpaceBetween
-		) {
-			CustomText(
-				capitalize = true,
-				text = "saldo futuro\n ${
-					model.showAmount(
+				)
+			}
+			for (i in 1..5) {
+				item { Spacer(modifier = Modifier.height(25.dp)) }
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saldo Futuro", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Entrada Futura", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saida Futura", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = model.showAmount(
+						amountsState.value["remaining"],
+						showValues.value,
+						remaining
+					)
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = model.showAmount(
 						amountsState.value["entrance"],
 						showValues.value,
 						future
 					)
-				}",
-				color = Color50,
-				textStyle = MaterialTheme.typography.titleMedium
-			)
-			CustomText(
-				capitalize = true,
-				text = "pendencias\n${
-					model.showAmount(
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = model.showAmount(
 						amountsState.value["output"],
 						showValues.value,
 						pendencia
 					)
-				}",
-				color = Color50,
-				textStyle = MaterialTheme.typography.titleMedium
-			)
+				)
+			}
 		}
 	}
 }
@@ -404,7 +447,7 @@ fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 		)
 		CustomText(
 			modifier = Modifier.width(width),
-			text = amount.creatAt.format(
+			text = amount.amountDate.format(
 				DateTimeFormatter.ofPattern("dd/MM/yyyy"),
 			), color = Color50
 		)
@@ -418,7 +461,9 @@ fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 )
 @Composable
 fun HomeWhite() {
-	Home(rememberNavController())
+	val model =
+		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
+	Home(rememberNavController(), model)
 }
 
 @Preview(
@@ -427,5 +472,7 @@ fun HomeWhite() {
 )
 @Composable
 fun HomeDark() {
-	Home(rememberNavController())
+	val model =
+		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
+	Home(rememberNavController(), model)
 }

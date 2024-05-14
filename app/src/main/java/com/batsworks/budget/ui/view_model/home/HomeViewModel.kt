@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import java.math.BigDecimal
 import java.time.Duration
+import java.time.LocalDate
 
 class HomeViewModel(
 	private var repository: AmountDao = BudgetApplication.database.getAmountDao(),
@@ -32,30 +33,34 @@ class HomeViewModel(
 
 	init {
 		viewModelScope.launch {
-			_amountsMutableFlow.emit(repository.findAll())
+			repository.let { _amountsMutableFlow.emit(it.findAll()) }
 			calculateAmount()
 		}
 	}
 
 
 	val lastAmounts = flow {
+		emit(repository.findLastAmounts())
 		while (true) {
-			delay(Duration.ofSeconds(10))
-			emit(repository.findLastAmounts())
-			Log.d(ajustTag(tag), "rodou findAll")
+			delay(Duration.ofSeconds(5))
+			val amounts = repository.findLastAmounts()
+			emit(amounts)
+			Log.d(ajustTag(tag), "Amounts encontradas: ${amounts.size}")
 		}
-	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(15000L), emptyList())
+	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3500), emptyList())
 
 
 	private fun calculateAmount() = viewModelScope.launch {
 		val map = HashMap<String, BigDecimal>()
-		val entrace = findValues(amounts.value, true)
-		val output = findValues(amounts.value, false)
+		val entrace = findValues(amounts.value, entrance = true, today = false)
+		val output = findValues(amounts.value, entrance = false, today = false)
 		val remaining = entrace.minus(output)
 
 		map["entrance"] = entrace
 		map["output"] = output
-		map["remaining"] = remaining
+		map["remaining"] = findValues(amounts.value, entrance = null, today = true)
+		map["future"] = remaining
+		Log.d(tag, map.toString())
 		_profileCardValues.emit(map)
 	}
 
@@ -64,8 +69,27 @@ class HomeViewModel(
 		return word.value
 	}
 
-	private fun findValues(amounts: List<AmountEntity>, entrance: Boolean): BigDecimal {
-		return amounts.filter { it.entrance == entrance }.map(AmountEntity::value).sumOf { it }
+	private fun findValues(
+		amounts: List<AmountEntity>,
+		entrance: Boolean? = null,
+		today: Boolean? = null,
+	): BigDecimal {
+		var filteredValues = amounts
+
+		if (entrance != null) {
+			filteredValues = filteredValues.filter { it.entrance == entrance }.toList()
+		}
+
+		if (today != null) {
+			filteredValues = filteredValues.filter {
+				if (today) {
+					return@filter it.amountDate.isBefore(LocalDate.now()) or
+							it.amountDate.isEqual(LocalDate.now())
+				} else it.amountDate.isAfter(LocalDate.now())
+			}.toList()
+		}
+
+		return filteredValues.map(AmountEntity::value).sumOf { it }
 	}
 
 }

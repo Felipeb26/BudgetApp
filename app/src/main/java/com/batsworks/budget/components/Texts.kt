@@ -1,6 +1,7 @@
 package com.batsworks.budget.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -8,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,6 +25,8 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.ui.theme.textColor
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CustomText(
@@ -37,7 +41,11 @@ fun CustomText(
 	iconBitMap: ImageVector,
 	clickEvent: (() -> Unit),
 ) {
-	Row(modifier = Modifier.clickable { clickEvent.invoke() }) {
+	Row(
+		modifier = Modifier.clickable { clickEvent.invoke() },
+		horizontalArrangement = Arrangement.Center,
+		verticalAlignment = Alignment.CenterVertically
+	) {
 		Text(
 			modifier = modifier,
 			text = if (isUpperCase) text.toUpperCase(Locale.current) else text,
@@ -138,4 +146,12 @@ private fun capitalizeString(text: String?): String {
 
 fun ajustTag(tag: String): String {
 	return tag.substring(tag.lastIndexOf(".") + 1)
+}
+
+fun localDate(date: LocalDate, pattern: String = "dd/MM/yyyy"): String {
+	return DateTimeFormatter.ofPattern(pattern).format(date)
+}
+
+fun localDate(date: String, pattern: String = "dd/MM/yyyy"): LocalDate {
+	return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern))
 }
