@@ -254,7 +254,7 @@ fun CalendarPick(model: AddViewModel) {
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		CustomOutlineTextField(
-			modifier = Modifier.fillMaxWidth(0.6f),
+			modifier = Modifier.fillMaxWidth(0.5f),
 			enabled = true, defaultText = formattedDate,
 			onValueChange = {},
 			error = model.state.amountDateError != null,

@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -35,11 +36,15 @@ import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
+import com.rollbar.android.Rollbar
+
 
 class MainActivity : AppCompatActivity() {
 
 	private val model by viewModels<MainViewModel>()
 	private val promptManager by lazy { BiometricPromptManager(this) }
+	private var rollbar: Rollbar? = null
+
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -48,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
 			navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
 		)
-
 		setContent {
 			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 
@@ -74,7 +78,8 @@ class MainActivity : AppCompatActivity() {
 				val model = viewModel<ProfileViewModel>()
 				val userState = model.userEntity.collectAsState()
 				val navController = rememberNavController()
-				val tag = "biometria"
+				rollbar = Rollbar.init(LocalContext.current)
+				rollbar?.debug("Here is some debug message");
 
 				biometricResult?.let { result ->
 					when (result) {
@@ -84,13 +89,13 @@ class MainActivity : AppCompatActivity() {
 						}
 
 						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
-							Log.d(tag, result.error)
+							Log.d("biometria", result.error)
 							StartNavigate(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
-							Log.d(tag, "houuve falha ao se autenticar")
+							Log.d("biometria", "houuve falha ao se autenticar")
 							StartNavigate(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
