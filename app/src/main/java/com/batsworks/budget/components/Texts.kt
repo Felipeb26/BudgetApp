@@ -80,7 +80,7 @@ fun CustomText(
 		textDecoration = textDecoration,
 		style = textStyle,
 		fontWeight = textWeight,
-		softWrap = false
+		softWrap = text.length >= 35
 	)
 }
 
@@ -154,4 +154,8 @@ fun localDate(date: LocalDate, pattern: String = "dd/MM/yyyy"): String {
 
 fun localDate(date: String, pattern: String = "dd/MM/yyyy"): LocalDate {
 	return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern))
+}
+
+fun formatScreenTitle(title: String): String {
+	return title.replace("_screen", "").toUpperCase(Locale.current)
 }

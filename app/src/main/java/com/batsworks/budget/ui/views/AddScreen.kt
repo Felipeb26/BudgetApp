@@ -90,7 +90,7 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 				}
 
 				is Resource.Sucess -> {
-					loading.value = !loading.value
+					loading.value = false
 					CustomToast(context, "conta cadastrada com sucesso")
 				}
 			}

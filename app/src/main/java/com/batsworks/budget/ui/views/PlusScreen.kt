@@ -38,6 +38,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color50

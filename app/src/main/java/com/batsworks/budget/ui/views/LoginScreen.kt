@@ -64,7 +64,6 @@ fun Login(
 	val model = viewModel ?: viewModel<SignInViewModel>()
 	val (isLoading, setLoading) = remember { mutableStateOf(false) }
 
-
 	Column(
 		modifier = Modifier
 			.fillMaxSize()

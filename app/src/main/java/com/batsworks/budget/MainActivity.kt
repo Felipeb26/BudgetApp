@@ -1,6 +1,11 @@
 package com.batsworks.budget
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -24,8 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.domain.entity.UserEntity
@@ -37,14 +42,17 @@ import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.rollbar.android.Rollbar
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 
 
 class MainActivity : AppCompatActivity() {
 
-	private val model by viewModels<MainViewModel>()
 	private val promptManager by lazy { BiometricPromptManager(this) }
+	private val model by viewModels<MainViewModel>()
+	private val profile by viewModels<ProfileViewModel>()
+	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
 	private var rollbar: Rollbar? = null
-
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -53,9 +61,9 @@ class MainActivity : AppCompatActivity() {
 			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
 			navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
 		)
+
 		setContent {
 			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
-
 			val enrollLauncher = rememberLauncherForActivityResult(
 				contract = ActivityResultContracts.StartActivityForResult(),
 				onResult = { println("Activity $it") })
@@ -73,13 +81,23 @@ class MainActivity : AppCompatActivity() {
 					}
 				}
 			}
+			val permissionsResultLauncher = rememberLauncherForActivityResult(
+				contract = ActivityResultContracts.RequestMultiplePermissions(),
+				onResult = { })
+
+
+			LaunchedEffect(Unit) {
+				delay(Duration.ofSeconds(2))
+				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+			}
 
 			BudgetTheme {
-				val model = viewModel<ProfileViewModel>()
-				val userState = model.userEntity.collectAsState()
-				val navController = rememberNavController()
 				rollbar = Rollbar.init(LocalContext.current)
-				rollbar?.debug("Here is some debug message");
+				val navController = rememberNavController()
+				val userState = profile.userEntity.collectAsState()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+					permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+				}
 
 				biometricResult?.let { result ->
 					when (result) {
@@ -109,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 						.fillMaxSize()
 						.background(customBackground)
 				) {}
-				SelectScreen(userState.value, navController, promptManager)
+//				SelectScreen(userState.value, navController, promptManager)
 			}
 		}
 	}
@@ -136,5 +154,47 @@ private fun SelectScreen(
 				"testar a biometria para login"
 			)
 		}
+	}
+}
+
+//@Composable
+//fun CustomRequestPermission() {
+//	val context = LocalContext.current
+//
+//
+//	val permissionsResultLauncher = rememberLauncherForActivityResult(
+//		contract = ActivityResultContracts.RequestMultiplePermissions(),
+//		onResult = { perms ->
+//			println("foram ${perms.size}")
+////			permissionsToRequest.forEach { permission ->
+////				CustomToast(context, "${formatPermissionName(permission)}")
+////			}
+//		}
+//	)
+//	permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+//}
+
+
+private fun Activity.openAppSetting() {
+	Intent(
+		Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+		Uri.fromParts("package", packageName, null)
+	).also(::startActivity)
+}
+
+private fun checkPermissionFor(context: Context, permission: String): Boolean {
+	return ContextCompat.checkSelfPermission(
+		context,
+		permission
+	) == PackageManager.PERMISSION_GRANTED
+}
+
+private fun formatPermissionName(permission: String): String {
+	return if (permission.lastIndexOf("_") > 0) {
+		permission.substring(permission.lastIndexOf("_"))
+	} else if (permission.lastIndexOf(".") > 0) {
+		permission.substring(permission.lastIndexOf("."))
+	} else {
+		permission;
 	}
 }

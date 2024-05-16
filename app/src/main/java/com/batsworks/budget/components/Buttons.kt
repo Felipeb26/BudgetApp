@@ -28,12 +28,13 @@ fun CustomButton(
 	onClick: () -> Unit, text: String = "empty", enable: Boolean = false,
 	shape: Shape = RoundedCornerShape(30),
 	textStyle: TextStyle = MaterialTheme.typography.labelLarge,
+	containerColor:Color = Color800
 ) {
 	Button(
 		modifier = modifier, border = BorderStroke(2.dp, Color600),
 		shape = shape,
 		colors = ButtonDefaults.buttonColors(
-			containerColor = Color800,
+			containerColor = containerColor,
 			contentColor = Color50,
 			disabledContainerColor = Color500,
 			disabledContentColor = Color600

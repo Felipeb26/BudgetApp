@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
@@ -106,10 +107,6 @@ fun FloatingButton(navController: NavController, modifier: Modifier = Modifier) 
 		onClick = { easyNavigate(navController, Screen.AdicionarScreen.route) }) {
 		Icon(imageVector = Icons.Filled.Add, contentDescription = "", tint = Color50)
 	}
-}
-
-fun formatScreenTitle(title: String): String {
-	return title.replace("_screen", "").toUpperCase(Locale.current)
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)

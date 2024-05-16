@@ -73,6 +73,7 @@ import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.components.notEnableIfEmpty
 import com.batsworks.budget.components.visibilityIsOn
 import com.batsworks.budget.domain.entity.AmountEntity
