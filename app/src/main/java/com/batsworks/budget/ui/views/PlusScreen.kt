@@ -19,7 +19,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,10 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.formatScreenTitle
@@ -44,6 +39,7 @@ import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Color950
+import com.batsworks.budget.ui.theme.CustomLottieAnimation
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import java.util.Timer
@@ -56,7 +52,9 @@ fun PlusScreen(
 ) {
 	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
 	val (exit, makeExit) = remember { mutableStateOf(false) }
-	Column(
+
+	if (exit) ExitAnimation(true)
+	else Column(
 		modifier = Modifier
 			.fillMaxSize()
 			.background(customDarkBackground),
@@ -76,7 +74,6 @@ fun PlusScreen(
 				makeExit(!exit)
 			})
 	}
-	if (exit) ExitAnimation()
 }
 
 @Composable
@@ -119,18 +116,9 @@ fun CardFunction(
 }
 
 @Composable
-fun ExitAnimation() {
+fun ExitAnimation(exit:Boolean) {
 	val activity = (LocalContext.current as? Activity)
-
-	val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.bye))
-	LottieAnimation(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(Color800),
-		iterations = LottieConstants.IterateForever,
-		composition = composition,
-		speed = 0.5f
-	)
+	CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
 	Timer().schedule(2500) {
 		activity?.finish()
 	}

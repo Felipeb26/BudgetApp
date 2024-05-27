@@ -48,7 +48,7 @@ fun Loading(
 			enableMergePaths = true,
 			iterations = LottieConstants.IterateForever,
 			composition = composition,
-			speed = 0.5f
+			speed = 0.5f,
 		)
 	}
 }

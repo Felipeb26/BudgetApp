@@ -18,7 +18,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -32,11 +31,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
-import com.batsworks.budget.components.CustomSnackBar
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.notification.Notifications
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customDarkBackground
@@ -45,9 +44,9 @@ import com.batsworks.budget.ui.view_model.receipt.ReceiptViewModel
 
 @Composable
 fun ReceiptScreen(navController: NavController, id: String) {
-    val coroutine=  rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+    val  notifications = Notifications(context)
     val (isLoading, setLoading) = mutableStateOf(false)
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -65,6 +64,7 @@ fun ReceiptScreen(navController: NavController, id: String) {
             when (event) {
                 is Resource.Loading -> {
                     setLoading(!isLoading)
+                    notifications.showBasicNotification()
                     CustomToast(context, "carregando")
                 }
 
@@ -74,6 +74,7 @@ fun ReceiptScreen(navController: NavController, id: String) {
                 )
 
                 is Resource.Sucess -> {
+                    notifications.showBasicNotification()
                     CustomToast(context, "Usuario cadastrado com sucesso")
                 }
             }

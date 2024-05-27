@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+                    permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
                 }
 
                 biometricResult?.let { result ->
@@ -163,14 +164,4 @@ private fun checkPermissionFor(context: Context, permission: String): Boolean {
         context,
         permission
     ) == PackageManager.PERMISSION_GRANTED
-}
-
-private fun formatPermissionName(permission: String): String {
-    return if (permission.lastIndexOf("_") > 0) {
-        permission.substring(permission.lastIndexOf("_"))
-    } else if (permission.lastIndexOf(".") > 0) {
-        permission.substring(permission.lastIndexOf("."))
-    } else {
-        permission
-    }
 }

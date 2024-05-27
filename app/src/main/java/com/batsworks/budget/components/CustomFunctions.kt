@@ -1,6 +1,7 @@
 package com.batsworks.budget.components
 
 import android.content.Context
+import com.batsworks.budget.components.notification.CustomToast
 
 fun <T> notEnableIfEmpty(context: Context, message: String, content: T?, func: () -> Unit) {
 	var isNullOrEmpty = false

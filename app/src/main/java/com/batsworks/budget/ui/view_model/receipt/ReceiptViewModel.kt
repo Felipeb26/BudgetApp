@@ -15,38 +15,42 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class ReceiptViewModel(
-    private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
-    context: Context,
-    private val download: AndroidDownloader? = AndroidDownloader(context),
-    id: String
+	private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
+	context: Context,
+	private val download: AndroidDownloader? = AndroidDownloader(context),
+	id: String,
 ) : ViewModel() {
 
 
-    private val resourceEventChannel = Channel<Resource<Any>>()
-    val resourceEventFlow = resourceEventChannel.receiveAsFlow()
+	private val resourceEventChannel = Channel<Resource<Any>>()
+	val resourceEventFlow = resourceEventChannel.receiveAsFlow()
 
-    private val _mutableEntityAmount = MutableStateFlow<AmountEntity?>(null)
-    var entityAmount = _mutableEntityAmount.asStateFlow()
+	private val _mutableEntityAmount = MutableStateFlow<AmountEntity?>(null)
+	var entityAmount = _mutableEntityAmount.asStateFlow()
 
-    init {
-        showImage(id)
-    }
+	init {
+		showImage(id)
+	}
 
-    private fun showImage(id: String) {
-        viewModelScope.launch {
-            val amount = localRepository.findById(id)
-            _mutableEntityAmount.emit(amount)
-        }
-    }
+	private fun showImage(id: String) {
+		viewModelScope.launch {
+			val amount = localRepository.findById(id)
+			_mutableEntityAmount.emit(amount)
+		}
+	}
 
-    fun downloadImage(file: ByteArray) {
-        if (download == null) return
-        viewModelScope.launch {
-            resourceEventChannel.send(Resource.Loading())
-            download.downloadFromBytes(file)
-            resourceEventChannel.send(Resource.Loading(false))
-            resourceEventChannel.send(Resource.Sucess(false))
-        }
-    }
+	fun downloadImage(file: ByteArray) {
+		if (download == null) return
+		viewModelScope.launch {
+			resourceEventChannel.send(Resource.Loading())
+			try {
+				download.downloadFromBytes(file)
+				resourceEventChannel.send(Resource.Loading(false))
+				resourceEventChannel.send(Resource.Sucess(false))
+			} catch (e: Exception) {
+				resourceEventChannel.send(Resource.Failure(e.message))
+			}
+		}
+	}
 
 }

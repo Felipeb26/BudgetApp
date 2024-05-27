@@ -89,389 +89,374 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun Home(navController: NavController, model: HomeViewModel = viewModel<HomeViewModel>()) {
-    val configuration = LocalConfiguration.current
-    val amounts by model.lastAmounts.collectAsState()
-    val viewValues = remember { mutableStateOf(true) }
+	val configuration = LocalConfiguration.current
+	val amounts by model.lastAmounts.collectAsState()
+	val viewValues = remember { mutableStateOf(true) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(customDarkBackground)
-    ) {
-        Canvas(modifier = Modifier, onDraw = {
-            drawRect(
-                color = Color600,
-                size = Size(
-                    configuration.screenWidthDp.toFloat() * 5,
-                    (configuration.screenHeightDp / 2.5).toFloat()
-                )
-            )
-        })
-        Spacer(modifier = Modifier.height(35.dp))
-        ProfileLowInfo(viewValues, model)
-        Spacer(modifier = Modifier.height(35.dp))
-        Cards(navController)
-        LimitedHistory(amounts)
-    }
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.background(customDarkBackground)
+	) {
+		Canvas(modifier = Modifier, onDraw = {
+			drawRect(
+				color = Color600,
+				size = Size(
+					configuration.screenWidthDp.toFloat() * 5,
+					(configuration.screenHeightDp / 2.5).toFloat()
+				)
+			)
+		})
+		Spacer(modifier = Modifier.height(35.dp))
+		ProfileLowInfo(viewValues, model)
+		Spacer(modifier = Modifier.height(35.dp))
+		Cards(navController)
+		LimitedHistory(amounts)
+	}
 }
 
 
 @Composable
 fun ProfileLowInfo(
-    showValues: MutableState<Boolean>,
-    model: HomeViewModel,
+	showValues: MutableState<Boolean>,
+	model: HomeViewModel,
 ) {
-    val amountsState = model.totalAmount.collectAsState()
+	val amountsState = model.totalAmount.collectAsState()
 
-    val future = remember { mutableStateOf(". . .") }
-    val pendencia = remember { mutableStateOf(". . .") }
-    val remaining = remember { mutableStateOf(". . .") }
+	val current = remember { mutableStateOf(". . .") }
+	val future = remember { mutableStateOf(". . .") }
+	val billing = remember { mutableStateOf(". . .") }
+	val charge = remember { mutableStateOf(". . .") }
 
-    val title = MaterialTheme.typography.titleMedium
-    val bold = FontWeight.Bold
-    val align = TextAlign.Start
+	val title = MaterialTheme.typography.titleMedium
+	val bold = FontWeight.Bold
+	val align = TextAlign.Start
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(170.dp)
-            .padding(15.dp, 0.dp),
-        border = BorderStroke(2.dp, Color600),
-        colors = CardDefaults.cardColors(
-            containerColor = Color800,
-            contentColor = Color50
-        )
-    ) {
-        LazyVerticalGrid(
-            contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
-            columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    text = "Saldo atual", textWeight = bold,
-                    color = Color50, textAlign = align
-                )
-            }
-            item {}
-            item {
-                CustomText(
-                    textStyle = title, text = "Show", color = Color50,
-                    isUpperCase = true, textWeight = bold,
-                    iconBitMap = visibilityIsOn(!showValues.value),
-                    clickEvent = { showValues.value = !showValues.value }
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    textWeight = bold, color = Color50, textAlign = align,
-                    text = model.showAmount(
-                        amountsState.value["remaining"],
-                        showValues.value,
-                        remaining
-                    )
-                )
-            }
-            for (i in 1..5) {
-                item { Spacer(modifier = Modifier.height(25.dp)) }
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    text = "Saldo Futuro", textWeight = bold,
-                    color = Color50, textAlign = align
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    text = "Entrada Futura", textWeight = bold,
-                    color = Color50, textAlign = align
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    text = "Saida Futura", textWeight = bold,
-                    color = Color50, textAlign = align
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    textWeight = bold, color = Color50, textAlign = align,
-                    text = model.showAmount(
-                        amountsState.value["remaining"],
-                        showValues.value,
-                        remaining
-                    )
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    textWeight = bold, color = Color50, textAlign = align,
-                    text = model.showAmount(
-                        amountsState.value["entrance"],
-                        showValues.value,
-                        future
-                    )
-                )
-            }
-            item {
-                CustomText(
-                    capitalize = true, textStyle = title,
-                    textWeight = bold, color = Color50, textAlign = align,
-                    text = model.showAmount(
-                        amountsState.value["output"],
-                        showValues.value,
-                        pendencia
-                    )
-                )
-            }
-        }
-    }
+	Card(
+		modifier = Modifier
+			.fillMaxWidth()
+			.height(170.dp)
+			.padding(15.dp, 0.dp),
+		border = BorderStroke(2.dp, Color600),
+		colors = CardDefaults.cardColors(
+			containerColor = Color800,
+			contentColor = Color50
+		)
+	) {
+		LazyVerticalGrid(
+			contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
+			columns = GridCells.Fixed(3),
+			horizontalArrangement = Arrangement.spacedBy(5.dp)
+		) {
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saldo atual", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {}
+			item {
+				CustomText(
+					textStyle = title, text = "Show", color = Color50,
+					isUpperCase = true, textWeight = bold,
+					iconBitMap = visibilityIsOn(!showValues.value),
+					clickEvent = { showValues.value = !showValues.value }
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = amountsState.value?.current.let { model.showAmount(it, showValues.value, current) }
+				)
+			}
+			for (i in 1..5) {
+				item { Spacer(modifier = Modifier.height(25.dp)) }
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saldo Futuro", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Entrada Futura", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					text = "Saida Futura", textWeight = bold,
+					color = Color50, textAlign = align
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = amountsState.value?.future.let { model.showAmount(it, showValues.value, future) }
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = amountsState.value?.billing.let { model.showAmount(it, showValues.value, billing) }
+				)
+			}
+			item {
+				CustomText(
+					capitalize = true, textStyle = title,
+					textWeight = bold, color = Color50, textAlign = align,
+					text = amountsState.value?.charge.let { model.showAmount(it, showValues.value, charge) }
+				)
+			}
+		}
+	}
 }
 
 
 @Composable
 fun Cards(navController: NavController) {
-    val cards = arrayOf(HomeCard.Emprestimo, HomeCard.Cartoes, HomeCard.Investimentos)
-    val remeberState = rememberScrollState()
+	val cards = arrayOf(HomeCard.Emprestimo, HomeCard.Cartoes, HomeCard.Investimentos)
+	val remeberState = rememberScrollState()
 
-    Row(
-        modifier = Modifier.horizontalScroll(remeberState),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        cards.forEachIndexed { _, card ->
-            Card(
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(130.dp)
-                    .padding(horizontal = 10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (isSystemInDarkTheme()) {
-                        card.color.copy(0.6f)
-                    } else card.color.copy(0.8f)
-                ), onClick = { easyNavigate(navController, card.screen.route) }
-            ) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Icon(
-                    modifier = Modifier
-                        .padding(0.dp)
-                        .padding(horizontal = 10.dp),
-                    imageVector = ImageVector.vectorResource(id = card.resource),
-                    contentDescription = card.name
-                )
-                CustomText(
-                    modifier = Modifier
-                        .padding(0.dp)
-                        .padding(10.dp),
-                    text = formatScreenTitle(card.name), textWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
+	Row(
+		modifier = Modifier.horizontalScroll(remeberState),
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.SpaceBetween
+	) {
+		cards.forEachIndexed { _, card ->
+			Card(
+				modifier = Modifier
+					.width(150.dp)
+					.height(130.dp)
+					.padding(horizontal = 10.dp),
+				colors = CardDefaults.cardColors(
+					containerColor = if (isSystemInDarkTheme()) {
+						card.color.copy(0.6f)
+					} else card.color.copy(0.8f)
+				), onClick = { easyNavigate(navController, card.screen.route) }
+			) {
+				Spacer(modifier = Modifier.height(10.dp))
+				Icon(
+					modifier = Modifier
+						.padding(0.dp)
+						.padding(horizontal = 10.dp),
+					imageVector = ImageVector.vectorResource(id = card.resource),
+					contentDescription = card.name
+				)
+				CustomText(
+					modifier = Modifier
+						.padding(0.dp)
+						.padding(10.dp),
+					text = formatScreenTitle(card.name), textWeight = FontWeight.Bold
+				)
+			}
+		}
+	}
 }
 
 @Composable
 fun LimitedHistory(amounts: List<AmountEntity>) {
-    val dark = isSystemInDarkTheme()
-    val (isVisible, setVisible) = remember { mutableStateOf(false) }
-    val (icon, setIcon) = remember { mutableStateOf(Icons.Rounded.KeyboardArrowUp) }
-    val context = LocalContext.current
+	val dark = isSystemInDarkTheme()
+	val (isVisible, setVisible) = remember { mutableStateOf(false) }
+	val (icon, setIcon) = remember { mutableStateOf(Icons.Rounded.KeyboardArrowUp) }
+	val context = LocalContext.current
 
-    if (amounts.isEmpty()) setVisible(false)
+	if (amounts.isEmpty()) setVisible(false)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp), contentAlignment = Alignment.BottomCenter
-    ) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                .background(if (dark) Color800 else Color600)
-                .animateContentSize(),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .animateContentSize()
-                    .fillMaxWidth()
-                    .clickable {
-                        notEnableIfEmpty(context, "sem saida ou entrada", amounts) {
-                            setVisible(!isVisible)
-                            if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
-                                Icons.Rounded.KeyboardArrowDown
-                            )
-                        }
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color700)
-                        .clickable {
-                            notEnableIfEmpty(context, "sem saida ou entrada", amounts.size) {
-                                setVisible(!isVisible)
-                                if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
-                                    Icons.Rounded.KeyboardArrowDown
-                                )
-                            }
-                        }
-                ) {
-                    Icon(
-                        modifier = Modifier,
-                        imageVector = icon,
-                        contentDescription = "",
-                        tint = Color50
-                    )
-                }
-                Spacer(modifier = Modifier.width(20.dp))
-                CustomText(
-                    modifier = Modifier,
-                    text = "Ultimas entradas e saídas",
-                    textDecoration = TextDecoration.Underline,
-                    textWeight = FontWeight.Bold,
-                    color = Color50
-                )
-            }
-            AnimatedVisibility(
-                visible = isVisible,
-                enter = expandVertically(
-                    animationSpec = tween(500),
-                    expandFrom = Alignment.Top
-                ) + fadeIn(),
-                exit = shrinkVertically(
-                    animationSpec = tween(1500),
-                    shrinkTowards = Alignment.Top
-                ) + fadeOut(animationSpec = tween(1600))
-            ) {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
-                        .background(if (isSystemInDarkTheme()) Color800 else Color600)
-                ) {
-                    val boxwithContraints = this
-                    val width = (boxwithContraints.maxWidth.value / 3.05).dp
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(top = 32.dp), contentAlignment = Alignment.BottomCenter
+	) {
+		Column(
+			modifier = Modifier
+				.clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+				.background(if (dark) Color800 else Color600)
+				.animateContentSize(),
+			verticalArrangement = Arrangement.Bottom,
+			horizontalAlignment = Alignment.CenterHorizontally
+		) {
+			Row(
+				modifier = Modifier
+					.padding(16.dp)
+					.animateContentSize()
+					.fillMaxWidth()
+					.clickable {
+						notEnableIfEmpty(context, "sem saida ou entrada", amounts) {
+							setVisible(!isVisible)
+							if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
+								Icons.Rounded.KeyboardArrowDown
+							)
+						}
+					},
+				verticalAlignment = Alignment.CenterVertically,
+			) {
+				Box(
+					modifier = Modifier
+						.clip(CircleShape)
+						.background(Color700)
+						.clickable {
+							notEnableIfEmpty(context, "sem saida ou entrada", amounts.size) {
+								setVisible(!isVisible)
+								if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
+									Icons.Rounded.KeyboardArrowDown
+								)
+							}
+						}
+				) {
+					Icon(
+						modifier = Modifier,
+						imageVector = icon,
+						contentDescription = "",
+						tint = Color50
+					)
+				}
+				Spacer(modifier = Modifier.width(20.dp))
+				CustomText(
+					modifier = Modifier,
+					text = "Ultimas entradas e saídas",
+					textDecoration = TextDecoration.Underline,
+					textWeight = FontWeight.Bold,
+					color = Color50
+				)
+			}
+			AnimatedVisibility(
+				visible = isVisible,
+				enter = expandVertically(
+					animationSpec = tween(500),
+					expandFrom = Alignment.Top
+				) + fadeIn(),
+				exit = shrinkVertically(
+					animationSpec = tween(1500),
+					shrinkTowards = Alignment.Top
+				) + fadeOut(animationSpec = tween(1600))
+			) {
+				BoxWithConstraints(
+					modifier = Modifier
+						.fillMaxSize()
+						.clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
+						.background(if (isSystemInDarkTheme()) Color800 else Color600)
+				) {
+					val boxwithContraints = this
+					val width = (boxwithContraints.maxWidth.value / 3.05).dp
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Spacer(modifier = Modifier.height(16.dp))
+					Column(
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(16.dp)
+					) {
+						Spacer(modifier = Modifier.height(16.dp))
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            CustomText(
-                                modifier = Modifier.width(width),
-                                textWeight = FontWeight.Bold,
-                                isUpperCase = true,
-                                text = "Entrada/Saida"
-                            )
-                            CustomText(
-                                modifier = Modifier
-                                    .width(width)
-                                    .padding(horizontal = 15.dp),
-                                textWeight = FontWeight.Bold,
-                                isUpperCase = true,
-                                text = "valores"
-                            )
-                            CustomText(
-                                modifier = Modifier.width(width),
-                                textWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Start,
-                                isUpperCase = true,
-                                text = "receber/pagar"
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
+						Row(modifier = Modifier.fillMaxWidth()) {
+							CustomText(
+								modifier = Modifier.width(width),
+								textWeight = FontWeight.Bold,
+								isUpperCase = true,
+								text = "Entrada/Saida"
+							)
+							CustomText(
+								modifier = Modifier
+									.width(width)
+									.padding(horizontal = 15.dp),
+								textWeight = FontWeight.Bold,
+								isUpperCase = true,
+								text = "valores"
+							)
+							CustomText(
+								modifier = Modifier.width(width),
+								textWeight = FontWeight.Bold,
+								textAlign = TextAlign.Start,
+								isUpperCase = true,
+								text = "receber/pagar"
+							)
+						}
+						Spacer(modifier = Modifier.height(16.dp))
 
-                        LazyColumn {
-                            items(items = amounts) { amount ->
-                                val color =
-                                    if (amount.entrance) Color.Green.copy(0.3f)
-                                    else Color.Red.copy(0.3f)
-                                CurrencyItem(amount, width, color)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+						LazyColumn {
+							items(items = amounts) { amount ->
+								val color =
+									if (amount.entrance) Color.Green.copy(0.3f)
+									else Color.Red.copy(0.3f)
+								CurrencyItem(amount, width, color)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 @Composable
 private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
-    val itemColor = if (amount.entrance) Color.Green else Color.Red
+	val itemColor = if (amount.entrance) Color.Green else Color.Red
 
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(5.dp))
-                .drawBehind { drawRect(color) }
-        ) {
-            Image(
-                painter = painterResource(if (amount.entrance) R.drawable.icons8_arrowup else R.drawable.icons8_arrowdown),
-                contentDescription = "",
-                colorFilter = ColorFilter.tint(color = itemColor)
-            )
-        }
-        Spacer(modifier = Modifier.width(5.dp))
+	Row(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(bottom = 16.dp),
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Box(
+			modifier = Modifier
+				.clip(RoundedCornerShape(5.dp))
+				.drawBehind { drawRect(color) }
+		) {
+			Image(
+				painter = painterResource(if (amount.entrance) R.drawable.icons8_arrowup else R.drawable.icons8_arrowdown),
+				contentDescription = "",
+				colorFilter = ColorFilter.tint(color = itemColor)
+			)
+		}
+		Spacer(modifier = Modifier.width(5.dp))
 
-        CustomText(
-            modifier = Modifier.width(width),
-            capitalize = true,
-            text = amount.chargeName,
-            color = Color50
-        )
-        CustomText(
-            modifier = Modifier.width((width.value).dp),
-            text = currency(amount.value),
-            color = Color50
-        )
-        CustomText(
-            modifier = Modifier.width(width),
-            text = amount.amountDate.format(
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-            ), color = Color50
-        )
-    }
+		CustomText(
+			modifier = Modifier.width(width),
+			capitalize = true,
+			text = amount.chargeName,
+			color = Color50
+		)
+		CustomText(
+			modifier = Modifier.width((width.value).dp),
+			text = currency(amount.value),
+			color = Color50
+		)
+		CustomText(
+			modifier = Modifier.width(width),
+			text = amount.amountDate.format(
+				DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+			), color = Color50
+		)
+	}
 }
 
 
 @Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showSystemUi = true
+	uiMode = Configuration.UI_MODE_NIGHT_NO,
+	showSystemUi = true
 )
 @Composable
 fun HomeWhite() {
-    val model =
-        viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
-    Home(rememberNavController(), model)
+	val model =
+		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
+	Home(rememberNavController(), model)
 }
 
 @Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showSystemUi = true
+	uiMode = Configuration.UI_MODE_NIGHT_YES,
+	showSystemUi = true
 )
 @Composable
 fun HomeDark() {
-    val model =
-        viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
-    Home(rememberNavController(), model)
+	val model =
+		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
+	Home(rememberNavController(), model)
 }

@@ -23,11 +23,10 @@ import androidx.navigation.NavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.SwipeToDeleteContainer
 import com.batsworks.budget.components.currency
-import com.batsworks.budget.components.formatter
+import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.Screen
@@ -101,11 +100,10 @@ private fun Content(amount: AmountEntity, navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style)
+        CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style, wrap = true)
         CustomText(text = currency(amount.value), textStyle = style)
-        CustomText(text = amount.creatAt.format(formatter()), textStyle = style)
         if (amount.file != null) CustomButton(
-            modifier = Modifier.height(30.dp),
+            modifier = Modifier.height(35.dp),
             onClick = {
                 easyNavigate(navController, Screen.ReceiptScreen.withArgs(amount.id.toString()))
             },

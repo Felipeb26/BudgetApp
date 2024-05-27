@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -43,7 +44,7 @@ import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.CustomToast
+import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
@@ -111,8 +112,8 @@ fun LoginExecution(
 	val context = LocalContext.current
 	val focusRequester = FocusRequester()
 
-	val (username, setUsername) = remember { mutableStateOf("") }
-	val (password, setPassword) = remember { mutableStateOf("") }
+	val (username, setUsername) = rememberSaveable { mutableStateOf("") }
+	val (password, setPassword) = rememberSaveable { mutableStateOf("") }
 	val (enterWhenLogin, setEnterWhenLogin) = remember { mutableStateOf(false) }
 
 	LaunchedEffect(key1 = context) {

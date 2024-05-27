@@ -95,6 +95,7 @@ fun CustomText(
 	color: Color = textColor,
 	textWeight: FontWeight = FontWeight.Normal,
 	isUpperCase: Boolean = false,
+	wrap: Boolean = false,
 ) {
 	var textTyped = text
 	if (capitalize) textTyped = capitalizeStrings(textTyped)
@@ -108,7 +109,7 @@ fun CustomText(
 		textDecoration = textDecoration,
 		style = textStyle,
 		fontWeight = textWeight,
-		softWrap = false
+		softWrap = wrap
 	)
 }
 

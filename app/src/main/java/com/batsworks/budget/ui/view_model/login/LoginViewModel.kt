@@ -102,9 +102,10 @@ class LoginViewModel(
             Log.d(ajustTag(TAG), "Foram encontrados erros")
             return
         }
+        registerUser()
     }
 
-    fun registerUser() {
+   private fun registerUser() {
         viewModelScope.launch {
             if (repository == null) {
                 resourceEventChannel.send(Resource.Failure("repository must not be null"))

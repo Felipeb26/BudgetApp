@@ -1,41 +1,43 @@
-package com.batsworks.budget.ui.transformation
+package com.batsworks.budget.components.visual_transformation
 
+import android.util.Log
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import com.batsworks.budget.components.ajustTag
 
-class PhoneTransformation : VisualTransformation {
+class CurrencyTransformation : VisualTransformation {
+
+    private val tag = CurrencyTransformation::class.java.name
     override fun filter(text: AnnotatedString): TransformedText {
 
-        val phoneMask = text.text.mapIndexed { index, c ->
+        val currencyMask = text.text.mapIndexed { index, c ->
             when (index) {
-                0 -> "($c"
-                1 -> "$c) "
-                6 -> "$c-"
+                0 -> "R$ $c"
                 else -> c
             }
         }.joinToString(separator = "")
 
-
-        return TransformedText(AnnotatedString(phoneMask), PhoneMaskOffset)
+        return try {
+            TransformedText(AnnotatedString(currencyMask), CurrencyOffset)
+        } catch (e: Exception) {
+            Log.d(ajustTag(tag), e.message ?: "error has happen")
+            TransformedText(text, CurrencyOffset)
+        }
     }
 
-    object PhoneMaskOffset : OffsetMapping {
+    object CurrencyOffset : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
             return when {
-                offset > 6 -> offset + 4
                 offset > 1 -> offset + 3
-                offset > 0 -> offset + 1
                 else -> offset
             }
         }
 
         override fun transformedToOriginal(offset: Int): Int {
             return when {
-                offset > 6 -> offset - 4
                 offset > 1 -> offset - 3
-                offset > 0 -> offset - 1
                 else -> offset
             }
         }

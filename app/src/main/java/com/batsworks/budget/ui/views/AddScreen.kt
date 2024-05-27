@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -37,23 +36,23 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.getByteArrayFromUri
 import com.batsworks.budget.components.localDate
+import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customDarkBackground
-import com.batsworks.budget.ui.transformation.CurrencyTransformation
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -77,10 +76,14 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 			model.onEvent(AmountFormEvent.FileVoucher(bytes))
 		}
 	}
+
 	LaunchedEffect(context) {
 		model.resourceEventFlow.collect { event ->
 			when (event) {
-				is Resource.Loading -> CustomToast(context, "carregando")
+				is Resource.Loading -> {
+					loading.value = !loading.value
+					CustomToast(context, "carregando")
+				}
 
 				is Resource.Failure -> {
 					loading.value = !loading.value
@@ -209,7 +212,8 @@ fun ActionButtons(
 		contract = ActivityResultContracts.PickVisualMedia(),
 		onResult = { uri ->
 			Log.d("TESTE", "$uri")
-			setFile(uri) }
+			setFile(uri)
+		}
 	)
 	Row(
 		modifier = Modifier.fillMaxWidth(),
@@ -318,19 +322,7 @@ fun EntranceButton(
 	CustomText(text = model.state.entranceError ?: "")
 }
 
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showBackground = true
-)
-@Composable
-fun AddWhite() {
-	Add()
-}
-
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showBackground = true
-)
+@PreviewLightDark
 @Composable
 fun AddDark() {
 	Add()

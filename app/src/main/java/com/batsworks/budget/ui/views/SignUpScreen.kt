@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -35,15 +34,15 @@ import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.CustomToast
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.annotedString
+import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.visual_transformation.PhoneTransformation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
-import com.batsworks.budget.ui.transformation.PhoneTransformation
 import com.batsworks.budget.ui.view_model.login.LoginViewModel
 import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 
@@ -172,7 +171,7 @@ private fun Content(viewModel: LoginViewModel) {
         modifier = Modifier.fillMaxWidth(0.6f),
         text = "cadastrar",
         enable = checked,
-        onClick = { viewModel.registerUser() }
+        onClick = { viewModel.onEvent(RegistrationFormEvent.Submit) }
     )
 }
 
@@ -205,23 +204,9 @@ fun TermsAndCondition(
 }
 
 
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
-)
-@Composable
-fun SignUpDark() {
-    val model = viewModel<LoginViewModel>()
-    SignUp(rememberNavController(), model)
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true
-)
+@PreviewLightDark
 @Composable
 fun SignUpWhite() {
     val model = viewModel<LoginViewModel>()
     SignUp(rememberNavController(), model)
 }
-//https://www.youtube.com/watch?v=zu8lQSVw4vk
