@@ -42,6 +42,11 @@
         <meta-data
             android:name="com.rollbar.android.ACCESS_TOKEN"
             android:value="d93a2a04ae4642f1844d51a73c44b791" />
+        <receiver android:name=".services.download.DownloadCompletedReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

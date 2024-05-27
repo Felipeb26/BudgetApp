@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
 import com.batsworks.budget.ui.views.Historico
@@ -16,44 +18,53 @@ import com.batsworks.budget.ui.views.Home
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
+import com.batsworks.budget.ui.views.ReceiptScreen
 import com.batsworks.budget.ui.views.Setting
 
 @Composable
 fun Navigate(
-	navController: NavHostController,
-	screen: Screen,
-	paddingValues: PaddingValues? = null,
+    navController: NavHostController,
+    screen: Screen,
+    paddingValues: PaddingValues? = null,
 ) {
-	NavHost(
-		navController = navController,
-		startDestination = screen.route,
-		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
-	) {
-		composable(Screen.MainScreen.route) { Main(navController) }
-		composable(Screen.HomeScreen.route) { Home(navController) }
-		composable(Screen.ProfileScreen.route) { Profile(navController) }
-		composable(Screen.AccountsScreen.route) { Accounts(navController) }
-		composable(Screen.PlusScreen.route) { PlusScreen(navController) }
-		composable(Screen.SettingScreen.route) { Setting(navController) }
-		composable(Screen.AdicionarScreen.route) { Add() }
-		composable(Screen.HistoryScreen.route) { Historico(navController) }
-	}
+    NavHost(
+        navController = navController,
+        startDestination = screen.route,
+        modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
+    ) {
+        composable(Screen.MainScreen.route) { Main(navController) }
+        composable(Screen.HomeScreen.route) { Home(navController) }
+        composable(Screen.ProfileScreen.route) { Profile(navController) }
+        composable(Screen.AccountsScreen.route) { Accounts(navController) }
+        composable(Screen.PlusScreen.route) { PlusScreen(navController) }
+        composable(Screen.SettingScreen.route) { Setting(navController) }
+        composable(Screen.AdicionarScreen.route) { Add() }
+        composable(Screen.HistoryScreen.route) { Historico(navController) }
+        composable(
+            Screen.ReceiptScreen.route + "/{id}",
+            arguments = listOf(navArgument("id") {
+                type = NavType.StringType
+                defaultValue = "0"
+                nullable = false
+            })
+        ) { entry -> ReceiptScreen(navController, entry.arguments?.getString("id")?:"0") }
+    }
 }
 
 fun easyNavigate(
-	navController: NavController,
-	route: String,
-	stateSave: Boolean = true,
-	singleTop: Boolean = true,
-	restore: Boolean = true,
-	include: Boolean = false,
+    navController: NavController,
+    route: String,
+    stateSave: Boolean = true,
+    singleTop: Boolean = true,
+    restore: Boolean = true,
+    include: Boolean = false,
 ) {
-	navController.navigate(route) {
-		popUpTo(navController.graph.findStartDestination().id) {
-			inclusive = include
-			saveState = stateSave
-		}
-		launchSingleTop = singleTop
-		restoreState = restore
-	}
+    navController.navigate(route) {
+        popUpTo(navController.graph.findStartDestination().id) {
+            inclusive = include
+            saveState = stateSave
+        }
+        launchSingleTop = singleTop
+        restoreState = restore
+    }
 }

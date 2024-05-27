@@ -20,6 +20,12 @@ fun currency(value: BigDecimal?): String {
     return currencyFormat.format(value ?: BigDecimal.ZERO)
 }
 
+fun currency(value: String?): String {
+    val finalValue = if (value.isNullOrEmpty()) BigDecimal.ZERO else BigDecimal(value)
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt-BR"))
+    return currencyFormat.format(finalValue)
+}
+
 fun currency(value: BigDecimal, locale: ULocale): String {
     val currencyFormat = NumberFormat.getCurrencyInstance(locale)
     return currencyFormat.format(value)

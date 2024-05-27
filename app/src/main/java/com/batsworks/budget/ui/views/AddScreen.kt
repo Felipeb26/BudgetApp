@@ -2,6 +2,7 @@ package com.batsworks.budget.ui.views
 
 import android.content.res.Configuration
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,13 +53,13 @@ import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.transformation.CurrencyTransformation
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.delay
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @Composable
@@ -168,12 +169,13 @@ fun AddContent(model: AddViewModel) {
 		)
 		CustomOutlineTextField(
 			modifier = Modifier.fillMaxWidth(0.95f),
+			transformation = CurrencyTransformation(),
 			labelText = "Valor da despesa",
 			defaultText = valueExpense,
 			keyboardType = KeyboardType.Number,
 			onValueChange = {
 				setValueExpense(it)
-				if (it.isNotBlank()) model.onEvent(AmountFormEvent.ValueEventChange(BigDecimal(it)))
+				if (it.isNotBlank()) model.onEvent(AmountFormEvent.ValueEventChange(it))
 			}, error = model.state.valueError != null,
 			errorMessage = model.state.valueError
 		)
@@ -205,7 +207,9 @@ fun ActionButtons(
 
 	val selectImage = rememberLauncherForActivityResult(
 		contract = ActivityResultContracts.PickVisualMedia(),
-		onResult = { uri -> setFile(uri) }
+		onResult = { uri ->
+			Log.d("TESTE", "$uri")
+			setFile(uri) }
 	)
 	Row(
 		modifier = Modifier.fillMaxWidth(),

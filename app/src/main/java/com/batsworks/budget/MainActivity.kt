@@ -26,12 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Screen
@@ -48,153 +49,128 @@ import java.time.Duration
 
 class MainActivity : AppCompatActivity() {
 
-	private val promptManager by lazy { BiometricPromptManager(this) }
-	private val model by viewModels<MainViewModel>()
-	private val profile by viewModels<ProfileViewModel>()
-	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
-	private var rollbar: Rollbar? = null
+    private val promptManager by lazy { BiometricPromptManager(this) }
+    private val model by viewModels<MainViewModel>()
+    private val profile by viewModels<ProfileViewModel>()
+    private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
+    private var rollbar: Rollbar? = null
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
-		enableEdgeToEdge(
-			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
-			navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
-		)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
+            navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
+        )
 
-		setContent {
-			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
-			val enrollLauncher = rememberLauncherForActivityResult(
-				contract = ActivityResultContracts.StartActivityForResult(),
-				onResult = { println("Activity $it") })
+        setContent {
+            val biometricResult by promptManager.promptResults.collectAsState(initial = null)
+            val enrollLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult(),
+                onResult = { println("Activity $it") })
 
-			LaunchedEffect(biometricResult) {
-				if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
-					if (Build.VERSION.SDK_INT >= 30) {
-						val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-							putExtra(
-								Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-								BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-							)
-						}
-						enrollLauncher.launch(enrollIntent)
-					}
-				}
-			}
-			val permissionsResultLauncher = rememberLauncherForActivityResult(
-				contract = ActivityResultContracts.RequestMultiplePermissions(),
-				onResult = { })
+            LaunchedEffect(biometricResult) {
+                if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
+                    if (Build.VERSION.SDK_INT >= 30) {
+                        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                            putExtra(
+                                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                            )
+                        }
+                        enrollLauncher.launch(enrollIntent)
+                    }
+                }
+            }
+            val permissionsResultLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestMultiplePermissions(),
+                onResult = { })
 
 
-			LaunchedEffect(Unit) {
-				delay(Duration.ofSeconds(2))
-				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
-			}
+            LaunchedEffect(Unit) {
+                delay(Duration.ofSeconds(2))
+                permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+            }
 
-			BudgetTheme {
-				rollbar = Rollbar.init(LocalContext.current)
-				val navController = rememberNavController()
-				val userState = profile.userEntity.collectAsState()
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-					permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
-				}
+            BudgetTheme {
+                rollbar = Rollbar.init(LocalContext.current)
+                val navController = rememberNavController()
+                val userState = profile.userEntity.collectAsState()
+                val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
 
-				biometricResult?.let { result ->
-					when (result) {
-						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
-							StartNavigate(navController, Screen.MainScreen, true)
-							return@BudgetTheme
-						}
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+                }
 
-						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
-							Log.d("biometria", result.error)
-							StartNavigate(navController, Screen.LoginScreen)
-							return@BudgetTheme
-						}
+                biometricResult?.let { result ->
+                    when (result) {
+                        is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
+                            StartNavigate(navController, Screen.MainScreen, true)
+                            return@BudgetTheme
+                        }
 
-						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
-							Log.d("biometria", "houuve falha ao se autenticar")
-							StartNavigate(navController, Screen.LoginScreen)
-							return@BudgetTheme
-						}
+                        is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
+                            Log.d("biometria", result.error)
+                            StartNavigate(navController, Screen.LoginScreen)
+                            return@BudgetTheme
+                        }
 
-						else -> Unit
-					}
-				}
+                        BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
+                            Log.d("biometria", "houuve falha ao se autenticar")
+                            StartNavigate(navController, Screen.LoginScreen)
+                            return@BudgetTheme
+                        }
 
-				Column(
-					Modifier
-						.fillMaxSize()
-						.background(customBackground)
-				) {}
-//				SelectScreen(userState.value, navController, promptManager)
-			}
-		}
-	}
+                        else -> Unit
+                    }
+                }
+
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(customBackground)) {}
+                if (user.value != null) {
+                    promptManager.showBiometricPrompt("BatsWorks Budget", "")
+                } else SelectScreen(userState.value)
+            }
+        }
+    }
 }
 
 @Composable
-private fun SelectScreen(
-	userEntity: UserEntity?,
-	navController: NavHostController,
-	promptManager: BiometricPromptManager,
-) {
-	if (userEntity == null) {
-		StartNavigate(navController, Screen.LoginScreen)
-		return
-	}
-
-	userEntity.let { user ->
-		if (user.loginWhenEnter) {
-			StartNavigate(navController, Screen.LoginScreen, true)
-
-		} else {
-			promptManager.showBiometricPrompt(
-				"teste biometria",
-				"testar a biometria para login"
-			)
-		}
-	}
+private fun SelectScreen(user: UserEntity?) {
+    if (user?.loginWhenEnter == true) {
+        StartNavigate(
+            navController = rememberNavController(),
+            screen = Screen.MainScreen, true
+        )
+    } else {
+        StartNavigate(
+            navController = rememberNavController(),
+            screen = Screen.LoginScreen
+        )
+    }
 }
 
-//@Composable
-//fun CustomRequestPermission() {
-//	val context = LocalContext.current
-//
-//
-//	val permissionsResultLauncher = rememberLauncherForActivityResult(
-//		contract = ActivityResultContracts.RequestMultiplePermissions(),
-//		onResult = { perms ->
-//			println("foram ${perms.size}")
-////			permissionsToRequest.forEach { permission ->
-////				CustomToast(context, "${formatPermissionName(permission)}")
-////			}
-//		}
-//	)
-//	permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
-//}
-
-
 private fun Activity.openAppSetting() {
-	Intent(
-		Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-		Uri.fromParts("package", packageName, null)
-	).also(::startActivity)
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
+    ).also(::startActivity)
 }
 
 private fun checkPermissionFor(context: Context, permission: String): Boolean {
-	return ContextCompat.checkSelfPermission(
-		context,
-		permission
-	) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 private fun formatPermissionName(permission: String): String {
-	return if (permission.lastIndexOf("_") > 0) {
-		permission.substring(permission.lastIndexOf("_"))
-	} else if (permission.lastIndexOf(".") > 0) {
-		permission.substring(permission.lastIndexOf("."))
-	} else {
-		permission;
-	}
+    return if (permission.lastIndexOf("_") > 0) {
+        permission.substring(permission.lastIndexOf("_"))
+    } else if (permission.lastIndexOf(".") > 0) {
+        permission.substring(permission.lastIndexOf("."))
+    } else {
+        permission
+    }
 }

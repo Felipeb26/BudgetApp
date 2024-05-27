@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.batsworks.budget.R
 
@@ -21,6 +22,7 @@ sealed class Screen(val route: String, val icon: ImageVector?, val resource: Int
    data object ProfileScreen : Screen("profile_screen", Icons.Filled.AccountCircle)
    data object PlusScreen : Screen("plus_screen", null, R.drawable.baseline_more_horiz_24)
    data object AccountsScreen : Screen("accounts_screen", null, R.drawable.baseline_account_balance_24)
+    data object ReceiptScreen :Screen("receiveit_screen", Icons.Filled.ShoppingCart)
 
     fun withArgs(vararg args: String): String {
         return buildString {

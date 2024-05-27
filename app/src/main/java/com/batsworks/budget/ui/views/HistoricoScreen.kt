@@ -3,7 +3,6 @@ package com.batsworks.budget.ui.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,81 +30,87 @@ import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.formatter
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
+import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.CustomLottieAnimation
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.view_model.history.HistoryViewModel
 
 @Composable
 fun Historico(
-	navController: NavController,
-	model: HistoryViewModel = viewModel<HistoryViewModel>(),
+    navController: NavController,
+    model: HistoryViewModel = viewModel<HistoryViewModel>(),
 ) {
-	model.init()
-	val context = LocalContext.current
-	val amounts = model.amounts
-	LaunchedEffect(key1 = context) {
-		model.resourceEventFlow.collect { event ->
-			when (event) {
-				is Resource.Loading -> {}
+    model.init()
+    val context = LocalContext.current
+    val amounts = model.amounts
+    LaunchedEffect(key1 = context) {
+        model.resourceEventFlow.collect { event ->
+            when (event) {
+                is Resource.Loading -> {}
 
-				is Resource.Sucess -> {
-					CustomToast(context, "item deletado com sucesso")
-				}
+                is Resource.Sucess -> {
+                    CustomToast(context, "item deletado com sucesso")
+                }
 
-				is Resource.Failure -> {
-					CustomToast(context, event.error ?: "Não foi possivel deletar o item")
-				}
-			}
-		}
-	}
+                is Resource.Failure -> {
+                    CustomToast(context, event.error ?: "Não foi possivel deletar o item")
+                }
+            }
+        }
+    }
 
-	if (amounts.value.isEmpty()) {
-		CustomLottieAnimation(R.raw.empty, amounts.value.isEmpty())
-		CustomText(
-			modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
-			textStyle = MaterialTheme.typography.titleMedium,
-			text = "Sem nenhum conteudo",
-			textAlign = TextAlign.Center,
-			textWeight = FontWeight.Bold,
-			isUpperCase = true
-		)
-	} else {
-		LazyColumn(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(customDarkBackground)
-		) {
-			items(items = amounts.value, key = { it.id }) { amount ->
-				SwipeToDeleteContainer(item = amount, onDelete = { am ->
-					model.deleteAmount(am.id)
-				}) {
-					Content(amount)
-				}
-			}
-		}
-	}
+    if (amounts.value.isEmpty()) {
+        CustomLottieAnimation(R.raw.empty, amounts.value.isEmpty())
+        CustomText(
+            modifier = Modifier
+                .padding(vertical = 20.dp)
+                .fillMaxWidth(),
+            textStyle = MaterialTheme.typography.titleMedium,
+            text = "Sem nenhum conteudo",
+            textAlign = TextAlign.Center,
+            textWeight = FontWeight.Bold,
+            isUpperCase = true
+        )
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(customDarkBackground)
+        ) {
+            items(items = amounts.value, key = { it.id }) { amount ->
+                SwipeToDeleteContainer(item = amount, onDelete = { am ->
+                    model.deleteAmount(am.id)
+                }) {
+                    Content(amount, navController)
+                }
+            }
+        }
+    }
 }
 
 
 @Composable
-private fun Content(amount: AmountEntity) {
-	val style = MaterialTheme.typography.labelLarge
-	Row(
-		Modifier
-			.fillMaxWidth()
-			.background(isEntrance(amount).copy(0.2f))
-			.padding(10.dp, 15.dp, 15.dp, 10.dp),
-		horizontalArrangement = Arrangement.SpaceBetween,
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style)
-		CustomText(text = currency(amount.value), textStyle = style)
-		CustomText(text = amount.creatAt.format(formatter()), textStyle = style)
-		if (amount.file != null) CustomButton(
-			modifier = Modifier.height(30.dp),
-			onClick = { /*TODO*/ },
-			text = "see file",
-			enable = true
-		)
-	}
+private fun Content(amount: AmountEntity, navController: NavController) {
+    val style = MaterialTheme.typography.labelLarge
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(isEntrance(amount).copy(0.2f))
+            .padding(10.dp, 15.dp, 15.dp, 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style)
+        CustomText(text = currency(amount.value), textStyle = style)
+        CustomText(text = amount.creatAt.format(formatter()), textStyle = style)
+        if (amount.file != null) CustomButton(
+            modifier = Modifier.height(30.dp),
+            onClick = {
+                easyNavigate(navController, Screen.ReceiptScreen.withArgs(amount.id.toString()))
+            },
+            text = "see file",
+            enable = true
+        )
+    }
 }
