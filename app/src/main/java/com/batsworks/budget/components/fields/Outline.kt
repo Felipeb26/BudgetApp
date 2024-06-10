@@ -1,4 +1,4 @@
-package com.batsworks.budget.components
+package com.batsworks.budget.components.fields
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.batsworks.budget.components.capitalizeStrings
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
@@ -104,4 +105,3 @@ fun CustomOutlineTextField(
 		}
 	)
 }
-

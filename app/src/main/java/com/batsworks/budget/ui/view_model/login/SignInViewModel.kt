@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.ajustTag
+import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
@@ -54,7 +54,7 @@ class SignInViewModel(
 				signIn()
 			}
 
-			else -> throw Exception("Apenas permitido email se senha")
+			else -> throw Exception("Apenas permitido email e senha")
 		}
 	}
 
@@ -69,7 +69,7 @@ class SignInViewModel(
 				emailError = emailResult.errorMessage,
 				passwordError = passwordResult.errorMessage
 			)
-			Log.d(ajustTag(tag), "Erros foram localizados")
+			Log.d(AJUST_TAG(tag), "Erros foram localizados")
 			return
 		}
 		viewModelScope.launch {

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.net.URL
 
 class ReceiptViewModel(
 	private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
@@ -39,14 +40,15 @@ class ReceiptViewModel(
 		}
 	}
 
-	fun downloadImage(file: ByteArray) {
+	fun downloadImage(amountEntity: AmountEntity) {
 		if (download == null) return
 		viewModelScope.launch {
 			resourceEventChannel.send(Resource.Loading())
 			try {
-				download.downloadFromBytes(file)
+				val file = amountEntity.file ?: return@launch
+				val imagePath = download.downloadFromBytes(amountEntity.chargeName, file)
 				resourceEventChannel.send(Resource.Loading(false))
-				resourceEventChannel.send(Resource.Sucess(false))
+				resourceEventChannel.send(Resource.Sucess(imagePath.toString().plus("|${amountEntity.chargeName}.jpeg")))
 			} catch (e: Exception) {
 				resourceEventChannel.send(Resource.Failure(e.message))
 			}

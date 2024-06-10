@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
-import com.batsworks.budget.components.CustomOutlineTextField
+import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.getByteArrayFromUri
@@ -81,7 +81,7 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 		model.resourceEventFlow.collect { event ->
 			when (event) {
 				is Resource.Loading -> {
-					loading.value = !loading.value
+					loading.value = event.loading
 					CustomToast(context, "carregando")
 				}
 
@@ -135,8 +135,7 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 						onClick = {
 							model.onEvent(AmountFormEvent.Submit)
 							setFile(null)
-						},
-						text = "Salvar"
+						}, text = "Salvar"
 					)
 				}
 			}
@@ -210,10 +209,7 @@ fun ActionButtons(
 
 	val selectImage = rememberLauncherForActivityResult(
 		contract = ActivityResultContracts.PickVisualMedia(),
-		onResult = { uri ->
-			Log.d("TESTE", "$uri")
-			setFile(uri)
-		}
+		onResult = { uri -> setFile(uri) }
 	)
 	Row(
 		modifier = Modifier.fillMaxWidth(),

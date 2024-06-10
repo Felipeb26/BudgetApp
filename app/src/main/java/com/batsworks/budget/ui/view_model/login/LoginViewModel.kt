@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.ajustTag
+import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -99,7 +99,7 @@ class LoginViewModel(
                 repeatedPasswordErro = repeatedPasswordResult.errorMessage,
                 acceptedTermsError = termsResult.errorMessage
             )
-            Log.d(ajustTag(TAG), "Foram encontrados erros")
+            Log.d(AJUST_TAG(TAG), "Foram encontrados erros")
             return
         }
         registerUser()

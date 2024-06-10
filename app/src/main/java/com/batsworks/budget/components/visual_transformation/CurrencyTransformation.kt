@@ -5,7 +5,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import com.batsworks.budget.components.ajustTag
+import com.batsworks.budget.components.AJUST_TAG
 
 class CurrencyTransformation : VisualTransformation {
 
@@ -22,7 +22,7 @@ class CurrencyTransformation : VisualTransformation {
         return try {
             TransformedText(AnnotatedString(currencyMask), CurrencyOffset)
         } catch (e: Exception) {
-            Log.d(ajustTag(tag), e.message ?: "error has happen")
+            Log.d(AJUST_TAG(tag), e.message ?: "error has happen")
             TransformedText(text, CurrencyOffset)
         }
     }

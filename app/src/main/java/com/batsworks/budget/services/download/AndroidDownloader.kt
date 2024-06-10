@@ -3,7 +3,6 @@ package com.batsworks.budget.services.download
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import androidx.core.net.toUri
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.ByteArrayInputStream
@@ -11,60 +10,57 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID
+import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-class AndroidDownloader(
-    private val context: Context
-) : Download {
+class AndroidDownloader(context: Context) : Download {
 
-    private val downloadManager = context.getSystemService(DownloadManager::class.java)
+	private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
+	override fun downloadFileUrl(url: String, imageName: String): Long {
+		val request = DownloadManager.Request(url.toUri())
+			.setMimeType("image/jpeg")
+			.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+			.setTitle(imageName.plus(".jpeg"))
+			.setDestinationInExternalPublicDir(
+				Environment.DIRECTORY_PICTURES,
+				imageName.plus(".jpeg")
+			)
+		return downloadManager.enqueue(request)
+	}
 
-    override fun downloadFileUrl(url: String, imageName: String): Long {
-        val request = DownloadManager.Request(url.toUri())
-            .setMimeType("image/jpeg")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setTitle(imageName.plus(".jpeg"))
-            .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_PICTURES,
-                imageName.plus(".jpeg")
-            )
-        return downloadManager.enqueue(request)
-    }
+	override fun downloadFileUrl(url: String): Long {
+		val imageName = UUID.randomUUID().toString().plus(".jpeg")
+		val request = DownloadManager.Request(url.toUri())
+			.setMimeType("image/jpeg")
+			.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+			.setTitle("Downloading ".plus(imageName))
+			.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, imageName)
+		return downloadManager.enqueue(request)
+	}
 
-    override fun downloadFileUrl(url: String): Long {
-        val imageName = UUID.randomUUID().toString().plus(".jpeg")
-        val request = DownloadManager.Request(url.toUri())
-            .setMimeType("image/jpeg")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setTitle("Downloading ".plus(imageName))
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, imageName)
-        return downloadManager.enqueue(request)
-    }
+	override suspend fun downloadFromBytes(name: String, bytes: ByteArray): String =
+		suspendCancellableCoroutine { continuation ->
+			val `is`: InputStream = ByteArrayInputStream(bytes)
+			val mimeType = URLConnection.guessContentTypeFromStream(`is`)
+			val caminho = "/storage/emulated/0/Pictures/$name.${fileType(mimeType)}"
 
-    override suspend fun downloadFromBytes(bytes: ByteArray) {
-        return suspendCancellableCoroutine { continuation ->
-            val `is`: InputStream = ByteArrayInputStream(bytes)
-            val mimeType = URLConnection.guessContentTypeFromStream(`is`)
-            val caminho = "/storage/emulated/0/Pictures/teste.${fileType(mimeType)}"
+			val file = FileOutputStream(caminho)
+			try {
+				file.write(bytes)
+				file.flush()
+				file.close()
+				continuation.resume(caminho)
+			} catch (e: Exception) {
+				file.close()
+				continuation.resumeWithException(e)
+			}
+		}
 
-            val file = FileOutputStream(caminho)
-            try {
-                file.write(bytes)
-                file.flush()
-                file.close()
-            } catch (e: Exception) {
-                file.close()
-                continuation.resumeWithException(e)
-            }
-
-        }
-    }
-
-    private fun fileType(s: String?): String {
-        if (s.isNullOrEmpty()) return "png"
-        return s.substring(s.lastIndexOf("/") + 1)
-    }
+	private fun fileType(s: String?): String {
+		if (s.isNullOrEmpty()) return "png"
+		return s.substring(s.lastIndexOf("/") + 1)
+	}
 
 }

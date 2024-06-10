@@ -21,27 +21,27 @@ val Color950 = Color(0xFF51426d)
 val ColorDark = Color(0xFF141404)
 
 val customDarkBackground
-    @Composable
-    get() = if (isSystemInDarkTheme()) ColorDark else Color.White
+	@Composable
+	get() = if (isSystemInDarkTheme()) Color400.copy(0.4f) else Color.White.copy(0.4f)
 val customBackground
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.7f) else Color.White
+	@Composable
+	get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.7f) else Color.White
 val ColorScheme.outOfFocusText
-    @Composable
-    get() = if(isSystemInDarkTheme()) Color100 else Color50
+	@Composable
+	get() = if (isSystemInDarkTheme()) Color100 else Color50
 
 val textColor
-    @Composable
-    get() = if(isSystemInDarkTheme()) Color50 else Color950
+	@Composable
+	get() = if (isSystemInDarkTheme()) Color50 else Color950
 
 fun GradientBrush(
-    isVerticalGratient: Boolean = true,
-    colors: List<Color> = listOf(Color800, Color700, Color400),
+	isVerticalGratient: Boolean = true,
+	colors: List<Color> = listOf(Color800, Color700, Color400),
 ): Brush {
 
-    val endOffset = if (isVerticalGratient)
-        Offset(0f, Float.POSITIVE_INFINITY)
-    else Offset(Float.POSITIVE_INFINITY, 0f)
+	val endOffset = if (isVerticalGratient)
+		Offset(0f, Float.POSITIVE_INFINITY)
+	else Offset(Float.POSITIVE_INFINITY, 0f)
 
-    return Brush.linearGradient(colors, start = Offset.Zero, endOffset)
+	return Brush.linearGradient(colors, start = Offset.Zero, endOffset)
 }

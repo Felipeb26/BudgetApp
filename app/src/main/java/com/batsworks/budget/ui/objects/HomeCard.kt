@@ -19,7 +19,7 @@ sealed class HomeCard(
 	data object Investimentos :
 		HomeCard(
 			"investiments",
-			Color.Cyan,
+			Color.Green,
 			Screen.PlusScreen,
 			R.drawable.baseline_monetization_on_24
 		)

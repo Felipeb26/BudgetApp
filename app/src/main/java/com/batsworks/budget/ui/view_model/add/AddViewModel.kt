@@ -8,7 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.ajustTag
+import com.batsworks.budget.components.AJUST_TAG
+import com.batsworks.budget.components.stringToDate
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -95,7 +96,7 @@ class AddViewModel(
                 fileError = fileResult.errorMessage,
                 amountDateError = amountDateResult.errorMessage
             )
-            Log.d(ajustTag(tag), "Foram encontrados erros")
+            Log.d(AJUST_TAG(tag), "Foram encontrados erros")
             return@launch
         }
         resourceEventChannel.send(Resource.Loading(true))
@@ -110,17 +111,19 @@ class AddViewModel(
                 value = state.value,
                 entrance = state.entrance,
                 file = state.file,
-                user = userEntity.firebaseId
+                user = userEntity.firebaseId,
+                amountDate = stringToDate(state.amountDate)
             )
             localRepository.save(amout)
-            resourceEventChannel.send(Resource.Loading(false))
             resourceEventChannel.send(Resource.Sucess(amout))
-        } catch (e: Exception) {
             resourceEventChannel.send(Resource.Loading(false))
+        } catch (e: Exception) {
             resourceEventChannel.send(Resource.Failure(e.message ?: "A error has happen"))
+            resourceEventChannel.send(Resource.Loading(false))
             return@launch
         }
     }
+
 
     private fun formatEventCharge(value: String): BigDecimal {
         if (value.length <= 1 && value.contains("."))

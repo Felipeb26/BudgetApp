@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.ajustTag
+import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
 import kotlinx.coroutines.channels.Channel
@@ -24,8 +25,13 @@ class HistoryViewModel(
 
 	fun init() {
 		viewModelScope.launch {
-			amounts.value = repository.findLastAmounts()
+			amounts.value = repository.findAll()
 		}
+	}
+
+	fun findByEntrace(entrance: String) {
+		val value = entrance == "entrance"
+		amounts.value = amounts.value.filter { it.entrance == value }.toList()
 	}
 
 	fun deleteAmount(id: Int) = viewModelScope.launch {
@@ -35,7 +41,7 @@ class HistoryViewModel(
 			resourceEventChannel.send(Resource.Loading(false))
 			resourceEventChannel.send(Resource.Sucess(""))
 		} catch (e: Exception) {
-			Log.d(ajustTag(tag), e.message ?: "an error has happen")
+			Log.d(AJUST_TAG(tag), e.message ?: "an error has happen")
 			resourceEventChannel.send(Resource.Loading(false))
 			resourceEventChannel.send(Resource.Failure(e.message ?: ""))
 		}

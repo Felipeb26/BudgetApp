@@ -145,7 +145,7 @@ private fun capitalizeString(text: String?): String {
 	return firstChar.toUpperCase(Locale.current).plus(restOfChars)
 }
 
-fun ajustTag(tag: String): String {
+fun AJUST_TAG(tag: String): String {
 	return tag.substring(tag.lastIndexOf(".") + 1)
 }
 

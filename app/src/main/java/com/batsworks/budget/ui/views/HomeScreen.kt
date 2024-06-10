@@ -12,6 +12,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -63,6 +64,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -82,6 +84,8 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.Color900
+import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
@@ -121,7 +125,7 @@ fun ProfileLowInfo(
 	showValues: MutableState<Boolean>,
 	model: HomeViewModel,
 ) {
-	val amountsState = model.totalAmount.collectAsState()
+	val amountsState = model.amountStateFlow.collectAsState()
 
 	val current = remember { mutableStateOf(". . .") }
 	val future = remember { mutableStateOf(". . .") }
@@ -167,8 +171,15 @@ fun ProfileLowInfo(
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					textWeight = bold, color = Color50, textAlign = align,
-					text = amountsState.value?.current.let { model.showAmount(it, showValues.value, current) }
+					textWeight = bold, color = Color50,
+					textAlign = if (current.value == "...") TextAlign.Center else align,
+					text = amountsState.value?.current.let {
+						model.showAmount(
+							it,
+							showValues.value,
+							current
+						)
+					}
 				)
 			}
 			for (i in 1..5) {
@@ -198,22 +209,43 @@ fun ProfileLowInfo(
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					textWeight = bold, color = Color50, textAlign = align,
-					text = amountsState.value?.future.let { model.showAmount(it, showValues.value, future) }
+					textWeight = bold, color = Color50,
+					textAlign = if (future.value == "...") TextAlign.Center else align,
+					text = amountsState.value?.future.let {
+						model.showAmount(
+							it,
+							showValues.value,
+							future
+						)
+					}
 				)
 			}
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					textWeight = bold, color = Color50, textAlign = align,
-					text = amountsState.value?.billing.let { model.showAmount(it, showValues.value, billing) }
+					textWeight = bold, color = Color50,
+					textAlign = if (billing.value == "...") TextAlign.Center else align,
+					text = amountsState.value?.billing.let {
+						model.showAmount(
+							it,
+							showValues.value,
+							billing
+						)
+					}
 				)
 			}
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					textWeight = bold, color = Color50, textAlign = align,
-					text = amountsState.value?.charge.let { model.showAmount(it, showValues.value, charge) }
+					textWeight = bold, color = Color50,
+					textAlign = if (charge.value == "...") TextAlign.Center else align,
+					text = amountsState.value?.charge.let {
+						model.showAmount(
+							it,
+							showValues.value,
+							charge
+						)
+					}
 				)
 			}
 		}
@@ -236,11 +268,12 @@ fun Cards(navController: NavController) {
 				modifier = Modifier
 					.width(150.dp)
 					.height(130.dp)
-					.padding(horizontal = 10.dp),
+					.padding(horizontal = 10.dp)
+					.border(2.dp, color = card.color, RoundedCornerShape(10)),
 				colors = CardDefaults.cardColors(
 					containerColor = if (isSystemInDarkTheme()) {
 						card.color.copy(0.6f)
-					} else card.color.copy(0.8f)
+					} else card.color.copy(0.2f)
 				), onClick = { easyNavigate(navController, card.screen.route) }
 			) {
 				Spacer(modifier = Modifier.height(10.dp))
@@ -249,13 +282,16 @@ fun Cards(navController: NavController) {
 						.padding(0.dp)
 						.padding(horizontal = 10.dp),
 					imageVector = ImageVector.vectorResource(id = card.resource),
-					contentDescription = card.name
+					contentDescription = card.name,
+					tint = Color900
 				)
 				CustomText(
 					modifier = Modifier
 						.padding(0.dp)
 						.padding(10.dp),
-					text = formatScreenTitle(card.name), textWeight = FontWeight.Bold
+					text = formatScreenTitle(card.name),
+					textWeight = FontWeight.Bold,
+					color = Color900
 				)
 			}
 		}
@@ -398,7 +434,6 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 @Composable
 private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 	val itemColor = if (amount.entrance) Color.Green else Color.Red
-
 	Row(
 		modifier = Modifier
 			.fillMaxSize()
@@ -438,22 +473,7 @@ private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 	}
 }
 
-
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showSystemUi = true
-)
-@Composable
-fun HomeWhite() {
-	val model =
-		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
-	Home(rememberNavController(), model)
-}
-
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showSystemUi = true
-)
+@PreviewLightDark
 @Composable
 fun HomeDark() {
 	val model =

@@ -42,7 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomCheckBox
-import com.batsworks.budget.components.CustomOutlineTextField
+import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.components.Resource
