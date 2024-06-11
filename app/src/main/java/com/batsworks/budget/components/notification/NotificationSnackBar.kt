@@ -1,5 +1,6 @@
 package com.batsworks.budget.components.notification
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -10,7 +11,10 @@ fun CustomSnackBar(
 	message: String,
 ) {
 	coroutine.launch {
-		snackBarHostState.showSnackbar(message, withDismissAction = true)
+		snackBarHostState.showSnackbar(
+			message, withDismissAction = true,
+			duration = SnackbarDuration.Short
+		)
 	}
 }
 

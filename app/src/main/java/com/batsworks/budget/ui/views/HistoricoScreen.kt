@@ -2,6 +2,7 @@ package com.batsworks.budget.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -34,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
+import com.batsworks.budget.components.CustomIconButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.DropDownMenu
 import com.batsworks.budget.components.Resource
@@ -44,7 +50,6 @@ import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.CustomLottieAnimation
 import com.batsworks.budget.ui.theme.customDarkBackground
@@ -91,7 +96,7 @@ fun Historico(
 	} else {
 		LazyColumn(
 			modifier = Modifier
-				.fillMaxSize().padding(10.dp, 0.dp)
+				.fillMaxSize()
 				.background(customDarkBackground)
 		) {
 			item { CustomFilter(model) }
@@ -147,31 +152,38 @@ private fun CustomFilter(model: HistoryViewModel) {
 @Composable
 private fun Content(amount: AmountEntity, navController: NavController) {
 	val style = MaterialTheme.typography.labelLarge
-	Column {
+	val backgroundColor = isEntrance(amount)
+
+	Column(modifier = Modifier.padding(10.dp, 0.dp)) {
 		Spacer(
 			modifier = Modifier
 				.height(10.dp)
 				.background(Color50)
-		)aj
+		)
 		Row(
 			Modifier
 				.fillMaxWidth()
-				.background(isEntrance(amount).copy(0.4f))
-				.border(2.dp, color = Color400, RoundedCornerShape(15))
+				.background(backgroundColor.copy(0.4f))
+				.border(2.dp, color = backgroundColor.copy(0.6f), RoundedCornerShape(15))
 				.padding(10.dp, 15.dp, 15.dp, 10.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			CustomText(text = amount.chargeName, isUpperCase = true, textStyle = style, wrap = true)
-			CustomText(text = currency(amount.value), textStyle = style)
-			if (amount.file != null) CustomButton(
-				modifier = Modifier.height(35.dp),
+			CustomText(
+				text = amount.chargeName, isUpperCase = true,
+				textStyle = style.copy(letterSpacing = TextUnit(0.5f, TextUnitType.Sp)),
+				textWeight = FontWeight.Bold, wrap = true
+			)
+			CustomText(
+				text = currency(amount.value),
+				textStyle = style,
+				textWeight = FontWeight.Bold
+			)
+			if (amount.file != null) CustomIconButton(contentColor = backgroundColor.copy(0.8f),
+				imageVector = ImageVector.vectorResource(id = R.drawable.baseline_visibility_24),
 				onClick = {
 					easyNavigate(navController, Screen.ReceiptScreen.withArgs(amount.id.toString()))
-				},
-				text = "see file",
-				enable = true
-			)
+				})
 		}
 		Spacer(
 			modifier = Modifier

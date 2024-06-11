@@ -1,5 +1,6 @@
 package com.batsworks.budget.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
@@ -22,7 +23,7 @@ val ColorDark = Color(0xFF141404)
 
 val customDarkBackground
 	@Composable
-	get() = if (isSystemInDarkTheme()) Color400.copy(0.4f) else Color.White.copy(0.4f)
+	get() = if (isSystemInDarkTheme()) Color600.copy(0.4f) else Color.White.copy(0.6f)
 val customBackground
 	@Composable
 	get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.7f) else Color.White
@@ -33,6 +34,26 @@ val ColorScheme.outOfFocusText
 val textColor
 	@Composable
 	get() = if (isSystemInDarkTheme()) Color50 else Color950
+
+fun brushIcon(color: Color = Color950): Brush {
+	return Brush.verticalGradient(
+		listOf(
+			color.copy(0.2f),
+			color.copy(0.6f),
+			color.copy(0.4f)
+		)
+	)
+}
+fun brushIcon(isDark: Boolean): Brush {
+	val color = if(isDark) Color950 else Color200
+	return Brush.verticalGradient(
+		listOf(
+			color.copy(0.2f),
+			color.copy(0.6f),
+			color.copy(0.4f)
+		)
+	)
+}
 
 fun GradientBrush(
 	isVerticalGratient: Boolean = true,

@@ -9,6 +9,17 @@ plugins {
 tasks.register("clean", Delete::class) {
 	delete(rootProject.buildDir)
 }
+tasks.withType<JavaCompile>().configureEach {
+	options.isFork = true
+}
+tasks.withType<Test>().configureEach {
+	maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+	if (!project.hasProperty("createReports")) {
+		reports.html.required = false
+		reports.junitXml.required = false
+	}
+}
+
 buildscript{
 	dependencies{
 		classpath("com.google.dagger:hilt-android-gradle-plugin:2.50")

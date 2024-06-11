@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -52,20 +51,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -80,13 +83,15 @@ import com.batsworks.budget.components.visibilityIsOn
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.objects.HomeCard
+import com.batsworks.budget.ui.theme.Color200
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.Color900
 import com.batsworks.budget.ui.theme.Color950
+import com.batsworks.budget.ui.theme.brushIcon
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.textColor
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
 import java.time.format.DateTimeFormatter
@@ -257,6 +262,7 @@ fun ProfileLowInfo(
 fun Cards(navController: NavController) {
 	val cards = arrayOf(HomeCard.Emprestimo, HomeCard.Cartoes, HomeCard.Investimentos)
 	val remeberState = rememberScrollState()
+	val isSystemDark = isSystemInDarkTheme()
 
 	Row(
 		modifier = Modifier.horizontalScroll(remeberState),
@@ -280,10 +286,11 @@ fun Cards(navController: NavController) {
 				Icon(
 					modifier = Modifier
 						.padding(0.dp)
-						.padding(horizontal = 10.dp),
+						.padding(horizontal = 10.dp)
+						.drawBehind { drawRect(brush = brushIcon(isSystemDark)) },
 					imageVector = ImageVector.vectorResource(id = card.resource),
 					contentDescription = card.name,
-					tint = Color900
+					tint = textColor
 				)
 				CustomText(
 					modifier = Modifier
@@ -291,7 +298,13 @@ fun Cards(navController: NavController) {
 						.padding(10.dp),
 					text = formatScreenTitle(card.name),
 					textWeight = FontWeight.Bold,
-					color = Color900
+					color = textColor,
+					textStyle = TextStyle(
+						letterSpacing = TextUnit(0.7f, TextUnitType.Sp),
+						shadow = Shadow(
+							color = textColor, offset = Offset(0f, 2f), blurRadius = 1f
+						)
+					)
 				)
 			}
 		}

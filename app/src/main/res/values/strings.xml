@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">budget</string>
+    <string name="terms_and_conditions">
+        Termos e Condições
+1. Introdução
+Bem-vindo ao nosso serviço. Ao utilizar nossos serviços, você concorda com os seguintes Termos e Condições. Por favor, leia atentamente antes de continuar a utilização do serviço.
+
+2. Coleta de Informações
+Para fornecer nossos serviços, coletamos e registramos as seguintes informações:
+
+Nome
+Telefone
+E-mail
+Imagens salvas
+3. Uso das Informações
+As informações coletadas serão utilizadas exclusivamente para:
+
+Garantir o funcionamento adequado do serviço.
+Entrar em contato com os usuários conforme necessário.
+4. Proteção de Dados
+Estamos comprometidos com a proteção de seus dados pessoais. As informações coletadas não serão utilizadas para:
+
+Processamento por inteligência artificial (IA).
+Comercialização ou venda a outras empresas ou terceiros.
+5. Compartilhamento de Informações
+Não compartilhamos suas informações pessoais com terceiros, exceto conforme exigido por lei ou com seu consentimento expresso.
+
+6. Direitos dos Usuários
+Você tem o direito de acessar, corrigir ou excluir suas informações pessoais armazenadas em nosso sistema. Para exercer esses direitos, entre em contato conosco através do nosso canal de atendimento ao cliente.
+
+7. Alterações nos Termos e Condições
+Reservamo-nos o direito de atualizar estes Termos e Condições periodicamente. Notificaremos nossos usuários sobre quaisquer mudanças significativas por meio do nosso site ou por e-mail.
+
+8. Contato
+Se você tiver alguma dúvida ou preocupação sobre nossos Termos e Condições, por favor, entre em contato conosco através do e-mail [seu-email@dominio.com].
+    </string>
 </resources>

@@ -1,9 +1,9 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,8 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -34,9 +35,11 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
+import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.view_model.factoryProvider
+import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 
 @Composable
 fun Profile(
@@ -44,8 +47,7 @@ fun Profile(
 	viewModel: ProfileViewModel = viewModel<ProfileViewModel>(),
 ) {
 	val (enabled, setEnabled) = remember { mutableStateOf(false) }
-	val modifier = Modifier.fillMaxWidth()
-
+	val context = LocalContext.current
 
 	Column(
 		modifier = Modifier
@@ -61,12 +63,15 @@ fun Profile(
 				.padding(0.dp)
 				.padding(vertical = 20.dp)
 				.height(150.dp)
-				.width(250.dp),
+				.width(250.dp)
+				.clickable {
+					CustomToast(context, "item não implementado ainda")
+				},
 			painter = painterResource(id = R.drawable.logo_resource),
 			contentDescription = "profile preview"
 		)
 		Spacer(modifier = Modifier.height(30.dp))
-		ProfileContent(modifier, viewModel, enabled)
+		ProfileContent(viewModel, enabled)
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
@@ -86,9 +91,10 @@ fun Profile(
 
 
 @Composable
-fun ProfileContent(modifier: Modifier, viewModel: ProfileViewModel, enabled: Boolean) {
+fun ProfileContent(viewModel: ProfileViewModel, enabled: Boolean) {
 	val userState = viewModel.userEntity.collectAsState()
 	val user = userState.value ?: return
+	val modifier = Modifier.fillMaxWidth()
 
 	CustomOutlineTextField(
 		modifier = modifier,
@@ -126,13 +132,10 @@ fun ProfileContent(modifier: Modifier, viewModel: ProfileViewModel, enabled: Boo
 }
 
 @Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun ProfileDark() {
-	Profile(navController = rememberNavController())
-}
-
-@Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-fun ProfileWhite() {
-	Profile(navController = rememberNavController())
+@PreviewLightDark
+fun ProfilePreview() {
+	val model = viewModel<ProfileViewModel>(
+		factory = factoryProvider(ProfileViewModel())
+	)
+	Profile(navController = rememberNavController(), model)
 }

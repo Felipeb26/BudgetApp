@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -41,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.batsworks.budget.components.CustomButton
-import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.getByteArrayFromUri
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.notification.CustomToast
@@ -110,33 +108,35 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 			item { AddContent(model) }
 			item { ActionButtons(file, setFile, showPreview, setShowPreview, model) }
 			item {
-				Row(
+				Column(
 					modifier = Modifier
 						.fillMaxWidth()
 						.padding(0.dp)
 						.padding(vertical = 20.dp, horizontal = 10.dp),
-					horizontalArrangement = Arrangement.Center
+					verticalArrangement = Arrangement.Center
 				) {
-					if (showPreview) {
-						AsyncImage(
-							modifier = Modifier
-								.border(2.dp, color = Color500, RoundedCornerShape(5))
-								.width((configuration.screenWidthDp / 1.5).dp)
-								.height((configuration.screenHeightDp / 2).dp),
-							model = file,
-							contentDescription = "",
-							contentScale = ContentScale.Crop
-						)
-						Spacer(modifier = Modifier.width(10.dp))
-					}
 					CustomButton(
-						modifier = Modifier.weight(1f),
+						modifier = Modifier.fillMaxWidth(),
 						enable = true,
 						onClick = {
 							model.onEvent(AmountFormEvent.Submit)
 							setFile(null)
 						}, text = "Salvar"
 					)
+				}
+			}
+			item {
+				Column(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
+					if (showPreview) AsyncImage(
+						modifier = Modifier
+							.fillMaxWidth(0.9f)
+							.border(2.dp, color = Color500, RoundedCornerShape(5)),
+						model = file, contentDescription = "",
+					)
+					Spacer(modifier = Modifier.height(15.dp))
 				}
 			}
 		}

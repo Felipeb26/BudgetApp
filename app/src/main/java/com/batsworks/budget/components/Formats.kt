@@ -33,6 +33,11 @@ fun currency(value: BigDecimal, locale: ULocale): String {
 }
 
 fun stringToDate(date: String? = null): LocalDate {
-	if(date.isNullOrEmpty()) return LocalDate.now()
+	if (date.isNullOrEmpty()) return LocalDate.now()
 	return LocalDate.parse(date, formatter())
+}
+
+fun dataToString(date: LocalDate?): String {
+	if (date == null) return LocalDate.now().format(formatter())
+	return date.format(formatter())
 }
