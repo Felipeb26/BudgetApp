@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.view_model.factoryProvider
@@ -48,6 +49,7 @@ fun Profile(
 ) {
 	val (enabled, setEnabled) = remember { mutableStateOf(false) }
 	val context = LocalContext.current
+	val toast = NotificationToast(context)
 
 	Column(
 		modifier = Modifier
@@ -64,9 +66,7 @@ fun Profile(
 				.padding(vertical = 20.dp)
 				.height(150.dp)
 				.width(250.dp)
-				.clickable {
-					CustomToast(context, "item não implementado ainda")
-				},
+				.clickable { toast.customToast() },
 			painter = painterResource(id = R.drawable.logo_resource),
 			contentDescription = "profile preview"
 		)
@@ -79,11 +79,13 @@ fun Profile(
 			CustomButton(
 				Modifier.weight(1f),
 				onClick = { setEnabled(!enabled) },
-				text = "atualizar",
+				text = stringResource(id = R.string.update),
 				enable = true
 			)
 			Spacer(modifier = Modifier.width(20.dp))
-			CustomButton(Modifier.weight(1f), onClick = { /*TODO*/ }, text = "salvar")
+			CustomButton(Modifier.weight(1f), enable = enabled,
+				text = stringResource(id = R.string.save),
+				onClick = { toast.customToast() })
 		}
 	}
 
@@ -99,34 +101,34 @@ fun ProfileContent(viewModel: ProfileViewModel, enabled: Boolean) {
 	CustomOutlineTextField(
 		modifier = modifier,
 		onValueChange = {},
-		labelText = "name",
-		defaultText = user.nome,
+		labelText = stringResource(id = R.string.name),
+		text = user.nome,
 		enabled = enabled,
 		leadingIcon = Icons.Default.Person
 	)
 	CustomOutlineTextField(
 		modifier = modifier,
 		onValueChange = {},
-		labelText = "email",
-		defaultText = user.email,
+		labelText = stringResource(id = R.string.email),
+		text = user.email,
 		enabled = enabled,
 		leadingIcon = Icons.Default.Email
 	)
 	CustomOutlineTextField(
 		modifier = modifier,
 		onValueChange = {},
-		labelText = "phone",
-		defaultText = user.phone,
+		labelText = stringResource(id = R.string.phone),
+		text = user.phone,
 		enabled = enabled,
 		leadingIcon = Icons.Default.Phone
 	)
 	CustomOutlineTextField(
 		modifier = modifier,
 		onValueChange = {},
-		labelText = "password",
+		labelText = stringResource(id = R.string.password),
 		passwordField = true,
 		enabled = enabled,
-		defaultText = user.password.toString(),
+		text = user.password.toString(),
 		trailingIcon = Icons.Default.Lock
 	)
 }

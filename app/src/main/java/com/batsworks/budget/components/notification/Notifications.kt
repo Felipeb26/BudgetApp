@@ -11,15 +11,20 @@ import kotlin.random.Random
 class Notifications(private val context: Context) {
 
 	private val notificationManager = context.getSystemService(NotificationManager::class.java)
+	private val title = context.getString(R.string.enterprise_name)
 
 	fun showBasicNotification(text: String? = null) {
-		val notification = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
-			.setContentTitle("BatsWorks")
-			.setContentText(text ?: "hfvbljzvfdkjvdd")
+		val notificationBuilder = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
+			.setContentTitle(title)
 			.setSmallIcon(R.drawable.profile)
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setAutoCancel(true)
-			.build()
+
+		val notification = if (text.isNullOrEmpty()) {
+			notificationBuilder.build()
+		} else {
+			notificationBuilder.setContentText(text).build()
+		}
 
 		notificationManager.notify(Random.nextInt(), notification)
 	}
@@ -34,14 +39,19 @@ class Notifications(private val context: Context) {
 			PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 		)
 
-		val notification = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
-			.setContentTitle("BatsWorks")
-			.setContentText(text ?: "")
-			.setSmallIcon(R.drawable.profile)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setContentIntent(pendingIntent)
-			.setAutoCancel(true)
-			.build()
+		val notificationBuilder = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
+				.setContentTitle(title)
+				.setContentText(text ?: "")
+				.setSmallIcon(R.drawable.profile)
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setContentIntent(pendingIntent)
+				.setAutoCancel(true)
+
+		val notification = if (text.isNullOrEmpty()) {
+			notificationBuilder.build()
+		} else {
+			notificationBuilder.setContentText(text).build()
+		}
 
 		notificationManager.notify(Random.nextInt(), notification)
 	}

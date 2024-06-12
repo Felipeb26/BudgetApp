@@ -31,7 +31,7 @@ import com.batsworks.budget.ui.theme.textColor
 @Composable
 fun CustomOutlineTextField(
 	modifier: Modifier = Modifier,
-	defaultText: String = "",
+	text: String = "",
 	textStyle: TextStyle = LocalTextStyle.current,
 	enabled: Boolean = true,
 	onValueChange: (String) -> Unit,
@@ -59,7 +59,7 @@ fun CustomOutlineTextField(
 			keyboardType = if (passwordField) KeyboardType.NumberPassword else keyboardType
 		),
 		modifier = modifier,
-		value = defaultText,
+		value = text,
 		onValueChange = onValueChange,
 		label = {
 			Text(

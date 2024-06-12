@@ -1,6 +1,6 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,9 +32,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -42,10 +43,11 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomCheckBox
-import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color200
@@ -91,12 +93,16 @@ fun Login(
 		) {
 			CustomText(
 				modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
-				text = "register", textDecoration = TextDecoration.Underline
+				text = stringResource(id = R.string.register),
+				textDecoration = TextDecoration.Underline
 			)
 			Spacer(modifier = Modifier.width(10.dp))
 			VerticalDivider(color = textColor)
 			Spacer(modifier = Modifier.padding(5.dp))
-			CustomText(text = "esqueci a senha", textDecoration = TextDecoration.Underline)
+			CustomText(
+				text = stringResource(id = R.string.forgot_pass),
+				textDecoration = TextDecoration.Underline
+			)
 		}
 	}
 	Loading(isLoading)
@@ -111,6 +117,7 @@ fun LoginExecution(
 	val propsState = model.state
 	val context = LocalContext.current
 	val focusRequester = FocusRequester()
+	val toast = NotificationToast(context)
 
 	val (username, setUsername) = rememberSaveable { mutableStateOf("") }
 	val (password, setPassword) = rememberSaveable { mutableStateOf("") }
@@ -124,7 +131,7 @@ fun LoginExecution(
 				}
 
 				is Resource.Sucess -> {
-					CustomToast(context, "entering")
+					toast.customToast(context.getString(R.string.entering))
 					easyNavigate(
 						navController,
 						Screen.MainScreen.route,
@@ -133,23 +140,20 @@ fun LoginExecution(
 						include = true
 					)
 				}
-
-				is Resource.Failure -> {
-					CustomToast(context, "${event.error}\n não foi possivel localizar o usuario")
-				}
+				is Resource.Failure -> toast.customToast(event.error.plus(context.getString(R.string.user_not_found)))
 			}
 		}
 	}
 
 	CustomText(
-		modifier = Modifier.fillMaxWidth(0.85f), text = "username", capitalize = true,
+		modifier = Modifier.fillMaxWidth(0.85f), text = stringResource(id = R.string.email),
+		capitalize = true, textWeight = FontWeight.Bold,
 		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
-		textWeight = FontWeight.Bold
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
 		modifier = Modifier.fillMaxWidth(0.9f),
-		defaultText = username, labelText = "Email",
+		text = username, labelText = stringResource(id = R.string.email),
 		onValueChange = {
 			setUsername(it)
 			model.onEvent(RegistrationFormEvent.EmailChanged(it))
@@ -161,9 +165,9 @@ fun LoginExecution(
 	)
 
 	CustomText(
-		modifier = Modifier.fillMaxWidth(0.85f), text = "password", capitalize = true,
+		modifier = Modifier.fillMaxWidth(0.85f), text = stringResource(id = R.string.password),
+		capitalize = true, textWeight = FontWeight.Bold,
 		textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
-		textWeight = FontWeight.Bold
 	)
 	Spacer(modifier = Modifier.height(10.dp))
 	CustomOutlineTextField(
@@ -172,7 +176,7 @@ fun LoginExecution(
 			.focusRequester(focusRequester),
 		passwordField = true,
 		trailingIcon = Icons.Filled.Lock,
-		defaultText = password, labelText = "Password",
+		text = password, labelText = stringResource(id = R.string.password),
 		onValueChange = {
 			setPassword(it)
 			model.onEvent(RegistrationFormEvent.PasswordChanged(it))
@@ -200,35 +204,23 @@ fun LoginExecution(
 			model.onEvent(RegistrationFormEvent.TermsChanged(it))
 			setEnterWhenLogin(!enterWhenLogin)
 		})
-		CustomText(text = "Logar ao entrar?", textStyle = MaterialTheme.typography.labelLarge)
+		CustomText(
+			text = stringResource(id = R.string.login_on_enter),
+			textStyle = MaterialTheme.typography.labelLarge
+		)
 	}
 
 	CustomButton(modifier = Modifier
 		.fillMaxWidth(0.6f)
 		.padding(0.dp)
 		.padding(20.dp), enable = true,
-		text = "enter",
-		onClick = {
-			model.onEvent(RegistrationFormEvent.Submit)
-		})
+		text = stringResource(id = R.string.enter),
+		onClick = { model.onEvent(RegistrationFormEvent.Submit) })
 }
 
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_YES,
-	showBackground = true
-)
 @Composable
-fun LoginDark() {
-	val model = viewModel<SignInViewModel>()
-	Login(rememberNavController(), model)
-}
-
-@Preview(
-	uiMode = Configuration.UI_MODE_NIGHT_NO,
-	showBackground = true
-)
-@Composable
-fun LoginWhite() {
+@PreviewLightDark
+fun LoginPreview() {
 	val model = viewModel<SignInViewModel>()
 	Login(rememberNavController(), model)
 }

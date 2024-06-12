@@ -71,7 +71,6 @@ fun CustomText(
 	color: Color = textColor,
 	textWeight: FontWeight = FontWeight.Normal,
 ) {
-
 	Text(
 		modifier = modifier,
 		text = text,
@@ -134,11 +133,11 @@ fun annotedString(text1: String, text2: String, vararg values: String): Annotate
 
 fun capitalizeStrings(text: String?): String {
 	if (text.isNullOrEmpty()) return ""
-	val values = text.split(" ").map { capitalizeString(it.trim()) }.toList()
+	val values = text.split(" ").map { capitalize(it.trim()) }.toList()
 	return values.joinToString(" ")
 }
 
-private fun capitalizeString(text: String?): String {
+private fun capitalize(text: String?): String {
 	if (text.isNullOrEmpty()) return ""
 	val firstChar = text.substring(0, 1)
 	val restOfChars = text.substring(1)

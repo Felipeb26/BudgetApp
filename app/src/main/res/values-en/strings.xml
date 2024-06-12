@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">budget</string>
+    <string name="developer_mail">felipeb2silva@gmail.com</string>
+    <string name="confirm">confirm</string>
+    <string name="cancel" tools:ignore="ButtonCase">cancel</string>
+    <string name="terms_and_conditions">\t\t\t\t\t\t\t\t\t\t\t\tTerms and Conditions
+\n\n1. Introduction
+\n\n\t\tWelcome to our service. By using our services, you agree to the following Terms and Conditions. Please read carefully before continuing to use the service.
+\n\n2. Information Collection
+\n\n\t\tTo provide our services, we collect and record the following information:
+Name
+Telephone
+Email
+Saved images
+\n\n3. Use of Information
+\n\n\t\tThe information collected will be used exclusively to:
+Ensure the proper functioning of the service.
+Contact users as needed.
+\n\n4. Data Protection
+\n\n\t\tWe are committed to protecting your personal data. The information collected will not be used to:
+Artificial intelligence (AI) processing.
+Marketing or selling to other companies or third parties.
+\n\n5. Information Sharing
+\n\n\t\tWe do not share your personal information with third parties except as required by law or with your express consent.
+\n\n6. User Rights
+\n\n\t\tYou have the right to access, correct or delete your personal information stored in our system. To exercise these rights, please contact us through our customer service channel.
+\n\n7. Changes to Terms and Conditions
+\n\n\t\tWe reserve the right to update these Terms and Conditions periodically. We will notify our users of any significant changes via our website or by email.
+\n\n8. Contact
+\n\n\t\tIf you have any questions or concerns about our Terms and Conditions, please contact us via email at felipeb2silva@gmail.com.
+    </string>
+    <string name="email">mail</string>
+    <string name="password">password</string>
+    <string name="login_on_enter">Log in when entering?</string>
+    <string name="enter">enter</string>
+    <string name="register">register</string>
+    <string name="forgot_pass">forgot the password</string>
+    <string name="user_not_found">don´t was possible localize the user</string>
+    <string name="entering">entering</string>
+    <string name="confirm_pass">confirm passoword</string>
+    <string name="phone">phone</string>
+    <string name="name">name</string>
+    <string name="i_agree_with">i agree with</string>
+    <string name="and">" and "</string>
+    <string name="the_privacy">the privacy</string>
+    <string name="the_policiy">the policy</string>
+    <string name="empty_value">. . . . .</string>
+    <string name="entrance_exit">entrace / exit</string>
+    <string name="values">values</string>
+    <string name="receive_pay">receive / pay</string>
+    <string name="last_transactions">Recentes Transactions</string>
+    <string name="empty_transaction">No financial activity</string>
+    <string name="show">show</string>
+    <string name="current_balance">balance</string>
+    <string name="future_balance">next balance</string>
+    <string name="future_credit">future inflow</string>
+    <string name="future_outflow">future outflow</string>
+    <string name="save">save</string>
+    <string name="bill_name">bill name</string>
+    <string name="update">update</string>
+    <string name="not_yet_implemented">item not yet implemented!</string>
+    <string name="enterprise_name">BatsWorks</string>
+    <string name="deleting_now">Deleting content now . . .</string>
+    <string name="loading">loading</string>
+    <string name="adding_bill_sucess">bill successfully registered</string>
+    <string name="adding_bill_error">"Could not add bill "</string>
+    <string name="adding_user_error">There was an error creating the user!</string>
+    <string name="adding_user_sucess">User created with sucess!</string>
+    <string name="bill_value">"Value: "</string>
+    <string name="bill_date">"bill date: "</string>
+    <string name="download">download</string>
+    <string name="biometric_description">Use your fingerprint to enter</string>
+    <string name="biometric_auth_error">There was a error to authenticate</string>
+</resources>

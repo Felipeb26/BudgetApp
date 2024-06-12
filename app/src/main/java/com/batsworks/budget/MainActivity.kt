@@ -1,11 +1,7 @@
 package com.batsworks.budget
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -31,9 +27,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import com.batsworks.budget.components.capitalizeStrings
+import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
@@ -49,119 +47,116 @@ import java.time.Duration
 
 class MainActivity : AppCompatActivity() {
 
-    private val promptManager by lazy { BiometricPromptManager(this) }
-    private val model by viewModels<MainViewModel>()
-    private val profile by viewModels<ProfileViewModel>()
-    private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
-    private var rollbar: Rollbar? = null
+	private val promptManager by lazy { BiometricPromptManager(this) }
+	private val model by viewModels<MainViewModel>()
+	private val profile by viewModels<ProfileViewModel>()
+	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
+	private var rollbar: Rollbar? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
-            navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
-        )
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
+		enableEdgeToEdge(
+			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
+			navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
+		)
 
-        setContent {
-            val biometricResult by promptManager.promptResults.collectAsState(initial = null)
-            val enrollLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartActivityForResult(),
-                onResult = { println("Activity $it") })
+		setContent {
+			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
+			val enrollLauncher = rememberLauncherForActivityResult(
+				contract = ActivityResultContracts.StartActivityForResult(),
+				onResult = { Log.d("LAUNCHER", "Activity $it") })
 
-            LaunchedEffect(biometricResult) {
-                if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
-                    if (Build.VERSION.SDK_INT >= 30) {
-                        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                            putExtra(
-                                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                            )
-                        }
-                        enrollLauncher.launch(enrollIntent)
-                    }
-                }
-            }
-            val permissionsResultLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestMultiplePermissions(),
-                onResult = { })
+			LaunchedEffect(biometricResult) {
+				if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
+					if (Build.VERSION.SDK_INT >= 30) {
+						val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+							putExtra(
+								Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+								BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+							)
+						}
+						enrollLauncher.launch(enrollIntent)
+					}
+				}
+			}
+			val permissionsResultLauncher = rememberLauncherForActivityResult(
+				contract = ActivityResultContracts.RequestMultiplePermissions(),
+				onResult = { })
 
 
-            LaunchedEffect(Unit) {
-                delay(Duration.ofSeconds(2))
-                permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
-            }
+			LaunchedEffect(Unit) {
+				delay(Duration.ofSeconds(2))
+				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+			}
 
-            BudgetTheme {
-                rollbar = Rollbar.init(LocalContext.current)
-                val navController = rememberNavController()
-                val userState = profile.userEntity.collectAsState()
-                val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
+			BudgetTheme {
+				rollbar = Rollbar.init(LocalContext.current)
+				val navController = rememberNavController()
+				val context = LocalContext.current
+				val userState = profile.userEntity.collectAsState()
+				val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
+				val toast = NotificationToast(context)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
-                    permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
-                }
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+					permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+					permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+				}
 
-                biometricResult?.let { result ->
-                    when (result) {
-                        is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
-                            StartNavigate(navController, Screen.MainScreen, true)
-                            return@BudgetTheme
-                        }
+				biometricResult?.let { result ->
+					when (result) {
+						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
+							StartNavigate(navController, Screen.MainScreen, true)
+							return@BudgetTheme
+						}
 
-                        is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
-                            Log.d("biometria", result.error)
-                            StartNavigate(navController, Screen.LoginScreen)
-                            return@BudgetTheme
-                        }
+						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
+							Log.d("biometria", result.error)
+							toast.customToast(result.error)
+							StartNavigate(navController, Screen.LoginScreen)
+							return@BudgetTheme
+						}
 
-                        BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
-                            Log.d("biometria", "houuve falha ao se autenticar")
-                            StartNavigate(navController, Screen.LoginScreen)
-                            return@BudgetTheme
-                        }
+						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
+							Log.d("biometria", context.getString(R.string.biometric_auth_error))
+							toast.customToast(context.getString(R.string.biometric_auth_error))
+							StartNavigate(navController, Screen.LoginScreen)
+							return@BudgetTheme
+						}
 
-                        else -> Unit
-                    }
-                }
+						else -> Unit
+					}
+				}
 
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .background(customBackground)) {}
-                if (user.value != null) {
-                    promptManager.showBiometricPrompt("BatsWorks Budget", "")
-                } else SelectScreen(userState.value)
-            }
-        }
-    }
+				Column(
+					modifier = Modifier
+						.fillMaxSize()
+						.background(customBackground)
+				) {}
+				if (user.value != null) {
+					promptManager.showBiometricPrompt(
+						capitalizeStrings(
+							"${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"
+						),
+						stringResource(id = R.string.biometric_description)
+					)
+				} else SelectScreen(userState.value)
+			}
+		}
+	}
 }
 
 @Composable
 private fun SelectScreen(user: UserEntity?) {
-    if (user?.loginWhenEnter == true) {
-        StartNavigate(
-            navController = rememberNavController(),
-            screen = Screen.MainScreen, true
-        )
-    } else {
-        StartNavigate(
-            navController = rememberNavController(),
-            screen = Screen.LoginScreen
-        )
-    }
-}
-
-private fun Activity.openAppSetting() {
-    Intent(
-        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-        Uri.fromParts("package", packageName, null)
-    ).also(::startActivity)
-}
-
-private fun checkPermissionFor(context: Context, permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        permission
-    ) == PackageManager.PERMISSION_GRANTED
+	if (user?.loginWhenEnter == true) {
+		StartNavigate(
+			navController = rememberNavController(),
+			screen = Screen.MainScreen, true
+		)
+	} else {
+		StartNavigate(
+			navController = rememberNavController(),
+			screen = Screen.LoginScreen
+		)
+	}
 }

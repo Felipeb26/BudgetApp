@@ -42,11 +42,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +62,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,28 +76,25 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.formatScreenTitle
+import com.batsworks.budget.components.formatter
 import com.batsworks.budget.components.notEnableIfEmpty
 import com.batsworks.budget.components.visibilityIsOn
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.objects.HomeCard
-import com.batsworks.budget.ui.theme.Color200
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.brushIcon
 import com.batsworks.budget.ui.theme.customDarkBackground
 import com.batsworks.budget.ui.theme.textColor
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Home(navController: NavController, model: HomeViewModel = viewModel<HomeViewModel>()) {
@@ -131,15 +131,20 @@ fun ProfileLowInfo(
 	model: HomeViewModel,
 ) {
 	val amountsState = model.amountStateFlow.collectAsState()
+	val emptyValue: String = stringResource(id = R.string.empty_value)
 
-	val current = remember { mutableStateOf(". . .") }
-	val future = remember { mutableStateOf(". . .") }
-	val billing = remember { mutableStateOf(". . .") }
-	val charge = remember { mutableStateOf(". . .") }
+	val current = remember { mutableStateOf(emptyValue) }
+	val future = remember { mutableStateOf(emptyValue) }
+	val billing = remember { mutableStateOf(emptyValue) }
+	val charge = remember { mutableStateOf(emptyValue) }
+	var textAlign by remember { mutableStateOf(TextAlign.Start) }
 
 	val title = MaterialTheme.typography.titleMedium
 	val bold = FontWeight.Bold
-	val align = TextAlign.Start
+
+	LaunchedEffect(current.value) {
+		textAlign = if(current.value == emptyValue) TextAlign.Center else TextAlign.Start
+	}
 
 	Card(
 		modifier = Modifier
@@ -160,14 +165,14 @@ fun ProfileLowInfo(
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					text = "Saldo atual", textWeight = bold,
-					color = Color50, textAlign = align
+					text = stringResource(id = R.string.current_balance),
+					textWeight = bold, color = Color50, textAlign = textAlign
 				)
 			}
 			item {}
 			item {
 				CustomText(
-					textStyle = title, text = "Show", color = Color50,
+					textStyle = title, text = stringResource(id = R.string.show), color = Color50,
 					isUpperCase = true, textWeight = bold,
 					iconBitMap = visibilityIsOn(!showValues.value),
 					clickEvent = { showValues.value = !showValues.value }
@@ -177,13 +182,9 @@ fun ProfileLowInfo(
 				CustomText(
 					capitalize = true, textStyle = title,
 					textWeight = bold, color = Color50,
-					textAlign = if (current.value == "...") TextAlign.Center else align,
+					textAlign = textAlign,
 					text = amountsState.value?.current.let {
-						model.showAmount(
-							it,
-							showValues.value,
-							current
-						)
+						model.showAmount(it, showValues.value, current)
 					}
 				)
 			}
@@ -193,35 +194,31 @@ fun ProfileLowInfo(
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					text = "Saldo Futuro", textWeight = bold,
-					color = Color50, textAlign = align
+					text = stringResource(id = R.string.future_balance), textWeight = bold,
+					color = Color50, textAlign = textAlign
 				)
 			}
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					text = "Entrada Futura", textWeight = bold,
-					color = Color50, textAlign = align
+					text = stringResource(id = R.string.future_credit), textWeight = bold,
+					color = Color50, textAlign = textAlign
 				)
 			}
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
-					text = "Saida Futura", textWeight = bold,
-					color = Color50, textAlign = align
+					text = stringResource(id = R.string.future_outflow), textWeight = bold,
+					color = Color50, textAlign = textAlign
 				)
 			}
 			item {
 				CustomText(
 					capitalize = true, textStyle = title,
 					textWeight = bold, color = Color50,
-					textAlign = if (future.value == "...") TextAlign.Center else align,
+					textAlign = textAlign,
 					text = amountsState.value?.future.let {
-						model.showAmount(
-							it,
-							showValues.value,
-							future
-						)
+						model.showAmount(it, showValues.value, future)
 					}
 				)
 			}
@@ -229,13 +226,9 @@ fun ProfileLowInfo(
 				CustomText(
 					capitalize = true, textStyle = title,
 					textWeight = bold, color = Color50,
-					textAlign = if (billing.value == "...") TextAlign.Center else align,
+					textAlign = textAlign,
 					text = amountsState.value?.billing.let {
-						model.showAmount(
-							it,
-							showValues.value,
-							billing
-						)
+						model.showAmount(it, showValues.value, billing)
 					}
 				)
 			}
@@ -243,13 +236,9 @@ fun ProfileLowInfo(
 				CustomText(
 					capitalize = true, textStyle = title,
 					textWeight = bold, color = Color50,
-					textAlign = if (charge.value == "...") TextAlign.Center else align,
+					textAlign = textAlign,
 					text = amountsState.value?.charge.let {
-						model.showAmount(
-							it,
-							showValues.value,
-							charge
-						)
+						model.showAmount(it, showValues.value, charge)
 					}
 				)
 			}
@@ -317,6 +306,7 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 	val (isVisible, setVisible) = remember { mutableStateOf(false) }
 	val (icon, setIcon) = remember { mutableStateOf(Icons.Rounded.KeyboardArrowUp) }
 	val context = LocalContext.current
+	val emptyTransaction = stringResource(id = R.string.empty_transaction)
 
 	if (amounts.isEmpty()) setVisible(false)
 
@@ -339,7 +329,7 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 					.animateContentSize()
 					.fillMaxWidth()
 					.clickable {
-						notEnableIfEmpty(context, "sem saida ou entrada", amounts) {
+						notEnableIfEmpty(context, emptyTransaction, amounts) {
 							setVisible(!isVisible)
 							if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
 								Icons.Rounded.KeyboardArrowDown
@@ -353,7 +343,7 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 						.clip(CircleShape)
 						.background(Color700)
 						.clickable {
-							notEnableIfEmpty(context, "sem saida ou entrada", amounts.size) {
+							notEnableIfEmpty(context, emptyTransaction, amounts.size) {
 								setVisible(!isVisible)
 								if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
 									Icons.Rounded.KeyboardArrowDown
@@ -371,7 +361,7 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 				Spacer(modifier = Modifier.width(20.dp))
 				CustomText(
 					modifier = Modifier,
-					text = "Ultimas entradas e saídas",
+					text = stringResource(id = R.string.last_transactions),
 					textDecoration = TextDecoration.Underline,
 					textWeight = FontWeight.Bold,
 					color = Color50
@@ -409,7 +399,7 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 								modifier = Modifier.width(width),
 								textWeight = FontWeight.Bold,
 								isUpperCase = true,
-								text = "Entrada/Saida"
+								text = stringResource(id = R.string.entrance_exit)
 							)
 							CustomText(
 								modifier = Modifier
@@ -417,14 +407,14 @@ fun LimitedHistory(amounts: List<AmountEntity>) {
 									.padding(horizontal = 15.dp),
 								textWeight = FontWeight.Bold,
 								isUpperCase = true,
-								text = "valores"
+								text = stringResource(id = R.string.values)
 							)
 							CustomText(
 								modifier = Modifier.width(width),
 								textWeight = FontWeight.Bold,
 								textAlign = TextAlign.Start,
 								isUpperCase = true,
-								text = "receber/pagar"
+								text = stringResource(id = R.string.receive_pay)
 							)
 						}
 						Spacer(modifier = Modifier.height(16.dp))
@@ -479,9 +469,7 @@ private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 		)
 		CustomText(
 			modifier = Modifier.width(width),
-			text = amount.amountDate.format(
-				DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-			), color = Color50
+			text = amount.amountDate.format(formatter()), color = Color50
 		)
 	}
 }
@@ -489,7 +477,6 @@ private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
 @PreviewLightDark
 @Composable
 fun HomeDark() {
-	val model =
-		viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel(BudgetApplication.database.getAmountDao())))
+	val model = viewModel<HomeViewModel>(factory = factoryProvider(HomeViewModel()))
 	Home(rememberNavController(), model)
 }

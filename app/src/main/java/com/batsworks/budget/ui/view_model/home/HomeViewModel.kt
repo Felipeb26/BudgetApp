@@ -1,11 +1,9 @@
 package com.batsworks.budget.ui.view_model.home
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
-import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dto.AmountState
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import java.math.BigDecimal
 import java.time.Duration
@@ -28,7 +25,6 @@ class HomeViewModel(
 
 	private val tag = HomeViewModel::class.java.name
 	private val _profileCardValues = MutableStateFlow<AmountState?>(null)
-	val totalAmount = _profileCardValues.asStateFlow()
 
 	val lastAmounts = flow {
 		emit(repository.findLastAmounts())
@@ -54,7 +50,7 @@ class HomeViewModel(
 	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
 	fun showAmount(value: BigDecimal?, show: Boolean, word: MutableState<String>): String {
-		word.value = if (show) currency(value) else ". . ."
+		word.value = if (show) currency(value) else ". . . . ."
 		return word.value
 	}
 

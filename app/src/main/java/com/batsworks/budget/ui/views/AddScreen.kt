@@ -30,14 +30,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
@@ -45,6 +46,7 @@ import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.getByteArrayFromUri
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.notification.CustomToast
+import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
@@ -61,11 +63,11 @@ import java.time.LocalDate
 
 @Composable
 fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
-	val configuration = LocalConfiguration.current
 	val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
 	val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
 	val loading = remember { mutableStateOf(false) }
 	val context = LocalContext.current
+	val toast = NotificationToast(context)
 
 	LaunchedEffect(file) {
 		delay(500)
@@ -80,20 +82,17 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 			when (event) {
 				is Resource.Loading -> {
 					loading.value = event.loading
-					CustomToast(context, "carregando")
+					toast.customToast(context.getString(R.string.loading))
 				}
 
 				is Resource.Failure -> {
 					loading.value = !loading.value
-					CustomToast(
-						context,
-						event.error ?: "Não foi possivel adicionar conta"
-					)
+					toast.customToast(event.error ?: context.getString(R.string.adding_bill_error))
 				}
 
 				is Resource.Sucess -> {
 					loading.value = false
-					CustomToast(context, "conta cadastrada com sucesso")
+					toast.customToast(context.getString(R.string.adding_bill_sucess))
 				}
 			}
 		}
@@ -121,7 +120,7 @@ fun Add(model: AddViewModel = viewModel<AddViewModel>()) {
 						onClick = {
 							model.onEvent(AmountFormEvent.Submit)
 							setFile(null)
-						}, text = "Salvar"
+						}, text = stringResource(id = R.string.save)
 					)
 				}
 			}
@@ -162,7 +161,7 @@ fun AddContent(model: AddViewModel) {
 		CustomOutlineTextField(
 			modifier = Modifier.fillMaxWidth(0.95f),
 			labelText = "Nome da despesa",
-			defaultText = expense,
+			text = expense,
 			onValueChange = {
 				setExpense(it)
 				model.onEvent(AmountFormEvent.ChargeNameEventChange(it))
@@ -173,7 +172,7 @@ fun AddContent(model: AddViewModel) {
 			modifier = Modifier.fillMaxWidth(0.95f),
 			transformation = CurrencyTransformation(),
 			labelText = "Valor da despesa",
-			defaultText = valueExpense,
+			text = valueExpense,
 			keyboardType = KeyboardType.Number,
 			onValueChange = {
 				setValueExpense(it)
@@ -259,7 +258,7 @@ fun CalendarPick(model: AddViewModel) {
 	) {
 		CustomOutlineTextField(
 			modifier = Modifier.fillMaxWidth(0.5f),
-			enabled = true, defaultText = formattedDate,
+			enabled = true, text = formattedDate,
 			onValueChange = {},
 			error = model.state.amountDateError != null,
 			errorMessage = model.state.amountDateError

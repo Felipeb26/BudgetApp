@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -107,14 +106,9 @@ fun FloatingButton(navController: NavController, modifier: Modifier = Modifier) 
 	}
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun MainDark() {
-	Main()
-}
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun MainWhite() {
+@PreviewLightDark
+fun MainPreview() {
 	Main()
 }

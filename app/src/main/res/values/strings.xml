@@ -1,37 +1,81 @@
 <resources>
     <string name="app_name">budget</string>
-    <string name="terms_and_conditions">
-        Termos e Condições
-1. Introdução
-Bem-vindo ao nosso serviço. Ao utilizar nossos serviços, você concorda com os seguintes Termos e Condições. Por favor, leia atentamente antes de continuar a utilização do serviço.
-
-2. Coleta de Informações
-Para fornecer nossos serviços, coletamos e registramos as seguintes informações:
-
+    <string name="enterprise_name">BatsWorks</string>
+    <string name="developer_mail">felipeb2silva@gmail.com</string>
+    <string name="confirm">confirmar</string>
+    <string name="cancel">cancelar</string>
+    <string name="terms_and_conditions">\t\t\t\t\t\t\t\t\t\t\t\tTermos e Condições
+\n\n1. Introdução
+\n\n\t\tBem-vindo ao nosso serviço. Ao utilizar nossos serviços, você concorda com os seguintes Termos e Condições. Por favor, leia atentamente antes de continuar a utilização do serviço.
+\n\n2. Coleta de Informações
+\n\n\t\tPara fornecer nossos serviços, coletamos e registramos as seguintes informações:
 Nome
 Telefone
 E-mail
 Imagens salvas
-3. Uso das Informações
-As informações coletadas serão utilizadas exclusivamente para:
-
+\n\n3. Uso das Informações
+\n\n\t\tAs informações coletadas serão utilizadas exclusivamente para:
 Garantir o funcionamento adequado do serviço.
 Entrar em contato com os usuários conforme necessário.
-4. Proteção de Dados
-Estamos comprometidos com a proteção de seus dados pessoais. As informações coletadas não serão utilizadas para:
-
+\n\n4. Proteção de Dados
+\n\n\t\tEstamos comprometidos com a proteção de seus dados pessoais. As informações coletadas não serão utilizadas para:
 Processamento por inteligência artificial (IA).
 Comercialização ou venda a outras empresas ou terceiros.
-5. Compartilhamento de Informações
-Não compartilhamos suas informações pessoais com terceiros, exceto conforme exigido por lei ou com seu consentimento expresso.
-
-6. Direitos dos Usuários
-Você tem o direito de acessar, corrigir ou excluir suas informações pessoais armazenadas em nosso sistema. Para exercer esses direitos, entre em contato conosco através do nosso canal de atendimento ao cliente.
-
-7. Alterações nos Termos e Condições
-Reservamo-nos o direito de atualizar estes Termos e Condições periodicamente. Notificaremos nossos usuários sobre quaisquer mudanças significativas por meio do nosso site ou por e-mail.
-
-8. Contato
-Se você tiver alguma dúvida ou preocupação sobre nossos Termos e Condições, por favor, entre em contato conosco através do e-mail [seu-email@dominio.com].
+\n\n5. Compartilhamento de Informações
+\n\n\t\tNão compartilhamos suas informações pessoais com terceiros, exceto conforme exigido por lei ou com seu consentimento expresso.
+\n\n6. Direitos dos Usuários
+\n\n\t\tVocê tem o direito de acessar, corrigir ou excluir suas informações pessoais armazenadas em nosso sistema. Para exercer esses direitos, entre em contato conosco através do nosso canal de atendimento ao cliente.
+\n\n7. Alterações nos Termos e Condições
+\n\n\t\tReservamo-nos o direito de atualizar estes Termos e Condições periodicamente. Notificaremos nossos usuários sobre quaisquer mudanças significativas por meio do nosso site ou por e-mail.
+\n\n8. Contato
+\n\n\t\tSe você tiver alguma dúvida ou preocupação sobre nossos Termos e Condições, por favor, entre em contato conosco através do e-mail felipeb2silva@gmail.com.
     </string>
+    <string name="email">email</string>
+    <string name="password">senha</string>
+    <string name="login_on_enter">Logar ao entrar?</string>
+    <string name="enter">entrar</string>
+    <string name="register">cadastrar</string>
+    <string name="forgot_pass">esqueci a senha</string>
+    <string name="confirm_pass">confirmar senha</string>
+    <string name="phone">telefone</string>
+    <string name="name">nome</string>
+    <string name="i_agree_with">eu concordo com</string>
+    <string name="and">e</string>
+    <string name="the_privacy">a privacidade</string>
+    <string name="the_policiy">a polititca</string>
+    <!--   sign up - log in  screen -->
+    <!--   home in  screen -->
+    <string name="empty_value">. . . . .</string>
+    <string name="entrance_exit">entrada / saida</string>
+    <string name="values">valores</string>
+    <string name="receive_pay">receber / pagar</string>
+    <string name="last_transactions">Transações Recentes</string>
+    <string name="empty_transaction">sem atividade financeira</string>
+    <string name="show">visualizar</string>
+    <string name="current_balance">saldo atual</string>
+    <string name="future_balance">saldo futuro</string>
+    <string name="future_credit">entrada futura</string>
+    <string name="future_outflow">saida futura</string>
+    <string name="save">salvar</string>
+    <!--   home in  screen -->
+    <!--   bill dowload / visualization  -->
+    <string name="bill_name">nome conta:</string>
+    <string name="bill_value">"Valor: "</string>
+    <string name="bill_date">data conta</string>
+    <!--   bill dowload / visualization  -->
+    <string name="update">atualizar</string>
+    <string name="download">baixar</string>
+    <!--  messages  -->
+    <string name="user_not_found">não foi possivel localizar o usuario</string>
+    <string name="entering">entrando</string>
+    <string name="not_yet_implemented">item ainda não implementado!</string>
+    <string name="deleting_now">Deletando conteudo agora . . .</string>
+    <string name="loading">carregando</string>
+    <string name="adding_bill_error">Não foi possivel adicionar conta</string>
+    <string name="adding_bill_sucess">Conta incluida com sucesso!</string>
+    <string name="adding_user_error">Houve um erro ao criar o usuario!</string>
+    <string name="adding_user_sucess">Usuario cadastrado com sucesso!</string>
+    <string name="biometric_description">Use sua digital para entrar</string>
+    <string name="biometric_auth_error">Houve um erro ao autenticar</string>
+    <!--  messages  -->
 </resources>

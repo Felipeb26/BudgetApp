@@ -1,48 +1,56 @@
 package com.batsworks.budget.ui.views
 
-import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.components.DropDownMenu
 import com.batsworks.budget.ui.theme.customDarkBackground
+import java.util.Locale
 
 @Composable
 fun Setting(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(customDarkBackground),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CustomText(
-            text = "configuracao",
-            modifier = Modifier.clickable {
-                navController.navigate(Screen.LoginScreen.route)
-            }
-        )
-
-    }
+	var expanded by remember { mutableStateOf(true) }
+	val locales: Map<String, Locale> = mapOf(
+		"ingles" to Locale.ENGLISH,
+		"pt-br" to Locale("pt-BR")
+	)
+//https://www.youtube.com/watch?v=ObgmK3BywKI
+//	AppCompatDelegate.setApplicationLocales(
+//		LocaleListCompat.forLanguageTags(locales.values[0])
+//	)
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.background(customDarkBackground),
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.Center
+	) {
+		DropDownMenu(
+			modifier = Modifier.weight(1f),
+			onExpandChage = { expanded = !expanded },
+			onDismiss = { expanded = !expanded },
+			expanded = expanded,
+			itens = locales.keys.toList(),
+			onValueChange = {}
+		)
+	}
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SettingDark() {
-    Setting(navController = rememberNavController())
-}
-@Preview(showBackground = true)
-@Composable
+@PreviewLightDark
 fun SettingWhite() {
-    Setting(navController = rememberNavController())
+	Setting(navController = rememberNavController())
 }
