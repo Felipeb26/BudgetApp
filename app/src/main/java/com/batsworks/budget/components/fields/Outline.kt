@@ -45,6 +45,7 @@ fun CustomOutlineTextField(
 	keyboardType: KeyboardType = KeyboardType.Text,
 	onDone: (() -> Unit)? = null,
 	transformation: VisualTransformation = VisualTransformation.None,
+	isUpper: Boolean = false,
 ) {
 	val focusManager = LocalFocusManager.current
 	val (show, setShow) = remember { mutableStateOf(passwordField) }

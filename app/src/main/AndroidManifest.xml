@@ -33,6 +33,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:configChanges="locale|layoutDirection"
             android:theme="@style/Theme.BudgetSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

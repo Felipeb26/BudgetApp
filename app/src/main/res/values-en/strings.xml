@@ -72,4 +72,6 @@ Marketing or selling to other companies or third parties.
     <string name="download">download</string>
     <string name="biometric_description">Use your fingerprint to enter</string>
     <string name="biometric_auth_error">There was a error to authenticate</string>
+    <string name="en">English</string>
+    <string name="ptBR">Portuguese - Brazil</string>
 </resources>

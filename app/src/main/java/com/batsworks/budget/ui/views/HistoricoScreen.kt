@@ -135,7 +135,7 @@ private fun CustomFilter(model: HistoryViewModel) {
 			modifier = Modifier.weight(1f),
 			onExpandChage = { expanded = !expanded },
 			onDismiss = { expanded = !expanded },
-			expanded = expanded,
+			expanded = expanded, itens = listOf(""),
 			onValueChange = {}
 		)
 		Spacer(modifier = Modifier.width(10.dp))
@@ -143,7 +143,7 @@ private fun CustomFilter(model: HistoryViewModel) {
 			modifier = Modifier.weight(1f),
 			onExpandChage = { expanded = !expanded },
 			onDismiss = { expanded = !expanded },
-			expanded = expanded,
+			expanded = expanded, itens = listOf(""),
 			onValueChange = {}
 		)
 	}

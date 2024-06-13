@@ -1,32 +1,30 @@
 package com.batsworks.budget.components
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.batsworks.budget.components.fields.CustomTextField
+import com.batsworks.budget.ui.theme.Color600
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownMenu(
+fun <T> DropDownMenu(
 	modifier: Modifier = Modifier,
-	itens: List<String> = listOf("azul", "red", "fvnm"),
+	itens: List<T> = emptyList(),
 	onExpandChage: (Boolean) -> Unit,
 	onDismiss: () -> Unit,
 	expanded: Boolean = false,
 	onValueChange: (String) -> Unit,
 	selectText: String = "",
 ) {
-
-	Column(
-		modifier = modifier,
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
+	Box(modifier = modifier) {
 		ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandChage) {
 			CustomTextField(
 				modifier = Modifier.menuAnchor(), isUpper = true,
@@ -35,18 +33,32 @@ fun DropDownMenu(
 			)
 
 			ExposedDropdownMenu(
+				modifier = Modifier.background(Color600.copy(0.6f)),
 				expanded = expanded,
 				onDismissRequest = onDismiss
 			) {
 				itens.forEachIndexed { index, s ->
-					DropdownMenuItem(
-						contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-						text = { CustomText(text = s) },
-						onClick = {
-							onValueChange.invoke(itens[index])
-							onExpandChage.invoke(false)
-						}
-					)
+					if (s is Int) {
+						val string = stringResource(id = s)
+						DropdownMenuItem(
+							contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+							text = { CustomText(text = string, isUpperCase = true) },
+							onClick = {
+								onValueChange.invoke(itens[index].toString())
+								onExpandChage.invoke(false)
+							}
+						)
+					}
+					if (s is String) {
+						DropdownMenuItem(
+							contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+							text = { CustomText(text = s, isUpperCase = true) },
+							onClick = {
+								onValueChange.invoke(itens[index].toString())
+								onExpandChage.invoke(false)
+							}
+						)
+					}
 				}
 			}
 		}

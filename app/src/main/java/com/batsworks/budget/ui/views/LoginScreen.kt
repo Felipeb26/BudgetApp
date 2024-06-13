@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,7 +45,6 @@ import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.notification.CustomToast
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
@@ -140,6 +138,7 @@ fun LoginExecution(
 						include = true
 					)
 				}
+
 				is Resource.Failure -> toast.customToast(event.error.plus(context.getString(R.string.user_not_found)))
 			}
 		}

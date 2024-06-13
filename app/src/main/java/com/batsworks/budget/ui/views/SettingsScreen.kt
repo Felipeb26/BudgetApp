@@ -17,20 +17,14 @@ import androidx.core.os.LocaleListCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.DropDownMenu
+import com.batsworks.budget.language.LanguageSettings
 import com.batsworks.budget.ui.theme.customDarkBackground
-import java.util.Locale
 
 @Composable
 fun Setting(navController: NavController) {
 	var expanded by remember { mutableStateOf(true) }
-	val locales: Map<String, Locale> = mapOf(
-		"ingles" to Locale.ENGLISH,
-		"pt-br" to Locale("pt-BR")
-	)
-//https://www.youtube.com/watch?v=ObgmK3BywKI
-//	AppCompatDelegate.setApplicationLocales(
-//		LocaleListCompat.forLanguageTags(locales.values[0])
-//	)
+	val language = LanguageSettings()
+
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -43,8 +37,8 @@ fun Setting(navController: NavController) {
 			onExpandChage = { expanded = !expanded },
 			onDismiss = { expanded = !expanded },
 			expanded = expanded,
-			itens = locales.keys.toList(),
-			onValueChange = {}
+			itens = language.enabled.keys.toList(),
+			onValueChange = { language.selectAppLanguage(it.toInt()) }
 		)
 	}
 }
