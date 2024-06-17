@@ -60,7 +60,7 @@ fun CustomIconButton(
 	onClick: () -> Unit,
 	enabled: Boolean = true,
 	containerColor: Color = Color800.copy(0.8f),
-	contentColor: Color = Color50,
+	contentColor: Color = MaterialTheme.colorScheme.primary,
 	imageVector: ImageVector,
 ) {
 	IconButton(

@@ -37,6 +37,7 @@ import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		CustomTheme()
 		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
 		enableEdgeToEdge(
 			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),

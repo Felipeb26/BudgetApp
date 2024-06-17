@@ -343,7 +343,6 @@ fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
             modifier = Modifier
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .background(composeBool(isSystemInDarkTheme(), Color800, Color700))
-//				.background(if (dark) Color800 else Color600)
                 .animateContentSize(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally

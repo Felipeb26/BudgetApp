@@ -38,6 +38,14 @@ fun Setting(navController: NavController) {
 			itens = language.enabled.keys.toList(),
 			onValueChange = { language.selectAppLanguage(it.toInt()) }
 		)
+		DropDownMenu(
+			modifier = Modifier.weight(1f),
+			onExpandChage = { expanded = !expanded },
+			onDismiss = { expanded = !expanded },
+			expanded = expanded,
+			itens = language.enabled.keys.toList(),
+			onValueChange = { language.selectAppLanguage(it.toInt()) }
+		)
 	}
 }
 

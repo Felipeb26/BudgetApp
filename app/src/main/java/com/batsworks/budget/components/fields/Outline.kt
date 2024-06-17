@@ -128,9 +128,7 @@ fun CustomPasswordOutlineTextField(
 ) {
     val focusManager = LocalFocusManager.current
     val (show, setShow) = remember { mutableStateOf(passwordField) }
-    var trailingIcon = ImageVector.vectorResource(id = R.drawable.baseline_visibility_24)
-
-    val context = LocalContext.current
+    val trailingIcon = ImageVector.vectorResource(id = R.drawable.baseline_visibility_24)
 
     OutlinedTextField(
         keyboardActions = KeyboardActions(onDone = {
