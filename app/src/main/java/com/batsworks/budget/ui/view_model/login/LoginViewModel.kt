@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.AJUST_TAG
+import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -32,7 +32,7 @@ class LoginViewModel(
     private val repository: CustomRepository<UserEntity>? = null,
 ) : ViewModel() {
 
-    private val TAG = LoginViewModel::class.java.name
+    private val tag = LoginViewModel::class.java.name
     var state by mutableStateOf(RegistrationFormState())
 
     private val resourceEventChannel = Channel<Resource<Any>>()
@@ -99,7 +99,7 @@ class LoginViewModel(
                 repeatedPasswordErro = repeatedPasswordResult.errorMessage,
                 acceptedTermsError = termsResult.errorMessage
             )
-            Log.d(AJUST_TAG(TAG), "Foram encontrados erros")
+            Log.d(AJUST_TAG(tag), "Foram encontrados erros")
             return
         }
         registerUser()

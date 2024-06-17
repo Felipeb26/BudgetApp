@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.views
 
 import android.app.Activity
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,9 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
@@ -41,103 +39,90 @@ import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.CustomLottieAnimation
 import com.batsworks.budget.ui.theme.customDarkBackground
-import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 @Composable
 fun PlusScreen(
-	navController: NavHostController,
-	model: ProfileViewModel = viewModel<ProfileViewModel>(),
+    navController: NavHostController,
+    dontLoginWhenStart: () -> Unit,
 ) {
-	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
-	val (exit, makeExit) = remember { mutableStateOf(false) }
+    val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
+    val (exit, makeExit) = remember { mutableStateOf(false) }
 
-	if (exit) ExitAnimation(true)
-	else Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(customDarkBackground),
-		verticalArrangement = Arrangement.Top,
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		Spacer(modifier = Modifier.height(10.dp))
-		screens.forEachIndexed { _, screen ->
-			CardFunction(navController, screen.route, screen.icon, screen.resource)
-		}
-		CardFunction(
-			navController,
-			screenRoute = "exit",
-			icon = Icons.AutoMirrored.Filled.ExitToApp,
-			function = {
-				model.dontLoginWhenStart()
-				makeExit(!exit)
-			})
-	}
+    if (exit) ExitAnimation(true)
+    else Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(customDarkBackground),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(10.dp))
+        screens.forEachIndexed { _, screen ->
+            CardFunction(navController, screen.route, screen.icon, screen.resource)
+        }
+        CardFunction(
+            navController,
+            screenRoute = "exit",
+            icon = Icons.AutoMirrored.Filled.ExitToApp,
+            function = {
+                dontLoginWhenStart()
+                makeExit(true)
+            })
+    }
 }
 
 @Composable
 fun CardFunction(
-	navController: NavHostController,
-	screenRoute: String,
-	icon: ImageVector? = null,
-	resource: Int? = null,
-	function: (() -> Unit)? = null,
+    navController: NavHostController,
+    screenRoute: String,
+    icon: ImageVector? = null,
+    resource: Int? = null,
+    function: (() -> Unit)? = null,
 ) {
-	Card(
-		modifier = Modifier
-			.fillMaxWidth(0.9f)
-			.height(60.dp)
-			.padding(10.dp),
-		shape = RoundedCornerShape(25),
-		colors = CardDefaults.cardColors(
-			containerColor = Color800,
-			contentColor = Color950
-		),
-		onClick = function ?: { easyNavigate(navController, screenRoute) }
-	) {
-		Row(
-			modifier = Modifier.fillMaxSize(),
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.Start
-		) {
-			Spacer(modifier = Modifier.width(30.dp))
-			(icon ?: resource?.let { ImageVector.vectorResource(it) })?.let {
-				Icon(
-					imageVector = it,
-					contentDescription = "",
-					tint = Color50
-				)
-			}
-			Spacer(modifier = Modifier.width(30.dp))
-			CustomText(text = formatScreenTitle(screenRoute), color = Color50)
-		}
-	}
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(60.dp)
+            .padding(10.dp),
+        shape = RoundedCornerShape(25),
+        colors = CardDefaults.cardColors(
+            containerColor = Color800,
+            contentColor = Color950
+        ),
+        onClick = function ?: { easyNavigate(navController, screenRoute) }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Spacer(modifier = Modifier.width(30.dp))
+            (icon ?: resource?.let { ImageVector.vectorResource(it) })?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = "",
+                    tint = Color50
+                )
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            CustomText(text = formatScreenTitle(screenRoute), color = Color50)
+        }
+    }
 }
 
 @Composable
-fun ExitAnimation(exit:Boolean) {
-	val activity = (LocalContext.current as? Activity)
-	CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
-	Timer().schedule(2500) {
-		activity?.finish()
-	}
+fun ExitAnimation(exit: Boolean) {
+    val activity = (LocalContext.current as? Activity)
+    CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
+    Timer().schedule(2500) {
+        activity?.finish()
+    }
 }
 
-@Preview(
-	showBackground = true,
-	uiMode = Configuration.UI_MODE_NIGHT_NO
-)
 @Composable
-fun PlusWhite() {
-	PlusScreen(rememberNavController())
-}
-
-@Preview(
-	showBackground = true,
-	uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun PlusDark() {
-	PlusScreen(rememberNavController())
+@PreviewLightDark
+fun PlusPreview() {
+    PlusScreen(rememberNavController()){}
 }

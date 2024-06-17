@@ -59,9 +59,9 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="save">salvar</string>
     <!--   home in  screen -->
     <!--   bill dowload / visualization  -->
-    <string name="bill_name">nome conta:</string>
-    <string name="bill_value">"Valor: "</string>
-    <string name="bill_date">data conta</string>
+    <string name="bill_name">"nome conta:  "</string>
+    <string name="bill_value">"Valor:  "</string>
+    <string name="bill_date">"data da conta:  "</string>
     <!--   bill dowload / visualization  -->
     <string name="update">atualizar</string>
     <string name="download">baixar</string>

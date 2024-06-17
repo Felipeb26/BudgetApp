@@ -10,10 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.login.LoginViewModel
 import com.batsworks.budget.ui.view_model.login.SignInViewModel
-import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.SignUp
@@ -30,17 +30,8 @@ fun StartNavigate(
 		modifier = Modifier.background(customBackground)
 	) {
 		composable(Screen.LoginScreen.route) {
-			val model = viewModel<SignInViewModel>(
-				factory = factoryProvider(
-					SignInViewModel(
-						CustomRepository(
-							"users",
-							UserEntity::class.java
-						)
-					)
-				)
-			)
-			Login(navController, model)
+			val model = viewModel<SignInViewModel>()
+			Login(navController, model.state, model.validationEvents, model::onEvent)
 		}
 		composable(Screen.SignUpScreen.route) {
 			val model = viewModel<LoginViewModel>(

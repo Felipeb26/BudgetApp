@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomButton
@@ -25,11 +26,8 @@ fun Accounts(navController: NavController) {
 }
 
 
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
-)
 @Composable
-fun AccountsDark() {
+@PreviewLightDark
+fun AccountsPreview() {
     Accounts(navController = rememberNavController())
 }

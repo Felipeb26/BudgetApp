@@ -98,6 +98,4 @@ dependencies {
 	implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
 	//Rollbar
 	implementation("com.rollbar:rollbar-android:1.10.0")
-	//data store
-	implementation("androidx.datastore:datastore-preferences:1.1.1")
 }

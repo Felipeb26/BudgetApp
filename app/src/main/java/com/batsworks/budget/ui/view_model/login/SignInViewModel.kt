@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-	private val repository: CustomRepository<UserEntity>? = null,
+	private val repository: CustomRepository<UserEntity> = CustomRepository("users", UserEntity::class.java),
 	private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
 	private val validateEmail: ValidateEmail = ValidateEmail(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
@@ -73,9 +73,7 @@ class SignInViewModel(
 			return
 		}
 		viewModelScope.launch {
-			if (repository == null) return@launch
 			validationEventChannel.send(Resource.Loading())
-
 
 			val user = localRepository.findByLogin(state.email, state.password.toInt())
 

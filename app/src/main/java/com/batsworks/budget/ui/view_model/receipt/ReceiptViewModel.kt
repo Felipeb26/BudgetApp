@@ -16,8 +16,8 @@ import kotlinx.coroutines.launch
 import java.net.URL
 
 class ReceiptViewModel(
-	private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
 	context: Context,
+	private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
 	private val download: AndroidDownloader? = AndroidDownloader(context),
 	id: String,
 ) : ViewModel() {

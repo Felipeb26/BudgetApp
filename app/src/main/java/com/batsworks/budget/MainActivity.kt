@@ -112,14 +112,14 @@ class MainActivity : AppCompatActivity() {
 
 						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
 							Log.d("biometria", result.error)
-							toast.customToast(result.error)
+							toast.show(result.error)
 							StartNavigate(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 							Log.d("biometria", context.getString(R.string.biometric_auth_error))
-							toast.customToast(context.getString(R.string.biometric_auth_error))
+							toast.show(context.getString(R.string.biometric_auth_error))
 							StartNavigate(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}

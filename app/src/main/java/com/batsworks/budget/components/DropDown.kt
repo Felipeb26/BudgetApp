@@ -33,7 +33,7 @@ fun <T> DropDownMenu(
 			)
 
 			ExposedDropdownMenu(
-				modifier = Modifier.background(Color600.copy(0.6f)),
+				modifier = Modifier.background(Color600),
 				expanded = expanded,
 				onDismissRequest = onDismiss
 			) {

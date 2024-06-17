@@ -5,19 +5,24 @@ import androidx.compose.material3.SnackbarHostState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-fun CustomSnackBar(
-	coroutine: CoroutineScope,
-	snackBarHostState: SnackbarHostState,
-	message: String,
-) {
-	coroutine.launch {
-		snackBarHostState.showSnackbar(
-			message, withDismissAction = true,
-			duration = SnackbarDuration.Short
-		)
-	}
-}
 
-suspend fun CustomSuspendSnackBar(snackBarHostState: SnackbarHostState, message: String) {
-	snackBarHostState.showSnackbar(message, withDismissAction = true)
+class NotificationSnackBar(
+    private val coroutine: CoroutineScope,
+    private val snackBarHostState: SnackbarHostState
+) {
+
+    fun show(
+        message: String,
+        actionLabel: String? = null,
+        duration: SnackbarDuration = SnackbarDuration.Short
+    ) {
+        coroutine.launch {
+            snackBarHostState.showSnackbar(
+                message, actionLabel,
+                withDismissAction = true,
+                duration = duration
+            )
+        }
+    }
+
 }
