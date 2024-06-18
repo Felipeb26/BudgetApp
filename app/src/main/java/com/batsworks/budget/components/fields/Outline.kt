@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.batsworks.budget.R
 import com.batsworks.budget.components.capitalizeStrings
-import com.batsworks.budget.components.composeBool
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor

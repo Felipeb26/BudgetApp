@@ -74,4 +74,12 @@ Marketing or selling to other companies or third parties.
     <string name="biometric_auth_error">There was a error to authenticate</string>
     <string name="en">English</string>
     <string name="ptBR">Portuguese - Brazil</string>
+    <string name="home">home</string>
+    <string name="history">history</string>
+    <string name="profile">profile</string>
+    <string name="plus">more</string>
+    <string name="settings">settings</string>
+    <string name="add">add</string>
+    <string name="account">accounts</string>
+    <string name="exit">exit</string>
 </resources>

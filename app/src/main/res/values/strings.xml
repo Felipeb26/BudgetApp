@@ -40,9 +40,9 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="phone">telefone</string>
     <string name="name">nome</string>
     <string name="i_agree_with">eu concordo com</string>
-    <string name="and">e</string>
-    <string name="the_privacy">a privacidade</string>
-    <string name="the_policiy">a polititca</string>
+    <string name="and"> \te\t </string>
+    <string name="the_privacy"> a privacidade </string>
+    <string name="the_policiy"> a polititca </string>
     <!--   sign up - log in  screen -->
     <!--   home in  screen -->
     <string name="empty_value">. . . . .</string>
@@ -51,7 +51,7 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="receive_pay">receber / pagar</string>
     <string name="last_transactions">Transações Recentes</string>
     <string name="empty_transaction">sem atividade financeira</string>
-    <string name="show">visualizar</string>
+    <string name="show">mostrar</string>
     <string name="current_balance">saldo atual</string>
     <string name="future_balance">saldo futuro</string>
     <string name="future_credit">entrada futura</string>
@@ -80,4 +80,14 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="en">Inglês</string>
     <string name="ptBR">Português - Brasil</string>
     <!--  messages  -->
+    <!--  telas   -->
+    <string name="home">inicio</string>
+    <string name="history">historico</string>
+    <string name="profile">perfil</string>
+    <string name="plus">extras</string>
+    <string name="settings">configurações</string>
+    <string name="add">adicionar</string>
+    <string name="account">contas</string>
+    <string name="exit">sair</string>
+    <!--  telas   -->
 </resources>

@@ -50,7 +50,7 @@ import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Loading
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.batsworks.budget.ui.view_model.add.AmountFormState
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -70,7 +70,7 @@ fun Add(
 ) {
     val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
     val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
-    val loading = remember { mutableStateOf(false) }
+    val loading = remember { mutableStateOf(true) }
     val context = LocalContext.current
     val toast = NotificationToast(context)
 
@@ -107,7 +107,7 @@ fun Add(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(customDarkBackground)
+                .background(customBackground)
         ) {
             item { AddContent(onEvent, state) }
             item { ActionButtons(file, setFile, showPreview, setShowPreview, state) }

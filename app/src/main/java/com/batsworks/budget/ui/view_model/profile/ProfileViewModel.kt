@@ -7,6 +7,7 @@ import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.ui.theme.Theme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

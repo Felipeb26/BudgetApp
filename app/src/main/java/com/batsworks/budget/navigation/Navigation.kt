@@ -19,6 +19,7 @@ import com.batsworks.budget.ui.view_model.history.HistoryViewModel
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.batsworks.budget.ui.view_model.receipt.ReceiptViewModel
+import com.batsworks.budget.ui.view_model.settings.SettingsViewModel
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
 import com.batsworks.budget.ui.views.Historico
@@ -96,7 +97,10 @@ fun Navigate(
             PlusScreen(navController, model::dontLoginWhenStart)
         }
 
-        composable(Screen.SettingScreen.route) { Setting(navController) }
+        composable(Screen.SettingScreen.route) {
+            val model = viewModel<SettingsViewModel>()
+            Setting(navController, model::saveTheme)
+        }
     }
 }
 

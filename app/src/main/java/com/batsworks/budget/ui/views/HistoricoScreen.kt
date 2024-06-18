@@ -41,7 +41,7 @@ import com.batsworks.budget.components.CustomIconButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.DropDownMenu
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.SwipeToDeleteContainer
+import com.batsworks.budget.components.functions.SwipeToDeleteContainer
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -50,7 +50,7 @@ import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.CustomLottieAnimation
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -99,7 +99,7 @@ fun Historico(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(customDarkBackground)
+                .background(customBackground)
         ) {
             item { CustomFilter() }
             items(items = amounts.value, key = { it.id }) { amount ->

@@ -42,96 +42,102 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.CustomLottieAnimation
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 @Composable
 fun PlusScreen(
-	navController: NavHostController,
-	dontLoginWhenStart: () -> Unit,
+    navController: NavHostController,
+    dontLoginWhenStart: () -> Unit,
 ) {
-	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
-	val (exit, makeExit) = remember { mutableStateOf(false) }
+    val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
+    val (exit, makeExit) = remember { mutableStateOf(false) }
 
-	if (exit) ExitAnimation(true)
-	else Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(customDarkBackground),
-		verticalArrangement = Arrangement.Top,
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		Spacer(modifier = Modifier.height(10.dp))
-		screens.forEachIndexed { _, screen ->
-			CardFunction(navController, screen.route, screen.icon, screen.resource)
-		}
-		CardFunction(
-			navController,
-			screenRoute = "exit",
-			icon = Icons.AutoMirrored.Filled.ExitToApp,
-			function = {
-				dontLoginWhenStart()
-				makeExit(true)
-			})
-	}
+    if (exit) ExitAnimation(true)
+    else Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(customBackground),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(10.dp))
+        screens.forEachIndexed { _, screen ->
+            CardFunction(navController, screen, screen.icon, screen.resource)
+        }
+        CardFunction(
+            navController,
+            screenRoute = null,
+            icon = Icons.AutoMirrored.Filled.ExitToApp,
+            function = {
+                dontLoginWhenStart()
+                makeExit(true)
+            })
+    }
 }
 
 @Composable
 fun CardFunction(
-	navController: NavHostController,
-	screenRoute: String,
-	icon: ImageVector? = null,
-	resource: Int? = null,
-	function: (() -> Unit)? = null,
+    navController: NavHostController,
+    screenRoute: Screen?,
+    icon: ImageVector? = null,
+    resource: Int? = null,
+    function: (() -> Unit)? = null,
 ) {
-	Card(
-		modifier = Modifier
-			.fillMaxWidth(0.9f)
-			.height(60.dp)
-			.padding(vertical = 10.dp),
-		shape = RoundedCornerShape(25),
-		colors = CardDefaults.cardColors(
-			containerColor = Color800,
-			contentColor = Color950
-		),
-		onClick = function ?: { easyNavigate(navController, screenRoute) }
-	) {
-		Row(
-			modifier = Modifier
-				.fillMaxSize()
-				.border(2.dp, color = Color400, RoundedCornerShape(25)),
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.Start
-		) {
-			Spacer(modifier = Modifier.width(35.dp))
-			(icon ?: resource?.let { ImageVector.vectorResource(it) })?.let {
-				Icon(
-					imageVector = it,
-					contentDescription = "",
-					tint = Color50
-				)
-			}
-			Spacer(modifier = Modifier.width(35.dp))
-			CustomText(text = formatScreenTitle(screenRoute),
-				color = Color50, textWeight = FontWeight.Bold,
-				textStyle = MaterialTheme.typography.titleSmall
-			)
-		}
-	}
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(60.dp)
+            .padding(vertical = 10.dp),
+        shape = RoundedCornerShape(25),
+        colors = CardDefaults.cardColors(
+            containerColor = Color800,
+            contentColor = Color950
+        ),
+        onClick = function ?: {
+            easyNavigate(
+                navController,
+                screenRoute?.route ?: Screen.HomeScreen.route
+            )
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .border(2.dp, color = Color400, RoundedCornerShape(25)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Spacer(modifier = Modifier.width(35.dp))
+            (icon ?: resource?.let { ImageVector.vectorResource(it) })?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = "",
+                    tint = Color50
+                )
+            }
+            Spacer(modifier = Modifier.width(35.dp))
+            CustomText(
+                text = formatScreenTitle(screenRoute),
+                color = Color50, textWeight = FontWeight.Bold,
+                textStyle = MaterialTheme.typography.titleSmall
+            )
+        }
+    }
 }
 
 @Composable
 fun ExitAnimation(exit: Boolean) {
-	val activity = (LocalContext.current as? Activity)
-	CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
-	Timer().schedule(2500) {
-		activity?.finish()
-	}
+    val activity = (LocalContext.current as? Activity)
+    CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
+    Timer().schedule(2500) {
+        activity?.finish()
+    }
 }
 
 @Composable
 @PreviewLightDark
 fun PlusPreview() {
-	PlusScreen(rememberNavController()) {}
+    PlusScreen(rememberNavController()) {}
 }

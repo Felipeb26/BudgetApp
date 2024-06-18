@@ -45,7 +45,7 @@ import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.composeBool
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen

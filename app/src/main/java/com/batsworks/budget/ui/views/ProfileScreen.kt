@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +38,7 @@ import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,7 +56,7 @@ fun Profile(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(customDarkBackground)
+            .background(customBackground)
             .padding(20.dp)
             .padding(0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -68,8 +69,9 @@ fun Profile(
                 .height(150.dp)
                 .width(250.dp)
                 .clickable { toast.show() },
-            painter = painterResource(id = R.drawable.logo_resource),
-            contentDescription = "profile preview"
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "profile preview",
+            colorFilter = ColorFilter.tint(Color800)
         )
         Spacer(modifier = Modifier.height(30.dp))
         ProfileContent(user, enabled)

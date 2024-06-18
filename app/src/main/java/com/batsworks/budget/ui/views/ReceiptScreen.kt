@@ -37,9 +37,9 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.composeBool
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.currency
-import com.batsworks.budget.components.dataToString
+import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.notification.NotificationSnackBar
 import com.batsworks.budget.components.notification.Notifications
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -47,7 +47,7 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Loading
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +101,7 @@ fun ReceiptScreen(
     }) { padding ->
         Column(
             modifier = Modifier
-                .background(customDarkBackground)
+                .background(customBackground)
                 .padding(padding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -152,7 +152,7 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
             .padding(horizontal = 40.dp),
         textAlign = TextAlign.Start, capitalize = true,
         textStyle = MaterialTheme.typography.titleMedium,
-        text = stringResource(id = R.string.bill_date).plus(dataToString(amount.value?.amountDate))
+        text = stringResource(id = R.string.bill_date).plus(localDate(amount.value?.amountDate))
     )
     Spacer(modifier = Modifier.height(20.dp))
 }

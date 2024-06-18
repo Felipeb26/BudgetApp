@@ -27,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
@@ -39,6 +40,7 @@ import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
+import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.rollbar.android.Rollbar
@@ -56,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		CustomTheme()
 		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
 		enableEdgeToEdge(
 			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
@@ -64,6 +65,8 @@ class MainActivity : AppCompatActivity() {
 		)
 
 		setContent {
+			val view = LocalView.current
+			CustomTheme(LocalView.current)
 			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 			val enrollLauncher = rememberLauncherForActivityResult(
 				contract = ActivityResultContracts.StartActivityForResult(),
@@ -105,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 					permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
 				}
 
+				CustomTheme(view, findTheme(userState.value?.theme))
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {

@@ -8,18 +8,21 @@ import com.batsworks.budget.domain.entity.UserEntity
 @Dao
 interface UsersDao {
 
-	@Query("SELECT * FROM USERENTITY")
-	suspend fun findAll(): List<UserEntity>
+    @Query("SELECT * FROM USERENTITY")
+    suspend fun findAll(): List<UserEntity>
 
-	@Query("SELECT * FROM USERENTITY LIMIT 1")
-	suspend fun findUser(): UserEntity
+    @Query("SELECT * FROM USERENTITY LIMIT 1")
+    suspend fun findUser(): UserEntity
 
-	@Upsert
-	suspend fun save(user: UserEntity)
+    @Upsert
+    suspend fun save(user: UserEntity)
 
-	@Query("SELECT * FROM USERENTITY WHERE email=:email and password=:password")
-	suspend fun findByLogin(email: String, password: Int): UserEntity?
+    @Query("SELECT * FROM USERENTITY WHERE email=:email and password=:password")
+    suspend fun findByLogin(email: String, password: Int): UserEntity?
 
-	@Query("DELETE FROM USERENTITY WHERE id =:id")
-	suspend fun deleteUserById(id: Int)
+    @Query("DELETE FROM USERENTITY WHERE id =:id")
+    suspend fun deleteUserById(id: Int)
+
+    @Query("UPDATE USERENTITY SET theme=:theme")
+    suspend fun updateTheme(theme: String)
 }

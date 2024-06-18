@@ -24,75 +24,76 @@ import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
+import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
 
 @Composable
 fun CustomButton(
-	modifier: Modifier = Modifier,
-	onClick: () -> Unit, text: String = "not implemented", enable: Boolean = false,
-	shape: Shape = RoundedCornerShape(30),
-	textStyle: TextStyle = MaterialTheme.typography.labelLarge,
-	containerColor: Color = Color800,
-	borderColor: Color = Color600,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit, text: String = "not implemented", enable: Boolean = false,
+    shape: Shape = RoundedCornerShape(30),
+    textStyle: TextStyle = MaterialTheme.typography.labelLarge,
+    containerColor: Color = Color800,
+    borderColor: Color = Color50,
 ) {
-	Button(
-		modifier = modifier, border = BorderStroke(2.dp, borderColor),
-		shape = shape,
-		colors = ButtonDefaults.buttonColors(
-			containerColor = containerColor,
-			contentColor = Color50,
-			disabledContainerColor = Color500,
-			disabledContentColor = borderColor
-		), onClick = onClick, enabled = enable
-	) {
-		CustomText(
-			textStyle = textStyle,
-			text = text.toUpperCase(Locale.current),
-			color = if (!enable) Color600 else Color.White,
-			textWeight = FontWeight.Bold
-		)
-	}
+    Button(
+        modifier = modifier, border = BorderStroke(2.dp, borderColor.copy(0.6f)),
+        shape = shape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = Color50,
+            disabledContainerColor = Color700.copy(0.6f),
+            disabledContentColor = borderColor.copy(0.6f)
+        ), onClick = onClick, enabled = enable
+    ) {
+        CustomText(
+            textStyle = textStyle,
+            text = text.toUpperCase(Locale.current),
+            color = if (!enable) Color600 else Color.White,
+            textWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable
 fun CustomIconButton(
-	modifier: Modifier = Modifier,
-	onClick: () -> Unit,
-	enabled: Boolean = true,
-	containerColor: Color = Color800.copy(0.8f),
-	contentColor: Color = MaterialTheme.colorScheme.primary,
-	imageVector: ImageVector,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    containerColor: Color = Color800.copy(0.8f),
+    contentColor: Color = MaterialTheme.colorScheme.primary,
+    imageVector: ImageVector,
 ) {
-	IconButton(
-		modifier = modifier,
-		enabled = enabled,
-		onClick = onClick,
-		colors = IconButtonColors(
-			containerColor = containerColor,
-			contentColor = contentColor,
-			disabledContainerColor = Color500,
-			disabledContentColor = Color400
-		)
-	) {
-		Icon(
-			imageVector = imageVector,
-			contentDescription = "icon button",
-			tint = contentColor
-		)
-	}
+    IconButton(
+        modifier = modifier,
+        enabled = enabled,
+        onClick = onClick,
+        colors = IconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = Color500,
+            disabledContentColor = Color400
+        )
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = "icon button",
+            tint = contentColor
+        )
+    }
 }
 
 @Composable
 fun CustomCheckBox(
-	checked: Boolean,
-	onCheckedChange: ((Boolean) -> Unit)?,
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
 ) {
-	Checkbox(
-		checked = checked,
-		onCheckedChange = onCheckedChange,
-		colors = CheckboxDefaults.colors(
-			checkmarkColor = Color800,
-			checkedColor = Color400
-		)
-	)
+    Checkbox(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        colors = CheckboxDefaults.colors(
+            checkmarkColor = Color800,
+            checkedColor = Color400
+        )
+    )
 }

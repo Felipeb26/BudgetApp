@@ -32,12 +32,12 @@ fun currency(value: BigDecimal, locale: ULocale): String {
 	return currencyFormat.format(value)
 }
 
-fun stringToDate(date: String? = null): LocalDate {
-	if (date.isNullOrEmpty()) return LocalDate.now()
-	return LocalDate.parse(date, formatter())
+fun localDate(date: LocalDate?, pattern: String = "dd/MM/yyyy"): String {
+	if (date == null) return LocalDate.now().format(formatter())
+	return DateTimeFormatter.ofPattern(pattern).format(date)
 }
 
-fun dataToString(date: LocalDate?): String {
-	if (date == null) return LocalDate.now().format(formatter())
-	return date.format(formatter())
+fun localDate(date: String?, pattern: String = "dd/MM/yyyy"): LocalDate {
+	if (date.isNullOrEmpty()) return LocalDate.now()
+	return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern))
 }

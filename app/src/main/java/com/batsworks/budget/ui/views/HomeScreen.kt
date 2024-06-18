@@ -77,14 +77,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
-import com.batsworks.budget.components.composeBool
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.components.formatter
-import com.batsworks.budget.components.notEnableIfEmpty
+import com.batsworks.budget.components.functions.composeBool
+import com.batsworks.budget.components.functions.notEnableIfEmpty
 import com.batsworks.budget.components.visibilityIsOn
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.objects.HomeCard
 import com.batsworks.budget.ui.theme.Color50
@@ -94,7 +95,7 @@ import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.SwitchElementsView
 import com.batsworks.budget.ui.theme.brushCard
 import com.batsworks.budget.ui.theme.brushIcon
-import com.batsworks.budget.ui.theme.customDarkBackground
+import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -113,7 +114,7 @@ fun Home(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(customDarkBackground)
+            .background(customBackground)
             .drawBehind {
                 drawRect(
                     brush = brushCard(cardEnd = (configuration.screenHeightDp / 2).toFloat()),
@@ -162,7 +163,7 @@ fun ProfileLowInfo(
             .padding(15.dp, 0.dp),
         border = BorderStroke(2.dp, Color600),
         colors = CardDefaults.cardColors(
-            containerColor = Color800,
+            containerColor = Color600.copy(0.4f),
             contentColor = Color50
         )
     ) {
@@ -445,9 +446,7 @@ fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
 
                         LazyColumn {
                             items(items = amounts) { amount ->
-                                val color =
-                                    if (amount.entrance) Color.Green.copy(0.3f)
-                                    else Color.Red.copy(0.3f)
+                                val color = isEntrance(amount).copy(0.3f)
                                 CurrencyItem(amount, width, color)
                             }
                         }
@@ -460,7 +459,6 @@ fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
 
 @Composable
 private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
-    val itemColor = if (amount.entrance) Color.Green else Color.Red
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -475,7 +473,7 @@ private fun CurrencyItem(amount: AmountEntity, width: Dp, color: Color) {
             Image(
                 painter = painterResource(if (amount.entrance) R.drawable.icons8_arrowup else R.drawable.icons8_arrowdown),
                 contentDescription = "",
-                colorFilter = ColorFilter.tint(color = itemColor)
+                colorFilter = ColorFilter.tint(color = isEntrance(amount))
             )
         }
         Spacer(modifier = Modifier.width(5.dp))

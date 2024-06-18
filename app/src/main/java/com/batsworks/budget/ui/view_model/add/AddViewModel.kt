@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
-import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.AJUST_TAG
-import com.batsworks.budget.components.stringToDate
+import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.localDate
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -112,7 +112,7 @@ class AddViewModel(
                 entrance = state.entrance,
                 file = state.file,
                 user = userEntity.firebaseId,
-                amountDate = stringToDate(state.amountDate)
+                amountDate = localDate(state.amountDate)
             )
             localRepository.save(amout)
             resourceEventChannel.send(Resource.Sucess(amout))

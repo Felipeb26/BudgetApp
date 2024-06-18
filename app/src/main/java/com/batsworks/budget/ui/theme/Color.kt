@@ -4,25 +4,22 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-var Color50 = Color(0xFFf3f2fb)
-var Color100 = Color(0xFFeae8f7)
-var Color200 = Color(0xFFd8d5f0)
-var Color300 = Color(0xFFc0bae7)
-var Color400 = Color(0xFFaa9edb)
-var Color500 = Color(0xFF9a86ce)
-var Color600 = Color(0xFF8b6dbe)
-var Color700 = Color(0xFF785ca6)
-var Color800 = Color(0xFF5c487f)
-var Color900 = Color(0xFF2f273f)
-var Color950 = Color(0xFF51426d)
+var Color50 = Color(0xFFfff0f0)
+var Color100 = Color(0xFFffdddd)
+var Color200 = Color(0xFFffc0c0)
+var Color300 = Color(0xFFff9494)
+var Color400 = Color(0xFFff5757)
+var Color500 = Color(0xFF413B3B)
+var Color600 = Color(0xFFff0000)
+var Color700 = Color(0xFF413B3B)
+var Color800 = Color(0xFFb10303)
+var Color900 = Color(0xFF920a0a)
+var Color950 = Color(0xFF500000)
 
-val customDarkBackground
-	@Composable
-	get() = if (isSystemInDarkTheme()) Color600.copy(0.4f) else Color.White.copy(0.6f)
 val customBackground
-	@Composable
-	get() = if (isSystemInDarkTheme()) Color800.copy(alpha = 0.7f) else Color.White
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color500 else Color.White
 
 val textColor
-	@Composable
-	get() = if (isSystemInDarkTheme()) Color50 else Color950
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color50 else Color950

@@ -17,10 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.rememberLottieDynamicProperties
+import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.batsworks.budget.R
 
 @Composable
@@ -52,7 +56,9 @@ fun SwitchElementsView(
             if (isVisible) content()
             else alternativeContent()
         }, transitionSpec = {
-            fadeIn(animationSpec = tween(1500))+ scaleIn(animationSpec = tween(2000)) togetherWith fadeOut(animationSpec = tween(3000))
+            fadeIn(animationSpec = tween(1500)) + scaleIn(animationSpec = tween(2000)) togetherWith fadeOut(
+                animationSpec = tween(3000)
+            )
         }
     )
 }
@@ -66,11 +72,10 @@ fun Loading(
         LottieAnimation(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color800.copy(0.6f)),
-            enableMergePaths = true,
+                .background(Color300.copy(0.6f)),
+            enableMergePaths = true, reverseOnRepeat = true,
             iterations = LottieConstants.IterateForever,
-            composition = composition,
-            speed = 0.5f,
+            composition = composition, speed = 0.5f,
         )
     }
 }
@@ -84,15 +89,23 @@ fun CustomLottieAnimation(
     backgroundColor: Color = Color800.copy(0.6f),
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieComposition))
+    val dynamicProperties = rememberLottieDynamicProperties(
+        rememberLottieDynamicProperty(
+            property = LottieProperty.DROP_SHADOW_COLOR,
+            keyPath = arrayOf("LUPA rotacion 3D", "Group 1", "Path 1"),
+            value = Color.Yellow.toArgb()
+        )
+    )
+
     if (show) {
         LottieAnimation(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor),
-            enableMergePaths = true,
+                .background(backgroundColor.copy(0.4f)),
+            enableMergePaths = true, reverseOnRepeat = true,
             iterations = LottieConstants.IterateForever,
-            composition = composition,
-            speed = speed
+            composition = composition, speed = speed,
+            dynamicProperties = dynamicProperties
         )
     }
 }
