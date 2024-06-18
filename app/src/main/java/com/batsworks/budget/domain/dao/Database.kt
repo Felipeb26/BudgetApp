@@ -7,7 +7,7 @@ import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.AmountEntity
 
 @TypeConverters(Converters::class)
-@Database(entities = [UserEntity::class, AmountEntity::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class, AmountEntity::class], version = 2, exportSchema = false)
 abstract class Database : RoomDatabase() {
 
 	companion object {

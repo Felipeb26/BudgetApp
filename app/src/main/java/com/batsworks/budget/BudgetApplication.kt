@@ -50,7 +50,9 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 		).setQueryCallback({ query, args ->
 			Log.d("QUERY", query)
 			if (args.isNotEmpty()) Log.d("ARGS", "$args")
-		}, Executors.newSingleThreadExecutor()).build()
+		}, Executors.newSingleThreadExecutor())
+			.fallbackToDestructiveMigration()
+			.build()
 
 		val notificationChannel = NotificationChannel(
 			NotificationChannelId.CHANNEL.id,

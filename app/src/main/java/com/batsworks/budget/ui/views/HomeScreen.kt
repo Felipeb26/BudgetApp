@@ -52,11 +52,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -88,6 +86,7 @@ import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.objects.HomeCard
+import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
@@ -162,7 +161,7 @@ fun ProfileLowInfo(
             .fillMaxWidth()
             .height(170.dp)
             .padding(15.dp, 0.dp),
-        border = BorderStroke(2.dp, Color600),
+        border = BorderStroke(2.dp, Color300),
         colors = CardDefaults.cardColors(
             containerColor = Color600.copy(0.4f),
             contentColor = Color50

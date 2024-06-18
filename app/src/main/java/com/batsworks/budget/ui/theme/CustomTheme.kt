@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 
-class CustomTheme(view: View, val theme: Theme = Theme.NATURE) {
+class CustomTheme(view: View, val theme: Theme = Theme.CHERRY) {
 
     init {
         when (theme) {

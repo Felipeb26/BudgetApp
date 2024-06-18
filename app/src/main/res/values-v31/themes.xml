@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="ColorHigh">#FF00FF</color>
     <style name="Theme.BudgetSplashScreen" parent="Theme.SplashScreen">
         <item name="android:windowSplashScreenBackground">@color/Color900</item>
         <item name="windowSplashScreenBackground">@color/Color900</item>

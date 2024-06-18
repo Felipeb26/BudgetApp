@@ -3,7 +3,6 @@
 
     <style name="Theme.Budget" parent="Theme.AppCompat.Light.NoActionBar" />
 
-    <color name="ColorHigh">#FF00FF</color>
     <style name="Theme.BudgetSplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/Color900</item>
         <item name="android:colorBackground">@color/Color900</item>

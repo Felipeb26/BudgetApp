@@ -29,14 +29,14 @@ fun brushIcon(isDark: Boolean): Brush {
 
 fun brushCard(
     isVerticalGratient: Boolean = true,
-    colors: List<Color> = listOf(Color700, Color600, Color500),
+    colors: List<Color> = listOf(Color400, Color600, Color500),
     cardStart: Float = 0.0f,
     cardEnd: Float = 150f,
 ): Brush {
 
     if (isVerticalGratient) {
         return Brush.verticalGradient(
-            0.0f to colors[0],
+            0.0f to colors[0].copy(0.6f),
             0.5f to colors[1],
             1.0f to colors[2],
             startY = cardStart,
