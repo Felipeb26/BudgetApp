@@ -10,10 +10,10 @@ var Color200 = Color(0xFFffc0c0)
 var Color300 = Color(0xFFff9494)
 var Color400 = Color(0xFFff5757)
 var Color500 = Color(0xFF413B3B)
-var Color600 = Color(0xFFff0000)
+var Color600 = Color(0xFFB45F5F)
 var Color700 = Color(0xFF413B3B)
-var Color800 = Color(0xFFb10303)
-var Color900 = Color(0xFF920a0a)
+var Color800 = Color(0xFFF16868)
+var Color900 = Color(0xFF9E5B5B)
 var Color950 = Color(0xFF500000)
 
 val customBackground

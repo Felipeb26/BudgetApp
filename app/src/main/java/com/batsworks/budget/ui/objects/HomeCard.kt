@@ -14,7 +14,7 @@ sealed class HomeCard(
 		HomeCard("loans", Color.Red, Screen.PlusScreen, R.drawable.baseline_account_balance_24)
 
 	data object Cartoes :
-		HomeCard("cards", Color.Magenta, Screen.PlusScreen, R.drawable.baseline_add_card_24)
+		HomeCard("cards", Color.Yellow, Screen.PlusScreen, R.drawable.baseline_add_card_24)
 
 	data object Investimentos :
 		HomeCard(

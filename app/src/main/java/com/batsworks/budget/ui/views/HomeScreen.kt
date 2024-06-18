@@ -92,6 +92,7 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.SwitchElementsView
 import com.batsworks.budget.ui.theme.brushCard
 import com.batsworks.budget.ui.theme.brushIcon
@@ -292,8 +293,8 @@ fun Cards(navController: NavController) {
                     .border(2.dp, color = card.color, RoundedCornerShape(10)),
                 colors = CardDefaults.cardColors(
                     containerColor = if (isSystemInDarkTheme()) {
-                        card.color.copy(0.6f)
-                    } else card.color.copy(0.2f)
+                        card.color.copy(0.75f)
+                    } else card.color.copy(0.5f)
                 ), onClick = { easyNavigate(navController, card.screen.route) }
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
@@ -312,12 +313,12 @@ fun Cards(navController: NavController) {
                         .padding(10.dp),
                     text = formatScreenTitle(card.name),
                     textWeight = FontWeight.Bold,
-                    color = textColor,
+                    color = Color950,
                     textStyle = TextStyle(
                         letterSpacing = TextUnit(0.7f, TextUnitType.Sp),
-                        shadow = Shadow(
-                            color = textColor, offset = Offset(0f, 2f), blurRadius = 1f
-                        )
+//                        shadow = Shadow(
+//                            color = textColor, offset = Offset(0f, 2f), blurRadius = 1f
+//                        )
                     )
                 )
             }

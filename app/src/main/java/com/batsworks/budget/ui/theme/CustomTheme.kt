@@ -13,7 +13,7 @@ class CustomTheme(view: View, val theme: Theme = Theme.NATURE) {
             is Theme.COLD -> coldTheme()
             is Theme.NATURE -> natureTheme()
             is Theme.THANOS -> thanosTheme()
-            is Theme.BLOOD -> bloodTheme()
+            is Theme.CHERRY -> cherryTheme()
         }
 
         if (!view.isInEditMode) {
@@ -66,17 +66,17 @@ class CustomTheme(view: View, val theme: Theme = Theme.NATURE) {
         Color950 = Color(0xFF0f241e)
     }
 
-    private fun bloodTheme() {
+    private fun cherryTheme() {
         Color50 = Color(0xFFfff0f0)
         Color100 = Color(0xFFffdddd)
         Color200 = Color(0xFFffc0c0)
         Color300 = Color(0xFFff9494)
         Color400 = Color(0xFFff5757)
         Color500 = Color(0xFF413B3B)
-        Color600 = Color(0xFFff0000)
+        Color600 = Color(0xFFB45F5F)
         Color700 = Color(0xFF413B3B)
-        Color800 = Color(0xFFb10303)
-        Color900 = Color(0xFF920a0a)
+        Color800 = Color(0xFFF16868)
+        Color900 = Color(0xFF9E5B5B)
         Color950 = Color(0xFF500000)
     }
 }
@@ -84,18 +84,18 @@ class CustomTheme(view: View, val theme: Theme = Theme.NATURE) {
 sealed class Theme(val theme: String) {
     data object THANOS : Theme("THANOS")
     data object NATURE : Theme("NATURE")
-    data object BLOOD : Theme("BLOOD")
+    data object CHERRY : Theme("CHERRY")
     data object COLD : Theme("COLD")
 }
 
 val themes =
-    listOf(Theme.COLD.theme, Theme.NATURE.theme, Theme.BLOOD.theme, Theme.THANOS.theme)
+    listOf(Theme.COLD.theme, Theme.NATURE.theme, Theme.CHERRY.theme, Theme.THANOS.theme)
 
 fun findTheme(theme: String?): Theme {
     return when (theme) {
         "THANOS" -> Theme.THANOS
         "NATURE" -> Theme.NATURE
-        "BLOOD" -> Theme.BLOOD
+        "CHERRY" -> Theme.CHERRY
         "COLD" -> Theme.COLD
         else -> Theme.COLD
     }
