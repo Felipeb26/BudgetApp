@@ -15,6 +15,9 @@ var Color700 = Color(0xFF413B3B)
 var Color800 = Color(0xFFF16868)
 var Color900 = Color(0xFF9E5B5B)
 var Color950 = Color(0xFF500000)
+var ColorCardEmprestimo = Color(0xFF800000)
+var ColorCardCartoes = Color(0xFFFFD700)
+var ColorCardInvestimentos = Color(0xFF228B22)
 
 val customBackground
     @Composable

@@ -36,6 +36,10 @@ class CustomTheme(view: View, val theme: Theme = Theme.CHERRY) {
         Color800 = Color(0xFF5c487f)
         Color900 = Color(0xFF2f273f)
         Color950 = Color(0xFF51426d)
+
+        ColorCardEmprestimo = Color(0xFFFF00FF)
+        ColorCardCartoes = Color(0xFFE6E6FA)
+        ColorCardInvestimentos = Color(0xFFADD8E6)
     }
 
     private fun coldTheme() {
@@ -50,6 +54,10 @@ class CustomTheme(view: View, val theme: Theme = Theme.CHERRY) {
         Color800 = Color(0xFF4a5989)
         Color900 = Color(0xFF414e6e)
         Color950 = Color(0xFF262c40)
+
+        ColorCardEmprestimo = Color(0xFFFF8C00)
+        ColorCardCartoes = Color(0xFFD3D3D3)
+        ColorCardInvestimentos = Color(0xFF008080)
     }
 
     private fun natureTheme() {
@@ -64,6 +72,10 @@ class CustomTheme(view: View, val theme: Theme = Theme.CHERRY) {
         Color800 = Color(0xFF254a3e)
         Color900 = Color(0xFF223f35)
         Color950 = Color(0xFF0f241e)
+
+        ColorCardEmprestimo = Color(0xFF8B4513)
+        ColorCardCartoes = Color(0xFFFFD700)
+        ColorCardInvestimentos = Color(0xFFF5F5DC)
     }
 
     private fun cherryTheme() {
@@ -78,6 +90,10 @@ class CustomTheme(view: View, val theme: Theme = Theme.CHERRY) {
         Color800 = Color(0xFFF16868)
         Color900 = Color(0xFF9E5B5B)
         Color950 = Color(0xFF500000)
+
+        ColorCardEmprestimo = Color(0xFF800000)
+        ColorCardCartoes = Color(0xFFFFD700)
+        ColorCardInvestimentos = Color(0xFF228B22)
     }
 }
 

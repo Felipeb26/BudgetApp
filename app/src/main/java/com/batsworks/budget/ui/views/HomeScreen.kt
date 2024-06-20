@@ -91,7 +91,6 @@ import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.Color950
 import com.batsworks.budget.ui.theme.SwitchElementsView
 import com.batsworks.budget.ui.theme.brushCard
 import com.batsworks.budget.ui.theme.brushIcon
@@ -312,7 +311,6 @@ fun Cards(navController: NavController) {
                         .padding(10.dp),
                     text = formatScreenTitle(card.name),
                     textWeight = FontWeight.Bold,
-                    color = Color950,
                     textStyle = TextStyle(
                         letterSpacing = TextUnit(0.7f, TextUnitType.Sp),
 //                        shadow = Shadow(
