@@ -9,6 +9,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.batsworks.budget.components.fields.CustomTextField
 import com.batsworks.budget.ui.theme.Color600
 
@@ -23,6 +24,8 @@ fun <T> DropDownMenu(
 	expanded: Boolean = false,
 	onValueChange: (String) -> Unit,
 	selectText: String = "",
+	isUpper: Boolean = true,
+	weight: FontWeight = FontWeight.Normal
 ) {
 	Box(modifier = modifier) {
 		ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandChage) {
@@ -42,7 +45,7 @@ fun <T> DropDownMenu(
 						val string = stringResource(id = s)
 						DropdownMenuItem(
 							contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-							text = { CustomText(text = string, isUpperCase = true) },
+							text = { CustomText(text = string, isUpperCase = isUpper, capitalize = !isUpper, textWeight = weight) },
 							onClick = {
 								onValueChange.invoke(itens[index].toString())
 								onExpandChage.invoke(false)
