@@ -70,7 +70,7 @@ fun Add(
 ) {
     val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
     val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
-    val loading = remember { mutableStateOf(true) }
+    val loading = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val toast = NotificationToast(context)
 
