@@ -18,6 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -91,9 +93,11 @@ fun CustomLottieAnimation(
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieComposition))
     val dynamicProperties = rememberLottieDynamicProperties(
         rememberLottieDynamicProperty(
-            property = LottieProperty.DROP_SHADOW_COLOR,
-            keyPath = arrayOf("LUPA rotacion 3D", "Group 1", "Path 1"),
-            value = Color.Yellow.toArgb()
+            property = LottieProperty.COLOR_FILTER,
+            keyPath = arrayOf("bg Outlines", "escalador papel", "Group 1", "ADBE Vector Group"),
+            value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                Color300.toArgb(), BlendModeCompat.SRC_ATOP
+            ),
         )
     )
 
