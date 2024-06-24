@@ -11,7 +11,6 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.google.firebase.firestore.Filter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -99,6 +98,7 @@ class LoginViewModel(
 
 	private fun registerUser() {
 		viewModelScope.launch {
+			resourceEventChannel.send(Resource.Loading(true))
 			if (repository == null) {
 				resourceEventChannel.send(Resource.Failure("repository must not be null"))
 				return@launch
@@ -109,10 +109,10 @@ class LoginViewModel(
 				phone = state.telefone,
 				password = state.password.toLong()
 			)
-			repository.findByParam(Filter.equalTo("email", user.email))
+			repository.findByParam("email", user.email)
 				.addOnSuccessListener { documents ->
 					viewModelScope.launch {
-						if(documents.size() <= 0){
+						if (documents.size() <= 0) {
 							save(user)
 							return@launch
 						}
@@ -141,7 +141,18 @@ class LoginViewModel(
 			resourceEventChannel.send(Resource.Failure("repository must not be null"))
 			return@launch
 		}
-		repository.save(user)
+		repository.save(user).addOnSuccessListener {
+			Log.d(AJUST_TAG(tag), "usurio alvo")
+			viewModelScope.launch {
+				resourceEventChannel.send(Resource.Loading(false))
+				resourceEventChannel.send(Resource.Failure(e.message))
+			}
+		}.addOnFailureListener { e ->
+			viewModelScope.launch {
+				resourceEventChannel.send(Resource.Loading(false))
+				resourceEventChannel.send(Resource.Failure(e.message))
+			}
+		}
 	}
 
 }

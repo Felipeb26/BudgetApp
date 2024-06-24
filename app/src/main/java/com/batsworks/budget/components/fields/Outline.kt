@@ -162,10 +162,6 @@ fun CustomPasswordOutlineTextField(
 				Icon(
 					modifier = if (enabled) Modifier.clickable {
 						if (passwordField) setShow(!show)
-//                        trailingIcon = composeBool(show,
-//                            ImageVector.vectorResource( R.drawable.baseline_visibility_off_24),
-//                            ImageVector.vectorResource(R.drawable.baseline_visibility_24)
-//                        )
 					} else Modifier,
 					imageVector = it,
 					contentDescription = "",

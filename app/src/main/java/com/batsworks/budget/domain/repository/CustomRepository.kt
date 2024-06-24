@@ -53,8 +53,8 @@ class CustomRepository<T>(
 		return db.collection(collection).document().update(data).await()
 	}
 
-	suspend fun findByParam(param: String, value: Any): QuerySnapshot {
-		return db.collection(collection).whereEqualTo(param, value).get().await()
+	suspend fun findByParam(param: String, value: Any): Task<QuerySnapshot> {
+		return db.collection(collection).whereEqualTo(param, value).get()
 	}
 
 	fun findByParam(vararg filter: Filter): Task<QuerySnapshot> {
