@@ -1,5 +1,6 @@
 package com.batsworks.budget.domain.dao
 
+import android.net.Uri
 import androidx.room.TypeConverter
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -37,4 +38,15 @@ class Converters {
 	fun toBigDecimal(value: Double): BigDecimal {
 		return BigDecimal.valueOf(value)
 	}
+
+	@TypeConverter
+	fun fromUri(value: Uri): String {
+		return value.toString()
+	}
+
+	@TypeConverter
+	fun toUri(value: String): Uri {
+		return Uri.parse(value)
+	}
+
 }

@@ -10,22 +10,18 @@ import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.files.getFileType
+import com.batsworks.budget.components.formatter
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.view_model.ValidationResult
-import com.batsworks.budget.ui.view_model.amout.ValdateEntrance
-import com.batsworks.budget.ui.view_model.amout.ValidateAmountDate
-import com.batsworks.budget.ui.view_model.amout.ValidateChargeName
-import com.batsworks.budget.ui.view_model.amout.ValidateChargeValue
-import com.batsworks.budget.ui.view_model.amout.ValidateFileVoucher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class AddViewModel(
     private val chargeNameValidation: ValidateChargeName = ValidateChargeName(),
@@ -33,12 +29,13 @@ class AddViewModel(
     private val fileValidation: ValidateFileVoucher = ValidateFileVoucher(),
     private val entranceValidation: ValdateEntrance = ValdateEntrance(),
     private val amountDateValidate: ValidateAmountDate = ValidateAmountDate(),
-    private val userRepository: UsersDao = BudgetApplication.database.getUsersDao(),
-    private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
+    private val userLocalRepository: UsersDao = BudgetApplication.database.getUsersDao(),
+    private val amountLocalRepository: AmountDao = BudgetApplication.database.getAmountDao(),
+	private val repository: CustomRepository<AmountEntity>
 ) : ViewModel() {
 
     private val tag: String = AddViewModel::class.java.name
-    private val now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    private val now = LocalDate.now().format(formatter())
     var state by mutableStateOf(AmountFormState())
 
     private val resourceEventChannel = Channel<Resource<Any>>()
@@ -106,7 +103,7 @@ class AddViewModel(
 
     private fun saveAmout(state: AmountFormState) = viewModelScope.launch {
         try {
-            val userEntity = userRepository.findUser()
+            val userEntity = userLocalRepository.findUser()
             val amout = AmountEntity(
                 chargeName = state.chargeName,
                 value = state.value,
@@ -117,13 +114,24 @@ class AddViewModel(
                 extension = getFileType(state.file),
                 size = state.file?.size ?: 0
             )
-            localRepository.save(amout)
+			state.file?.let { saveOnStorage(amout,it) }
+            amountLocalRepository.save(amout)
             resourceEventChannel.send(Resource.Sucess(amout))
             resourceEventChannel.send(Resource.Loading(false))
         } catch (e: Exception) {
             resourceEventChannel.send(Resource.Failure(e.message ?: "A error has happen"))
             resourceEventChannel.send(Resource.Loading(false))
             return@launch
+        }
+    }
+
+    private fun saveOnStorage(amout: AmountEntity, file: ByteArray){
+        repository.saveFile(file, "${amout.chargeName}.${amout.extension}").addOnSuccessListener { snapshot ->
+			Log.d(AJUST_TAG(tag), "ARQUIVO salvo com sucesso")
+            amout.withRef(snapshot.uploadSessionUri)
+        }.addOnFailureListener {
+			Log.e(AJUST_TAG(tag), it.message ?: "an error has happen")
+            throw Exception(it.message ?: it.cause?.message)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.batsworks.budget.ui.view_model.amout
+package com.batsworks.budget.ui.view_model.add
 
 import com.batsworks.budget.ui.view_model.ValidationResult
 

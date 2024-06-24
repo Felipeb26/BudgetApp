@@ -5,14 +5,19 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 class CustomRepository<T>(
 	private val collection: String,
 	private val type: Class<T>,
 	private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+	private val storage: StorageReference = FirebaseStorage.getInstance().reference,
 ) {
 
 	private val _fullList = MutableStateFlow<MutableList<T>>(mutableListOf())
@@ -56,5 +61,10 @@ class CustomRepository<T>(
 		val dbConst = db.collection(collection)
 		filter.forEach { dbConst.where(it) }
 		return dbConst.get()
+	}
+
+	fun saveFile(file: ByteArray, document: String = UUID.randomUUID().toString()): UploadTask {
+		val fileReference = storage.child("comprovantes/$document")
+		return fileReference.putBytes(file)
 	}
 }

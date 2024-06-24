@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.batsworks.budget.domain.dao.Collection
+import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.view_model.add.AddViewModel
@@ -54,7 +55,7 @@ fun Navigate(
                 factory = factoryProvider(
                     ProfileViewModel(
                         repository = CustomRepository(
-                            Collection.USERS.name,
+                            Collection.USERS.path,
                             UserEntity::class.java
                         )
                     )
@@ -71,7 +72,14 @@ fun Navigate(
         composable(Screen.AccountsScreen.route) { Accounts(navController) }
 
         composable(Screen.AdicionarScreen.route) {
-            val model = viewModel<AddViewModel>()
+            val model = viewModel<AddViewModel>(
+                factory = factoryProvider(AddViewModel(
+                    repository = CustomRepository(
+                        Collection.AMOUNTS.path,
+                        AmountEntity::class.java
+                    )
+                ))
+            )
             Add(model.resourceEventFlow, model::onEvent, model.state)
         }
 

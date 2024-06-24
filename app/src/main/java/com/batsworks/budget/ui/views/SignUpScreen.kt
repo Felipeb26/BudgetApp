@@ -87,7 +87,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
         viewModel.resourceEventFlow.collect { event ->
             when (event) {
                 is Resource.Loading -> {
-                    setLoading(!isLoading)
+                    setLoading(event.loading)
                     toast.show(context.getString(R.string.loading))
                 }
 

@@ -39,7 +39,7 @@ fun StartNavigate(
 				factory = factoryProvider(
 					LoginViewModel(
 						repository = CustomRepository(
-							Collection.USERS.name,
+							Collection.USERS.path,
 							UserEntity::class.java
 						)
 					)
