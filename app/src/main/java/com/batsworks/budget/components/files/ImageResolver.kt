@@ -1,13 +1,12 @@
-package com.batsworks.budget.components
+package com.batsworks.budget.components.files
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.ImageDecoder
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -21,7 +20,18 @@ fun getImageFromUri(context: Context, uri: Uri): Bitmap {
     return ImageDecoder.createSource(context.contentResolver, uri).decodeBitmap { _, _ -> }
 }
 
-fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
+
+fun getByteArrayFromUri(context: Context, uri: Uri, name: String? = null): ByteArray {
+    val fileType = getFileType(context, uri)
+    Log.d("FILE", fileType)
+    return when (fileType) {
+        "txt" -> zipFile(context, uri, name)
+        "pdf" -> zipFile(context, uri, name)
+        else -> compressImage(context, uri)
+    }
+}
+
+fun compressImage(context: Context, uri: Uri): ByteArray {
     val bitmap = ImageDecoder.createSource(context.contentResolver, uri).decodeBitmap { _, _ -> }
     return converterBitmapToByteArray(bitmap)
 }
@@ -34,37 +44,6 @@ fun converterBitmapToByteArray(bitmap: Bitmap): ByteArray {
 
 fun convertByteArrayToBitmap(byteArray: ByteArray): Bitmap {
     return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-}
-
-
-fun drawableToBitmap(drawable: Drawable): Bitmap {
-    if (drawable is BitmapDrawable) {
-        return drawable.bitmap
-    }
-
-    val width = if (!drawable.bounds.isEmpty) drawable.bounds.width() else drawable.intrinsicWidth
-
-    val height =
-        if (!drawable.bounds.isEmpty) drawable.bounds.height() else drawable.intrinsicHeight
-
-    val bitmap = Bitmap.createBitmap(
-        if (width <=
-            0
-        ) 1
-        else width, if (height <=
-            0
-        ) 1
-        else height, Bitmap.Config.ARGB_8888
-    )
-    val canvas: Canvas = Canvas(bitmap)
-    drawable.setBounds(
-        0,
-        0,
-        canvas.width, canvas.height
-    )
-    drawable.draw(canvas)
-
-    return bitmap
 }
 
 

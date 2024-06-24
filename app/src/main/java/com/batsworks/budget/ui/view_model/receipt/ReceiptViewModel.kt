@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.files.getFileType
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.services.download.AndroidDownloader
@@ -46,9 +47,10 @@ class ReceiptViewModel(
 			resourceEventChannel.send(Resource.Loading())
 			try {
 				val file = amountEntity.file ?: return@launch
+				val type = getFileType(file)
 				val imagePath = download.downloadFromBytes(amountEntity.chargeName, file)
 				resourceEventChannel.send(Resource.Loading(false))
-				resourceEventChannel.send(Resource.Sucess(imagePath.toString().plus("|${amountEntity.chargeName}.jpeg")))
+				resourceEventChannel.send(Resource.Sucess(imagePath.plus("|${amountEntity.chargeName}.$type")))
 			} catch (e: Exception) {
 				resourceEventChannel.send(Resource.Failure(e.message))
 			}

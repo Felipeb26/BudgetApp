@@ -34,19 +34,22 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.functions.composeBool
+import com.batsworks.budget.components.animations.Loading
+import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.files.decompressData
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.notification.NotificationSnackBar
 import com.batsworks.budget.components.notification.Notifications
+import com.batsworks.budget.components.pdf.ComposePDFViewer
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color700
-import com.batsworks.budget.ui.theme.Loading
+import com.batsworks.budget.ui.theme.Gray
 import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +64,6 @@ fun ReceiptScreen(
     downloadReceipt: (AmountEntity) -> Unit
 ) {
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
     val notifications = Notifications(context)
     val coroutine = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -108,16 +110,7 @@ fun ReceiptScreen(
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             AmountInfo(amount)
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp)
-                    .height((configuration.screenHeightDp / 2).dp)
-                    .padding(horizontal = 20.dp),
-                model = amount.value?.file,
-                contentDescription = amount.value?.chargeName,
-            )
-
+            AjustFilePreview(amount)
             Spacer(modifier = Modifier.height(35.dp))
             ActionButtons(amount, downloadReceipt)
         }
@@ -175,6 +168,37 @@ private fun ActionButtons(amount: State<AmountEntity?>, downloadReceipt: (Amount
             modifier = Modifier.weight(1f),
             onClick = { /*TODO*/ })
     }
+}
+
+@Composable
+private fun AjustFilePreview(amount: State<AmountEntity?>) {
+    val configuration = LocalConfiguration.current
+
+    var fileType = "unknow"
+    var file: ByteArray? = amount.value?.file
+    if (amount.value != null && amount.value!!.extension == "zip") {
+        amount.value?.extension?.let { fileType = it }
+        file = amount.value?.file?.let { decompressData(it) }
+    }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Gray)) {
+        if (fileType == "unknow" || fileType != "zip") {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp)
+                    .height((configuration.screenHeightDp / 2).dp)
+                    .padding(horizontal = 20.dp),
+                model = file,
+                contentDescription = amount.value?.chargeName,
+            )
+        } else {
+            ComposePDFViewer(byteArray = file!!)
+        }
+    }
+
 }
 
 @Composable

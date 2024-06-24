@@ -19,6 +19,8 @@ var ColorCardEmprestimo = Color(0xFF800000)
 var ColorCardCartoes = Color(0xFFFFD700)
 var ColorCardInvestimentos = Color(0xFF228B22)
 
+val Gray = Color(0xFF909090)
+
 val customBackground
     @Composable
     get() = if (isSystemInDarkTheme()) Color500 else Color.White

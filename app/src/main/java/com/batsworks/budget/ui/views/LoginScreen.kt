@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,17 +42,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomButton
-import com.batsworks.budget.components.CustomCheckBox
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.components.functions.composeBool
+import com.batsworks.budget.components.animations.Loading
+import com.batsworks.budget.components.buttons.CustomButton
+import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color200
-import com.batsworks.budget.ui.theme.Loading
+import com.batsworks.budget.ui.theme.Color300
+import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.theme.textColor
@@ -84,13 +87,9 @@ fun Login(
                 .padding(0.dp, 45.dp)
                 .fillMaxHeight(0.25f),
             painter = painterResource(
-                id = composeBool(
-                    isSystemInDarkTheme(),
-                    R.drawable.logo,
-                    R.drawable.logo_resource
-                )
-            ),
-            contentDescription = ""
+                id = R.drawable.logo
+            ), contentDescription = "",
+            colorFilter = ColorFilter.tint(Color300)
         )
         Spacer(modifier = Modifier.height(50.dp))
 
@@ -163,6 +162,7 @@ fun LoginExecution(
     CustomText(
         modifier = Modifier.fillMaxWidth(0.85f), text = stringResource(id = R.string.email),
         capitalize = true, textWeight = FontWeight.Bold,
+        color = composeBool(isSystemInDarkTheme(), Color300, Color800),
         textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
     )
     Spacer(modifier = Modifier.height(10.dp))
@@ -182,6 +182,7 @@ fun LoginExecution(
     CustomText(
         modifier = Modifier.fillMaxWidth(0.85f), text = stringResource(id = R.string.password),
         capitalize = true, textWeight = FontWeight.Bold,
+        color = composeBool(isSystemInDarkTheme(), Color300, Color800),
         textStyle = MaterialTheme.typography.titleMedium, textDecoration = TextDecoration.Underline,
     )
     Spacer(modifier = Modifier.height(10.dp))

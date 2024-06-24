@@ -1,6 +1,6 @@
-package com.batsworks.budget.domain.use_cases.login
+package com.batsworks.budget.ui.view_model.login
 
-import com.batsworks.budget.domain.use_cases.ValidationResult
+import com.batsworks.budget.ui.view_model.ValidationResult
 
 
 class ValidatePassword {
@@ -9,7 +9,7 @@ class ValidatePassword {
 			return ValidationResult(false, "The password must have 8 caracters at least")
 		}
 		if (!password.any { it.isDigit() }) {
-			return ValidationResult(false, "Password must have at least a number")
+			return ValidationResult(false, "Password must have only numbers")
 		}
 
 		return ValidationResult(true)

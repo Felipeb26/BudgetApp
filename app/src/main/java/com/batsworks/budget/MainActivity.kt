@@ -106,6 +106,8 @@ class MainActivity : AppCompatActivity() {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 					permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
 					permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+					permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+					permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
 				}
 
 				CustomTheme(view, findTheme(userState.value?.theme))

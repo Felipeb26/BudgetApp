@@ -37,10 +37,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomButton
-import com.batsworks.budget.components.CustomCheckBox
+import com.batsworks.budget.components.buttons.CustomButton
+import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.fields.CustomPasswordOutlineTextField
@@ -49,7 +50,6 @@ import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.components.visual_transformation.PhoneTransformation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.view_model.login.LoginViewModel

@@ -19,3 +19,10 @@ fun <T> notEnableIfEmpty(context: Context, message: String, content: T?, func: (
 fun <T> composeBool(item: Boolean, ifTrue: T, ifFalse: T): T {
     return if (item) ifTrue else ifFalse
 }
+
+fun assertValues(isTrue: String?, isFalse: String): String {
+    if (isTrue == null) return isFalse
+    if (isTrue.isEmpty()) return isFalse
+    if (isTrue.isBlank()) return isFalse
+    return isTrue
+}

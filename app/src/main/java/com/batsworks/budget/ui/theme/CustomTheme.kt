@@ -113,6 +113,6 @@ fun findTheme(theme: String?): Theme {
         "NATURE" -> Theme.NATURE
         "CHERRY" -> Theme.CHERRY
         "COLD" -> Theme.COLD
-        else -> Theme.COLD
+        else -> Theme.CHERRY
     }
 }

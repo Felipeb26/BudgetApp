@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.components.CustomButton
+import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.ui.theme.customBackground
 
 @Composable

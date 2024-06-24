@@ -2,6 +2,7 @@ package com.batsworks.budget.domain.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.batsworks.budget.components.functions.assertValues
 import com.batsworks.budget.ui.theme.Theme
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.time.LocalDateTime
@@ -17,8 +18,81 @@ data class UserEntity(
     val creatAt: LocalDateTime = LocalDateTime.now(),
     val firebaseId: String = "",
     val loginWhenEnter: Boolean = false,
-    val theme: String = Theme.COLD.theme
+    val theme: String = Theme.CHERRY.theme
 ) {
+
+    fun withName(nome: String?): UserEntity {
+        return UserEntity(
+            this.id,
+            assertValues(nome, this.nome),
+            this.email,
+            this.phone,
+            this.password,
+            this.creatAt,
+            this.firebaseId,
+            this.loginWhenEnter,
+            this.theme
+        )
+    }
+
+
+
+    fun withEmail(email: String?): UserEntity {
+        return UserEntity(
+            this.id,
+            this.nome,
+            assertValues(email, this.email),
+            this.phone,
+            this.password,
+            this.creatAt,
+            this.firebaseId,
+            this.loginWhenEnter,
+            this.theme
+        )
+    }
+
+    fun withPhone(phone: String?): UserEntity {
+        return UserEntity(
+            this.id,
+            this.nome,
+            this.email,
+            assertValues(phone, this.phone),
+            this.password,
+            this.creatAt,
+            this.firebaseId,
+            this.loginWhenEnter,
+            this.theme
+        )
+    }
+
+    fun withPassword(password: Long?): UserEntity {
+        return UserEntity(
+            this.id,
+            this.nome,
+            this.email,
+            this.phone,
+            password ?: this.password,
+            this.creatAt,
+            this.firebaseId,
+            this.loginWhenEnter,
+            this.theme
+        )
+    }
+
+    fun withPassword(password: String?): UserEntity {
+        return UserEntity(
+            this.id,
+            this.nome,
+            this.email,
+            this.phone,
+            assertValues(password, this.password.toString()).toLong(),
+            this.creatAt,
+            this.firebaseId,
+            this.loginWhenEnter,
+            this.theme
+        )
+    }
+
     fun withLoginWhenEnter(loginWhenEnter: Boolean): UserEntity {
         return UserEntity(
             this.id,

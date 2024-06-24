@@ -9,19 +9,20 @@ import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.AJUST_TAG
+import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.domain.use_cases.login.ValidateEmail
-import com.batsworks.budget.domain.use_cases.login.ValidatePassword
+import com.batsworks.budget.ui.view_model.login.ValidateEmail
+import com.batsworks.budget.ui.view_model.login.ValidatePassword
 import com.google.firebase.firestore.Filter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-	private val repository: CustomRepository<UserEntity> = CustomRepository("users", UserEntity::class.java),
+	private val repository: CustomRepository<UserEntity> = CustomRepository(Collection.USERS.name, UserEntity::class.java),
 	private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
 	private val validateEmail: ValidateEmail = ValidateEmail(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),

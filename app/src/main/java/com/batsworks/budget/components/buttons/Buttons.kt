@@ -1,6 +1,7 @@
-package com.batsworks.budget.components
+package com.batsworks.budget.components.buttons
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,12 +21,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.Color950
 
 @Composable
 fun CustomButton(
@@ -92,7 +96,7 @@ fun CustomCheckBox(
         checked = checked,
         onCheckedChange = onCheckedChange,
         colors = CheckboxDefaults.colors(
-            checkmarkColor = Color800,
+            checkmarkColor = composeBool(isSystemInDarkTheme(), Color50, Color950),
             checkedColor = Color400
         )
     )

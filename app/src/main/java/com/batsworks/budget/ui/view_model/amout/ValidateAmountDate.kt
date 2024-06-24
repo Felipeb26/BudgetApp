@@ -1,9 +1,8 @@
-package com.batsworks.budget.domain.use_cases.amout
+package com.batsworks.budget.ui.view_model.amout
 
 import com.batsworks.budget.components.localDate
-import com.batsworks.budget.domain.use_cases.ValidationResult
+import com.batsworks.budget.ui.view_model.ValidationResult
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ValidateAmountDate {
 	fun execute(date: String): ValidationResult {

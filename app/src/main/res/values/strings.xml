@@ -89,5 +89,6 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="add">adicionar</string>
     <string name="account">contas</string>
     <string name="exit">sair</string>
+    <string name="pdf_pages">paginas carregadas/ - total de paginas</string>
     <!--  telas   -->
 </resources>

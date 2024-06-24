@@ -37,10 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomIconButton
+import com.batsworks.budget.components.buttons.CustomIconButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.DropDownMenu
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.animations.CustomLottieAnimation
 import com.batsworks.budget.components.functions.SwipeToDeleteContainer
 import com.batsworks.budget.components.currency
 import com.batsworks.budget.components.notification.NotificationToast
@@ -49,7 +50,6 @@ import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color50
-import com.batsworks.budget.ui.theme.CustomLottieAnimation
 import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

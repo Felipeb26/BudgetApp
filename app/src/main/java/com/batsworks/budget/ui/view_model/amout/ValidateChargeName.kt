@@ -1,6 +1,6 @@
-package com.batsworks.budget.domain.use_cases.amout
+package com.batsworks.budget.ui.view_model.amout
 
-import com.batsworks.budget.domain.use_cases.ValidationResult
+import com.batsworks.budget.ui.view_model.ValidationResult
 
 class ValidateChargeName {
     fun execute(string: String): ValidationResult {

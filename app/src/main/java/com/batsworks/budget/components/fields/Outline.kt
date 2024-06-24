@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.batsworks.budget.R
 import com.batsworks.budget.components.capitalizeStrings
+import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
@@ -34,7 +35,6 @@ import com.batsworks.budget.ui.theme.textColor
 fun CustomOutlineTextField(
     modifier: Modifier = Modifier,
     text: String = "",
-    textStyle: TextStyle = LocalTextStyle.current,
     enabled: Boolean = true,
     onValueChange: (String) -> Unit,
     passwordField: Boolean = false,
@@ -63,13 +63,7 @@ fun CustomOutlineTextField(
         modifier = modifier,
         value = text,
         onValueChange = onValueChange,
-        label = {
-            Text(
-                text = capitalizeStrings(labelText),
-                color = textColor.copy(0.4f),
-                style = textStyle
-            )
-        },
+        label = { Text(text = capitalizeStrings(labelText)) },
         supportingText = { Text(text = errorMessage ?: "", fontWeight = FontWeight.Bold) },
         enabled = enabled,
         singleLine = true,
@@ -80,8 +74,8 @@ fun CustomOutlineTextField(
             focusedContainerColor = customBackground,
             unfocusedContainerColor = customBackground.copy(0.4f),
             cursorColor = textColor,
-            focusedBorderColor = Color500,
-            focusedLabelColor = Color500,
+            focusedBorderColor = Color300,
+            focusedLabelColor = Color300,
             errorSupportingTextColor = MaterialTheme.colorScheme.error,
         ),
         visualTransformation = if (passwordField && show) PasswordVisualTransformation() else transformation,

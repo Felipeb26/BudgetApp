@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,18 +36,19 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomButton
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.animations.Loading
+import com.batsworks.budget.components.buttons.CustomButton
+import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.getByteArrayFromUri
+import com.batsworks.budget.components.files.decompressData
+import com.batsworks.budget.components.files.getByteArrayFromUri
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.components.pdf.ComposePDFViewer
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.ui.theme.Color500
-import com.batsworks.budget.ui.theme.Color600
-import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.Loading
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.batsworks.budget.ui.view_model.add.AmountFormState
@@ -70,6 +69,8 @@ fun Add(
 ) {
     val (showPreview, setShowPreview) = remember { mutableStateOf(false) }
     val (file, setFile) = remember { mutableStateOf<Uri?>(null) }
+    val (isImage, setImage) = remember { mutableStateOf(false) }
+
     val loading = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val toast = NotificationToast(context)
@@ -77,7 +78,7 @@ fun Add(
     LaunchedEffect(file) {
         delay(500)
         if (file != null) {
-            val bytes = getByteArrayFromUri(context, file)
+            val bytes = getByteArrayFromUri(context, file, state.chargeName)
             onEvent(AmountFormEvent.FileVoucher(bytes))
         }
     }
@@ -110,7 +111,7 @@ fun Add(
                 .background(customBackground)
         ) {
             item { AddContent(onEvent, state) }
-            item { ActionButtons(file, setFile, showPreview, setShowPreview, state) }
+            item { ActionButtons(file, setFile, setImage, showPreview, setShowPreview, state) }
             item {
                 Column(
                     modifier = Modifier
@@ -131,15 +132,12 @@ fun Add(
             }
             item {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().height(400.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (showPreview) AsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .border(2.dp, color = Color500, RoundedCornerShape(5)),
-                        model = file, contentDescription = "",
-                    )
+                    if (showPreview) {
+                        PreviewContentFile(isImage, file)
+                    }
                     Spacer(modifier = Modifier.height(15.dp))
                 }
             }
@@ -219,16 +217,21 @@ fun AddContent(onEvent: (AmountFormEvent) -> Unit, state: AmountFormState) {
 fun ActionButtons(
     file: Uri? = null,
     setFile: (Uri?) -> Unit,
+    isImage: (Boolean) -> Unit,
     showPreview: Boolean,
     setShowPreview: (Boolean) -> Unit,
     state: AmountFormState
 ) {
-    val verifyFile = remember { mutableStateOf(false) }
-
     val selectImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> setFile(uri) }
     )
+
+    val selectPDF = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri -> setFile(uri) }
+    )
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -236,25 +239,37 @@ fun ActionButtons(
         if (state.fileError != null) CustomText(text = state.fileError)
         CustomButton(
             onClick = {
+                setFile(null)
+                isImage(true)
                 selectImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                verifyFile.value != !verifyFile.value
             },
             enable = true,
-            text = "select image",
+            text = "image",
             textStyle = MaterialTheme.typography.labelMedium
         )
         CustomButton(
             onClick = {
                 setFile(null)
-                setShowPreview(false)
+                isImage(false)
+                selectPDF.launch("application/pdf")
             },
             enable = true,
-            text = "remove file",
+            text = "pdf",
+            textStyle = MaterialTheme.typography.labelMedium
+        )
+        if (file != null) CustomButton(
+            onClick = {
+                setFile(null)
+                setShowPreview(false)
+            }, enable = true,
+            text = "remove",
             textStyle = MaterialTheme.typography.labelSmall
         )
         CustomButton(
             textStyle = MaterialTheme.typography.labelSmall,
-            text = if (file == null) "hide file" else "show file",
+            text = if (file != null) {
+                if (showPreview) "hide file" else "show file"
+            } else "show file",
             onClick = {
                 setShowPreview.invoke(!showPreview)
             },
@@ -265,8 +280,6 @@ fun ActionButtons(
 
 @Composable
 fun CalendarPick(onEvent: (AmountFormEvent) -> Unit, state: AmountFormState) {
-    val context = LocalContext.current
-    val toast = NotificationToast(context)
     var pickedDate by remember { mutableStateOf(LocalDate.now()) }
     val formattedDate by remember { derivedStateOf { localDate(date = pickedDate) } }
     val dateDialogState = rememberMaterialDialogState()
@@ -296,8 +309,8 @@ fun CalendarPick(onEvent: (AmountFormEvent) -> Unit, state: AmountFormState) {
     MaterialDialog(
         dialogState = dateDialogState,
         buttons = {
-            positiveButton(text = "OK") { toast.show("selected date") }
-            negativeButton(text = "not ok") { toast.show("selected date") }
+            positiveButton(text = "OK") { }
+            negativeButton(text = "") { }
         }) {
         datepicker(
             initialDate = LocalDate.now(),
@@ -324,18 +337,32 @@ fun EntranceButton(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(colors = CheckboxDefaults.colors(
-            checkmarkColor = Color800,
-            checkedColor = Color600
-        ),
-            checked = entrance,
-            onCheckedChange = {
-                mutableEntrance.value = !mutableEntrance.value
-                onEvent(AmountFormEvent.EntranceEventChange(mutableEntrance.value))
-            })
+        CustomCheckBox(checked = entrance, onCheckedChange = {
+            mutableEntrance.value = !mutableEntrance.value
+            onEvent(AmountFormEvent.EntranceEventChange(mutableEntrance.value))
+        })
         CustomText(text = exchange, isUpperCase = true, textWeight = FontWeight.Bold)
     }
     CustomText(text = state.entranceError ?: "")
+}
+
+
+@Composable
+private fun PreviewContentFile(image: Boolean, file: Uri?) {
+    val context = LocalContext.current
+    if (image) {
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .border(2.dp, color = Color500, RoundedCornerShape(5)),
+            model = file, contentDescription = "",
+        )
+    } else {
+        if (file == null) return
+        var bytes = getByteArrayFromUri(context, file)
+        bytes = decompressData(bytes)
+        ComposePDFViewer(byteArray = bytes)
+    }
 }
 
 @PreviewLightDark

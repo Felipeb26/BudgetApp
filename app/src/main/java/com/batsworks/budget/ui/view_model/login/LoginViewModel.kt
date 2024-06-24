@@ -11,12 +11,6 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.domain.use_cases.login.ValidateEmail
-import com.batsworks.budget.domain.use_cases.login.ValidateName
-import com.batsworks.budget.domain.use_cases.login.ValidatePassword
-import com.batsworks.budget.domain.use_cases.login.ValidatePhone
-import com.batsworks.budget.domain.use_cases.login.ValidateRepeatedPassword
-import com.batsworks.budget.domain.use_cases.login.ValidateTerms
 import com.google.firebase.firestore.Filter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

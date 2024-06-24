@@ -1,6 +1,6 @@
-package com.batsworks.budget.domain.use_cases.login
+package com.batsworks.budget.ui.view_model.login
 
-import com.batsworks.budget.domain.use_cases.ValidationResult
+import com.batsworks.budget.ui.view_model.ValidationResult
 
 class ValidateName {
 	fun execute(name: String): ValidationResult {

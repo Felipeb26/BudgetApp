@@ -13,6 +13,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.batsworks.budget.domain.dao.Collection
+import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.history.HistoryViewModel
@@ -47,8 +50,23 @@ fun Navigate(
             Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
         }
         composable(Screen.ProfileScreen.route) {
-            val model = viewModel<ProfileViewModel>()
-            Profile(navController, model.userEntity, model::dontLoginWhenStart)
+            val model = viewModel<ProfileViewModel>(
+                factory = factoryProvider(
+                    ProfileViewModel(
+                        repository = CustomRepository(
+                            Collection.USERS.name,
+                            UserEntity::class.java
+                        )
+                    )
+                )
+            )
+            Profile(
+                navController,
+                model.userEntity,
+                model.state,
+                model.resourceEventFlow,
+                model::onEvent
+            )
         }
         composable(Screen.AccountsScreen.route) { Accounts(navController) }
 

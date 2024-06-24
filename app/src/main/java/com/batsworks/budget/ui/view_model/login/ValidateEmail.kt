@@ -1,7 +1,7 @@
-package com.batsworks.budget.domain.use_cases.login
+package com.batsworks.budget.ui.view_model.login
 
 import android.util.Patterns
-import com.batsworks.budget.domain.use_cases.ValidationResult
+import com.batsworks.budget.ui.view_model.ValidationResult
 
 class ValidateEmail {
 	fun execute(email: String): ValidationResult {

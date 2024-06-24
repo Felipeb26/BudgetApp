@@ -9,16 +9,17 @@ import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.components.files.getFileType
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
-import com.batsworks.budget.domain.use_cases.ValidationResult
-import com.batsworks.budget.domain.use_cases.amout.ValdateEntrance
-import com.batsworks.budget.domain.use_cases.amout.ValidateAmountDate
-import com.batsworks.budget.domain.use_cases.amout.ValidateChargeName
-import com.batsworks.budget.domain.use_cases.amout.ValidateChargeValue
-import com.batsworks.budget.domain.use_cases.amout.ValidateFileVoucher
+import com.batsworks.budget.ui.view_model.ValidationResult
+import com.batsworks.budget.ui.view_model.amout.ValdateEntrance
+import com.batsworks.budget.ui.view_model.amout.ValidateAmountDate
+import com.batsworks.budget.ui.view_model.amout.ValidateChargeName
+import com.batsworks.budget.ui.view_model.amout.ValidateChargeValue
+import com.batsworks.budget.ui.view_model.amout.ValidateFileVoucher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -112,7 +113,9 @@ class AddViewModel(
                 entrance = state.entrance,
                 file = state.file,
                 user = userEntity.firebaseId,
-                amountDate = localDate(state.amountDate)
+                amountDate = localDate(state.amountDate),
+                extension = getFileType(state.file),
+                size = state.file?.size ?: 0
             )
             localRepository.save(amout)
             resourceEventChannel.send(Resource.Sucess(amout))
