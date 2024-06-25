@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
+import com.batsworks.budget.domain.dto.UserDTO
+import com.batsworks.budget.domain.dto.toDTO
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -22,7 +24,7 @@ class LoginViewModel(
 	private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
 	private val validateTerms: ValidateTerms = ValidateTerms(),
-	private val repository: CustomRepository<UserEntity>? = null,
+	private val repository: CustomRepository<UserDTO>? = null,
 ) : ViewModel() {
 
 	private val tag = LoginViewModel::class.java.name
@@ -112,18 +114,16 @@ class LoginViewModel(
 			repository.findByParam("email", user.email)
 				.addOnSuccessListener { documents ->
 					viewModelScope.launch {
-						if (documents.size() <= 0) {
-							save(user)
-							return@launch
-						}
+						val users = documents.toObjects(UserDTO::class.java)
+						Log.d(AJUST_TAG(tag), "${users.size}")
 						for (document in documents) {
 							val userDTO = querySnapshotToEntity(document.data, document.id)
 							if (userDTO.email == user.email) {
 								resourceEventChannel.send(Resource.Loading(false))
 								resourceEventChannel.send(Resource.Failure("Email already in use"))
-								return@launch
 							}
 						}
+						save(user)
 						resourceEventChannel.send(Resource.Loading(false))
 						resourceEventChannel.send(Resource.Sucess(""))
 					}
@@ -141,11 +141,11 @@ class LoginViewModel(
 			resourceEventChannel.send(Resource.Failure("repository must not be null"))
 			return@launch
 		}
-		repository.save(user).addOnSuccessListener {
-			Log.d(AJUST_TAG(tag), "usurio alvo")
+		repository.save(toDTO(user)).addOnSuccessListener {
+			Log.d(AJUST_TAG(tag), "usurio salvo")
 			viewModelScope.launch {
 				resourceEventChannel.send(Resource.Loading(false))
-				resourceEventChannel.send(Resource.Failure(e.message))
+				resourceEventChannel.send(Resource.Sucess(""))
 			}
 		}.addOnFailureListener { e ->
 			viewModelScope.launch {
