@@ -11,7 +11,6 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dto.UserDTO
 import com.batsworks.budget.domain.dto.toDTO
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -109,15 +108,16 @@ class LoginViewModel(
 				nome = state.nome,
 				email = state.email,
 				phone = state.telefone,
-				password = state.password.toLong()
+				password = state.password.toLong(),
+				termsAccepted = state.acceptedTerms
 			)
-			repository.findByParam("email", user.email)
+			repository.findByLogin("email", user.email)
 				.addOnSuccessListener { documents ->
 					viewModelScope.launch {
 						val users = documents.toObjects(UserDTO::class.java)
 						Log.d(AJUST_TAG(tag), "${users.size}")
 						for (document in documents) {
-							val userDTO = querySnapshotToEntity(document.data, document.id)
+							val userDTO = document.toObject(UserDTO::class.java).toEntity()
 							if (userDTO.email == user.email) {
 								resourceEventChannel.send(Resource.Loading(false))
 								resourceEventChannel.send(Resource.Failure("Email already in use"))

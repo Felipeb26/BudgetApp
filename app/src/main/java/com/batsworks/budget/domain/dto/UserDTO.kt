@@ -5,13 +5,25 @@ import com.batsworks.budget.domain.entity.UserEntity
 import java.time.LocalDateTime
 
 data class UserDTO(
-	val nome: String,
-	val email: String,
-	val phone: String,
-	val password: Long,
-	val acceptedTerms: Boolean,
+	val nome: String = "",
+	val email: String = "",
+	val phone: String = "",
+	val password: Long = 0,
+	val acceptedTerms: Boolean = false,
 	val creatAt: LocalDateTime = LocalDateTime.now(),
-) : AbstractEntity()
+) : AbstractEntity() {
+
+	fun toEntity(): UserEntity {
+		return UserEntity(
+			nome = this.nome,
+			email = this.email,
+			phone = this.phone,
+			password = this.password,
+			creatAt = this.creatAt,
+			firebaseId = this.id
+		)
+	}
+}
 
 fun toEntity(dto: UserDTO): UserEntity {
 	return UserEntity(

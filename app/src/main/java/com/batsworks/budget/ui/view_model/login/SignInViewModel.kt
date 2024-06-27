@@ -11,10 +11,9 @@ import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.dao.UsersDao
+import com.batsworks.budget.domain.dto.UserDTO
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.entity.querySnapshotToEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.google.firebase.firestore.Filter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -62,12 +61,10 @@ class SignInViewModel(
 
 	private fun signIn() {
 		try {
-
 			val emailResult = validateEmail.execute(state.email)
 			val passwordResult = validatePassword.execute(state.password)
 
 			val hasError = listOf(emailResult, passwordResult).any { !it.successful }
-
 			if (hasError) {
 				state = state.copy(
 					emailError = emailResult.errorMessage,
@@ -79,13 +76,14 @@ class SignInViewModel(
 			viewModelScope.launch {
 				validationEventChannel.send(Resource.Loading())
 
-				val user = localRepository.findByLogin(state.email, state.password.toInt())
+				var user = localRepository.findByLogin(state.email, state.password.toInt())
 
 				if (user == null) {
-					repository.findByParam(
-						Filter.equalTo("email", state.email),
-						Filter.equalTo("password", state.password.toLong())
-					)
+					val map = HashMap<String, Any>()
+					map["email"] = state.email
+					map["password"] = state.password.toLong()
+
+					repository.findByLogin(map)
 						.addOnSuccessListener { documents ->
 							if (documents.size() <= 0) {
 								viewModelScope.launch {
@@ -96,15 +94,10 @@ class SignInViewModel(
 							Log.d(AJUST_TAG(tag), "Encontrou ${documents.size()} usuarios assim ")
 							for (document in documents) {
 								viewModelScope.launch {
-									val userDTO = querySnapshotToEntity(document.data, document.id)
+									val userDTO = document.toObject(UserDTO::class.java)
 									if (userDTO.email == state.email) {
-										localRepository.save(
-											querySnapshotToEntity(
-												document.data,
-												document.id,
-												state.acceptedTerms
-											)
-										)
+										user = userDTO.toEntity()
+										localRepository.save(user!!)
 										validationEventChannel.send(Resource.Loading(false))
 										validationEventChannel.send(Resource.Sucess(""))
 									}
@@ -114,16 +107,12 @@ class SignInViewModel(
 							Log.d(AJUST_TAG(tag), exception.message ?: "error has happen")
 							viewModelScope.launch {
 								validationEventChannel.send(Resource.Loading(false))
-								validationEventChannel.send(
-									Resource.Failure(
-										exception.message ?: "An error has happen"
-									)
-								)
+								validationEventChannel.send(Resource.Failure(exception.message))
 							}
 						}
 				} else {
-					if (user.loginWhenEnter != state.acceptedTerms) {
-						localRepository.save(user.withLoginWhenEnter(state.acceptedTerms))
+					if (user!!.loginWhenEnter != state.acceptedTerms) {
+						localRepository.save(user!!.withLoginWhenEnter(state.acceptedTerms))
 					}
 
 					validationEventChannel.send(Resource.Loading(false))
@@ -134,5 +123,4 @@ class SignInViewModel(
 			Log.e(AJUST_TAG(tag), e.message ?: "un error has happen")
 		}
 	}
-
 }

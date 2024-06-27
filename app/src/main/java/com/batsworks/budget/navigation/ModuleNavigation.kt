@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.batsworks.budget.domain.dao.Collection
+import com.batsworks.budget.domain.dto.UserDTO
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.theme.customBackground
@@ -40,7 +41,7 @@ fun StartNavigate(
 					LoginViewModel(
 						repository = CustomRepository(
 							Collection.USERS.path,
-							UserEntity::class.java
+							UserDTO::class.java
 						)
 					)
 				)

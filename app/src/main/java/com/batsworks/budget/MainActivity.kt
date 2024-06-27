@@ -2,6 +2,7 @@ package com.batsworks.budget
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -23,7 +24,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -94,22 +97,26 @@ class MainActivity : AppCompatActivity() {
 				delay(Duration.ofSeconds(2))
 				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
 			}
+			val context = LocalContext.current
+			val toast = NotificationToast(context)
+			rollbar = Rollbar.init(context)
+			val navController = rememberNavController()
+			var imageUri by remember { mutableStateOf<Uri?>(null) }
+			val userState = profile.userEntity.collectAsState()
+			val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
+
+
+			LaunchedEffect(intent){
+				if (intent.action == Intent.ACTION_SEND && intent.type != null) {
+					if (intent.type?.startsWith("image/") == true) {
+
+						imageUri = intent.clipData?.getItemAt(0)?.uri
+					}
+				}
+			}
 
 			BudgetTheme {
-				rollbar = Rollbar.init(LocalContext.current)
-				val navController = rememberNavController()
-				val context = LocalContext.current
-				val userState = profile.userEntity.collectAsState()
-				val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
-				val toast = NotificationToast(context)
-
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-					permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
-					permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
-					permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-					permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-				}
-
+				ExtrasRequests(permissionsToRequest)
 				CustomTheme(view, findTheme(userState.value?.theme))
 				biometricResult?.let { result ->
 					when (result) {
@@ -151,6 +158,17 @@ class MainActivity : AppCompatActivity() {
 				} else SelectScreen(userState.value)
 			}
 		}
+	}
+}
+
+@Composable
+private fun ExtrasRequests(permissionsToRequest: MutableList<String>) {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+		permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+		permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+		permissionsToRequest.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+		permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
 	}
 }
 

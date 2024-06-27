@@ -53,11 +53,17 @@ class CustomRepository<T>(
 		return db.collection(collection).document().update(data).await()
 	}
 
-	suspend fun findByParam(param: String, value: Any): Task<QuerySnapshot> {
+	suspend fun findByLogin(param: String, value: Any): Task<QuerySnapshot> {
 		return db.collection(collection).whereEqualTo(param, value).get()
 	}
 
-	fun findByParam(vararg filter: Filter): Task<QuerySnapshot> {
+	fun findByLogin(querys: HashMap<String, Any>): Task<QuerySnapshot> {
+		val reference = db.collection(collection)
+		return reference.whereEqualTo("email", querys["email"])
+			.whereEqualTo("password", querys["password"]).get()
+	}
+
+	fun findByLogin(vararg filter: Filter): Task<QuerySnapshot> {
 		val dbConst = db.collection(collection)
 		filter.forEach { dbConst.where(it) }
 		return dbConst.get()
