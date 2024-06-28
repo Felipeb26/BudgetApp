@@ -12,19 +12,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.batsworks.budget.R
 
 sealed class Screen(val route: String, val icon: ImageVector?, val resource: Int = 0) {
-    data object LoginScreen : Screen("login_screen", Icons.Filled.Person)
-    data object SignUpScreen : Screen("sign_up_screen", Icons.Filled.Person)
-    data object MainScreen : Screen("main_screen", Icons.Filled.Home)
-    data object SettingScreen : Screen("settings_screen", Icons.Filled.Settings)
-    data object HomeScreen : Screen("home_screen", Icons.Filled.Home)
-    data object HistoryScreen : Screen("history_screen", Icons.AutoMirrored.Filled.List)
-    data object AdicionarScreen : Screen("add_screen", Icons.Filled.Add)
-    data object ProfileScreen : Screen("profile_screen", Icons.Filled.AccountCircle)
-    data object PlusScreen : Screen("plus_screen", null, R.drawable.baseline_more_horiz_24)
-    data object AccountsScreen :
-        Screen("accounts_screen", null, R.drawable.baseline_account_balance_24)
+	data object LoginScreen : Screen("login_screen", Icons.Filled.Person)
+	data object SignUpScreen : Screen("sign_up_screen", Icons.Filled.Person)
+	data object MainScreen : Screen("main_screen", Icons.Filled.Home)
+	data object SettingScreen : Screen("settings_screen", Icons.Filled.Settings)
+	data object HomeScreen : Screen("home_screen", Icons.Filled.Home)
+	data object HistoryScreen : Screen("history_screen", Icons.AutoMirrored.Filled.List)
+	data object AdicionarScreen : Screen("add_screen", Icons.Filled.Add)
+	data object ProfileScreen : Screen("profile_screen", Icons.Filled.AccountCircle)
+	data object PlusScreen : Screen("plus_screen", null, R.drawable.baseline_more_horiz_24)
+	data object AccountsScreen :
+		Screen("accounts_screen", null, R.drawable.baseline_account_balance_24)
 
-    data object ReceiptScreen : Screen("receiveit_screen", Icons.Filled.ShoppingCart)
+	data object ReceiptScreen : Screen("receiveit_screen", Icons.Filled.ShoppingCart)
+	data object SharedReceiptScreen : Screen("shared_receipt_screen", Icons.Filled.ShoppingCart)
 
     fun withArgs(vararg args: String): String {
         return buildString {

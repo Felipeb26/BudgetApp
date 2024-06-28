@@ -75,6 +75,7 @@ fun CustomOutlineTextField(
 			cursorColor = textColor,
 			focusedBorderColor = Color300,
 			focusedLabelColor = Color300,
+			unfocusedBorderColor = Color300.copy(0.7f),
 			errorSupportingTextColor = MaterialTheme.colorScheme.error,
 		),
 		visualTransformation = if (passwordField && show) PasswordVisualTransformation() else transformation,

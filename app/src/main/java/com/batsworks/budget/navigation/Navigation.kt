@@ -33,117 +33,246 @@ import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
 import com.batsworks.budget.ui.views.ReceiptScreen
 import com.batsworks.budget.ui.views.Setting
+import com.batsworks.budget.ui.views.SharedReceipt
 
 @Composable
 fun Navigate(
-    navController: NavHostController,
-    screen: Screen,
-    paddingValues: PaddingValues? = null,
+	navController: NavHostController,
+	screen: Screen,
+	paddingValues: PaddingValues? = null,
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = screen.route,
-        modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
-    ) {
-        composable(Screen.MainScreen.route) { Main(navController) }
-        composable(Screen.HomeScreen.route) {
-            val model = viewModel<HomeViewModel>()
-            Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
-        }
-        composable(Screen.ProfileScreen.route) {
-            val model = viewModel<ProfileViewModel>(
-                factory = factoryProvider(
-                    ProfileViewModel(
-                        repository = CustomRepository(
-                            Collection.USERS.path,
-                            UserEntity::class.java
-                        )
-                    )
-                )
-            )
-            Profile(
-                navController,
-                model.userEntity,
-                model.state,
-                model.resourceEventFlow,
-                model::onEvent
-            )
-        }
-        composable(Screen.AccountsScreen.route) { Accounts(navController) }
+	NavHost(
+		navController = navController,
+		startDestination = screen.route,
+		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
+	) {
+		composable(Screen.MainScreen.route) { Main(navController) }
+		composable(Screen.HomeScreen.route) {
+			val model = viewModel<HomeViewModel>()
+			Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
+		}
+		composable(Screen.ProfileScreen.route) {
+			val model = viewModel<ProfileViewModel>(
+				factory = factoryProvider(
+					ProfileViewModel(
+						repository = CustomRepository(
+							Collection.USERS.path,
+							UserEntity::class.java
+						)
+					)
+				)
+			)
+			Profile(
+				navController,
+				model.userEntity,
+				model.state,
+				model.resourceEventFlow,
+				model::onEvent
+			)
+		}
+		composable(Screen.AccountsScreen.route) { Accounts(navController) }
 
-        composable(Screen.AdicionarScreen.route) {
-            val model = viewModel<AddViewModel>(
-                factory = factoryProvider(AddViewModel(
-                    repository = CustomRepository(
-                        Collection.AMOUNTS.path,
-                        AmountEntity::class.java
-                    )
-                ))
-            )
-            Add(model.resourceEventFlow, model::onEvent, model.state)
-        }
+		composable(Screen.AdicionarScreen.route) {
+			val model = viewModel<AddViewModel>(
+				factory = factoryProvider(
+					AddViewModel(
+						repository = CustomRepository(
+							Collection.AMOUNTS.path,
+							AmountEntity::class.java
+						)
+					)
+				)
+			)
+			Add(model.resourceEventFlow, model::onEvent, model.state)
+		}
 
-        composable(Screen.HistoryScreen.route) {
-            val model = viewModel<HistoryViewModel>()
-            Historico(
-                navController,
-                model.resourceEventFlow,
-                model.amounts,
-                model::onInit,
-                model::deleteAmount
-            )
-        }
+		composable(Screen.HistoryScreen.route) {
+			val model = viewModel<HistoryViewModel>()
+			Historico(
+				navController,
+				model.resourceEventFlow,
+				model.amounts,
+				model::onInit,
+				model::deleteAmount
+			)
+		}
 
-        composable(
-            Screen.ReceiptScreen.route + "/{id}",
-            arguments = listOf(navArgument("id") {
-                type = NavType.StringType
-                defaultValue = "0"
-                nullable = false
-            })
-        ) { entry ->
-            val context = LocalContext.current
-            val model = viewModel<ReceiptViewModel>(
-                factory = factoryProvider(
-                    ReceiptViewModel(
-                        context = context,
-                        id = entry.arguments?.getString("id") ?: "0"
-                    )
-                )
-            )
-            ReceiptScreen(
-                model.entityAmount,
-                model.resourceEventFlow,
-                model::downloadImage
-            )
-        }
+		composable(
+			Screen.ReceiptScreen.route + "/{id}",
+			arguments = listOf(navArgument("id") {
+				type = NavType.StringType
+				defaultValue = "0"
+				nullable = false
+			})
+		) { entry ->
+			val context = LocalContext.current
+			val model = viewModel<ReceiptViewModel>(
+				factory = factoryProvider(
+					ReceiptViewModel(
+						context = context,
+						id = entry.arguments?.getString("id") ?: "0"
+					)
+				)
+			)
+			ReceiptScreen(
+				model.entityAmount,
+				model.resourceEventFlow,
+				model::downloadImage
+			)
+		}
 
-        composable(Screen.PlusScreen.route) {
-            val model = viewModel<ProfileViewModel>()
-            PlusScreen(navController, model::dontLoginWhenStart)
-        }
+		composable(Screen.PlusScreen.route) {
+			val model = viewModel<ProfileViewModel>()
+			PlusScreen(navController, model::dontLoginWhenStart)
+		}
 
-        composable(Screen.SettingScreen.route) {
-            val model = viewModel<SettingsViewModel>()
-            Setting(navController, model::saveTheme)
-        }
-    }
+		composable(Screen.SettingScreen.route) {
+			val model = viewModel<SettingsViewModel>()
+			Setting(navController, model::saveTheme)
+		}
+
+		composable(
+			"${Screen.SharedReceiptScreen.route}/{file}",
+			arguments = listOf(navArgument("file") {
+				type = NavType.StringType
+				defaultValue = ""
+				nullable = false
+			})
+		) { entry ->
+			SharedReceipt(entry.arguments?.getString("file")?:"")
+		}
+	}
+}
+
+@Composable
+fun Navigate(
+	navController: NavHostController,
+	screen: String = Screen.HomeScreen.route,
+	paddingValues: PaddingValues? = null,
+) {
+	NavHost(
+		navController = navController,
+		startDestination = goTo(screen),
+		route = screen,
+		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
+	) {
+		composable(Screen.MainScreen.route) { Main(navController) }
+		composable(Screen.HomeScreen.route) {
+			val model = viewModel<HomeViewModel>()
+			Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
+		}
+		composable(Screen.ProfileScreen.route) {
+			val model = viewModel<ProfileViewModel>(
+				factory = factoryProvider(
+					ProfileViewModel(
+						repository = CustomRepository(
+							Collection.USERS.path,
+							UserEntity::class.java
+						)
+					)
+				)
+			)
+			Profile(
+				navController,
+				model.userEntity,
+				model.state,
+				model.resourceEventFlow,
+				model::onEvent
+			)
+		}
+		composable(Screen.AccountsScreen.route) { Accounts(navController) }
+
+		composable(Screen.AdicionarScreen.route) {
+			val model = viewModel<AddViewModel>(
+				factory = factoryProvider(
+					AddViewModel(
+						repository = CustomRepository(
+							Collection.AMOUNTS.path,
+							AmountEntity::class.java
+						)
+					)
+				)
+			)
+			Add(model.resourceEventFlow, model::onEvent, model.state)
+		}
+
+		composable(Screen.HistoryScreen.route) {
+			val model = viewModel<HistoryViewModel>()
+			Historico(
+				navController,
+				model.resourceEventFlow,
+				model.amounts,
+				model::onInit,
+				model::deleteAmount
+			)
+		}
+
+		composable(
+			Screen.ReceiptScreen.route + "/{id}",
+			arguments = listOf(navArgument("id") {
+				type = NavType.StringType
+				defaultValue = "0"
+				nullable = false
+			})
+		) { entry ->
+			val context = LocalContext.current
+			val model = viewModel<ReceiptViewModel>(
+				factory = factoryProvider(
+					ReceiptViewModel(
+						context = context,
+						id = entry.arguments?.getString("id") ?: "0"
+					)
+				)
+			)
+			ReceiptScreen(
+				model.entityAmount,
+				model.resourceEventFlow,
+				model::downloadImage
+			)
+		}
+
+		composable(Screen.PlusScreen.route) {
+			val model = viewModel<ProfileViewModel>()
+			PlusScreen(navController, model::dontLoginWhenStart)
+		}
+
+		composable(Screen.SettingScreen.route) {
+			val model = viewModel<SettingsViewModel>()
+			Setting(navController, model::saveTheme)
+		}
+
+		composable(
+			"${Screen.SharedReceiptScreen.route}/{id}",
+			arguments = listOf(navArgument("id") {
+				type = NavType.StringType
+				defaultValue = ""
+				nullable = false
+			})
+		) { entry ->
+			val arguments = entry.arguments
+			SharedReceipt(entry.arguments?.getString("file")?: "")
+		}
+	}
 }
 
 fun easyNavigate(
-    navController: NavController,
-    route: String,
-    stateSave: Boolean = true,
-    singleTop: Boolean = true,
-    restore: Boolean = true,
-    include: Boolean = false,
+	navController: NavController,
+	route: String,
+	stateSave: Boolean = true,
+	singleTop: Boolean = true,
+	restore: Boolean = true,
+	include: Boolean = false,
 ) {
-    navController.navigate(route) {
-        popUpTo(navController.graph.findStartDestination().id) {
-            inclusive = include
-            saveState = stateSave
-        }
-        launchSingleTop = singleTop
-        restoreState = restore
-    }
+	navController.navigate(route) {
+		popUpTo(navController.graph.findStartDestination().id) {
+			inclusive = include
+			saveState = stateSave
+		}
+		launchSingleTop = singleTop
+		restoreState = restore
+	}
+}
+
+private fun goTo(route: String): String {
+	return route.lowercase().substring(0, route.indexOf("_"))
 }

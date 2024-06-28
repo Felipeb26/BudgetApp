@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.capitalizeStrings
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
 import com.batsworks.budget.ui.theme.BudgetTheme
@@ -48,6 +49,8 @@ import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.rollbar.android.Rollbar
 import kotlinx.coroutines.time.delay
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 
 
@@ -105,16 +108,6 @@ class MainActivity : AppCompatActivity() {
 			val userState = profile.userEntity.collectAsState()
 			val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
 
-
-			LaunchedEffect(intent){
-				if (intent.action == Intent.ACTION_SEND && intent.type != null) {
-					if (intent.type?.startsWith("image/") == true) {
-
-						imageUri = intent.clipData?.getItemAt(0)?.uri
-					}
-				}
-			}
-
 			BudgetTheme {
 				ExtrasRequests(permissionsToRequest)
 				CustomTheme(view, findTheme(userState.value?.theme))
@@ -140,6 +133,22 @@ class MainActivity : AppCompatActivity() {
 						}
 
 						else -> Unit
+					}
+				}
+
+				imageUri?.let {
+					val encodedUrl = URLEncoder.encode(it.toString(), StandardCharsets.UTF_8.toString())
+					Navigate(navController, Screen.SharedReceiptScreen.withArgs("arroz"), null)
+					return@BudgetTheme
+				}
+
+				LaunchedEffect(intent) {
+					if (intent.action == Intent.ACTION_SEND && intent.type != null) {
+						val type = intent.type
+						Log.d("hvjsb", "${intent.type}")
+						if (type?.startsWith("image") == true) {
+							imageUri = intent.clipData?.getItemAt(0)?.uri
+						}
 					}
 				}
 
