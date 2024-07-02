@@ -1,5 +1,6 @@
 package com.batsworks.budget.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.SharedReceipt
 import com.batsworks.budget.ui.views.SignUp
+import java.net.URI
 
 @Composable
 fun StartNavigate(
@@ -55,14 +57,15 @@ fun StartNavigate(
 		}
 
 		composable(
-			Screen.SharedReceiptScreen.route + "/{file}",
-			arguments = listOf(navArgument("file") {
+			Screen.SharedReceiptScreen.route + "/{uri}",
+			arguments = listOf(navArgument("uri") {
 				type = NavType.StringType
 				defaultValue = null
 				nullable = true
 			})
-		) { entry ->
-			SharedReceipt(entry.arguments?.getString("file")?: "")
+		) { backStackEntry ->
+			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
+			SharedReceipt(uri)
 		}
 	}
 }

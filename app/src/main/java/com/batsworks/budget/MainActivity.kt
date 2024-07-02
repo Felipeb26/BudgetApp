@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.StartNavigate
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
@@ -48,9 +50,8 @@ import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.rollbar.android.Rollbar
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import java.time.Duration
 
 
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 		setContent {
 			val view = LocalView.current
 			CustomTheme(LocalView.current)
+			val coroutine = rememberCoroutineScope()
 			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 			val enrollLauncher = rememberLauncherForActivityResult(
 				contract = ActivityResultContracts.StartActivityForResult(),
@@ -137,8 +139,13 @@ class MainActivity : AppCompatActivity() {
 				}
 
 				imageUri?.let {
-					val encodedUrl = URLEncoder.encode(it.toString(), StandardCharsets.UTF_8.toString())
-					Navigate(navController, Screen.SharedReceiptScreen.withArgs("arroz"), null)
+					val encodedUri = Uri.encode(it.toString())
+					StartNavigate(navController, Screen.MainScreen, true)
+					coroutine.launch {
+						delay(Duration.ofSeconds(3))
+						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
+						return@launch
+					}
 					return@BudgetTheme
 				}
 
@@ -147,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 						val type = intent.type
 						Log.d("hvjsb", "${intent.type}")
 						if (type?.startsWith("image") == true) {
-							imageUri = intent.clipData?.getItemAt(0)?.uri
+							imageUri = intent.clipData?.getItemAt(0)?.uri ?: intent.data
 						}
 					}
 				}

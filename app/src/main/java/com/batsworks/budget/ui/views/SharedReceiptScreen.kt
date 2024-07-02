@@ -23,7 +23,8 @@ import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.customBackground
 
 @Composable
-fun SharedReceipt(file: String) {
+fun SharedReceipt(file: Uri) {
+	Log.d("VALUE", file.toString())
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -49,10 +50,7 @@ fun SharedReceipt(file: String) {
 				.fillMaxWidth()
 				.height(500.dp)
 				.border(1.dp, color = Color300),
-			model = file.let {
-				Log.d("VALUE", it)
-				Uri.parse(it)
-			},
+			model = file,
 			contentDescription = ""
 		)
 
@@ -90,5 +88,5 @@ fun SharedReceipt(file: String) {
 @PreviewLightDark
 @Composable
 private fun Preview() {
-	SharedReceipt("")
+	SharedReceipt(Uri.EMPTY)
 }
