@@ -38,10 +38,8 @@ import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.capitalizeStrings
 import com.batsworks.budget.components.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
-import com.batsworks.budget.navigation.StartNavigate
-import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.navigation.ModuleNavigation
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
@@ -116,21 +114,21 @@ class MainActivity : AppCompatActivity() {
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
-							StartNavigate(navController, Screen.MainScreen, true)
+							ModuleNavigation(navController, Screen.MainScreen, true)
 							return@BudgetTheme
 						}
 
 						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
 							Log.d("biometria", result.error)
 							toast.show(result.error)
-							StartNavigate(navController, Screen.LoginScreen)
+							ModuleNavigation(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 							Log.d("biometria", context.getString(R.string.biometric_auth_error))
 							toast.show(context.getString(R.string.biometric_auth_error))
-							StartNavigate(navController, Screen.LoginScreen)
+							ModuleNavigation(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
 
@@ -140,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
 				imageUri?.let {
 					val encodedUri = Uri.encode(it.toString())
-					StartNavigate(navController, Screen.LoginScreen, true)
+					ModuleNavigation(navController, Screen.MainScreen, true)
 					coroutine.launch {
 						delay(Duration.ofSeconds(1))
 						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
@@ -191,12 +189,12 @@ private fun ExtrasRequests(permissionsToRequest: MutableList<String>) {
 @Composable
 private fun SelectScreen(user: UserEntity?) {
 	if (user?.loginWhenEnter == true) {
-		StartNavigate(
+		ModuleNavigation(
 			navController = rememberNavController(),
 			screen = Screen.MainScreen, true
 		)
 	} else {
-		StartNavigate(
+		ModuleNavigation(
 			navController = rememberNavController(),
 			screen = Screen.LoginScreen
 		)

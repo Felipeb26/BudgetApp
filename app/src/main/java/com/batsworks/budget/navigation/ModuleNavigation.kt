@@ -26,7 +26,7 @@ import com.batsworks.budget.ui.views.SharedReceipt
 import com.batsworks.budget.ui.views.SignUp
 
 @Composable
-fun StartNavigate(
+fun ModuleNavigation(
 	navController: NavHostController,
 	screen: Screen,
 	route: Boolean = false,
@@ -53,17 +53,10 @@ fun StartNavigate(
 			)
 			SignUp(navController, model)
 		}
-		navigation(Screen.MainScreen.route, route = "main") {
-			composable(Screen.MainScreen.route) { Main() }
-		}
 
 		composable(
 			Screen.SharedReceiptScreen.route + "/{uri}",
-			arguments = listOf(navArgument("uri") {
-				type = NavType.StringType
-				defaultValue = null
-				nullable = true
-			})
+			arguments = listOf(navArgument("uri") { type = NavType.StringType })
 		) { backStackEntry ->
 			val model = viewModel<AddViewModel>(
 				factory = factoryProvider(
@@ -75,10 +68,11 @@ fun StartNavigate(
 					)
 				)
 			)
-
-
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
 			SharedReceipt(uri, model.state, model::onEvent)
+		}
+		navigation(Screen.MainScreen.route, route = "main") {
+			composable(Screen.MainScreen.route) { Main() }
 		}
 	}
 }

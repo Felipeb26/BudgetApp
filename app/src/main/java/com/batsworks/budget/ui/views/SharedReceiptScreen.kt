@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -34,6 +36,7 @@ import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.components.files.getByteArrayFromUri
 import com.batsworks.budget.components.localDate
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.ui.theme.Color300
@@ -44,6 +47,8 @@ import com.batsworks.budget.ui.view_model.add.AmountFormState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 import java.time.LocalDate
 
 @Composable
@@ -52,6 +57,12 @@ fun SharedReceipt(file: Uri, state: AmountFormState, onEvent: (AmountFormEvent) 
 	val exchanges = arrayOf("entrance", "output")
 	val uri by remember { mutableStateOf(file) }
 	val entrance = remember { mutableStateOf(false) }
+	val context = LocalContext.current
+
+	LaunchedEffect(Unit) {
+		delay(Duration.ofMillis(250))
+		onEvent(AmountFormEvent.FileVoucher(getByteArrayFromUri(context, uri)))
+	}
 
 	LazyColumn(
 		modifier = Modifier
@@ -89,42 +100,26 @@ fun SharedReceipt(file: Uri, state: AmountFormState, onEvent: (AmountFormEvent) 
 			}
 		}
 		item {
+			CustomButton(
+				modifier = Modifier.fillMaxWidth(),
+				enable = true,
+				onClick = {
+					onEvent(AmountFormEvent.Submit)
+				}, text = stringResource(id = R.string.save)
+			)
+			Spacer(modifier = Modifier.height(15.dp))
+		}
+		item {
 			AsyncImage(
 				modifier = Modifier
 					.fillMaxWidth()
 					.height(500.dp)
 					.border(1.dp, color = Color300),
 				model = uri,
-				contentDescription = ""
+				contentDescription = "recepit"
 			)
+			Spacer(modifier = Modifier.height(30.dp))
 		}
-//		CalendarPick(onEvent, state)
-//		Row(
-//			modifier = Modifier.fillMaxWidth(),
-//			horizontalArrangement = Arrangement.SpaceEvenly
-//		) {
-//			exchangeTypes.forEachIndexed { index, exchange ->
-//				if ((index % 2) != 0) {
-//					EntranceButton(
-//						Modifier.weight(1f),
-//						exchange,
-//						!entrance.value,
-//						entrance,
-//						onEvent,
-//						state
-//					)
-//				} else {
-//					EntranceButton(
-//						Modifier.weight(1f),
-//						exchange,
-//						entrance.value,
-//						entrance,
-//						onEvent,
-//						state
-//					)
-//				}
-//			}
-//		}
 	}
 }
 

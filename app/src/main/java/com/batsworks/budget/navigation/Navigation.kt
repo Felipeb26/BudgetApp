@@ -1,5 +1,6 @@
 package com.batsworks.budget.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
 import com.batsworks.budget.ui.views.ReceiptScreen
 import com.batsworks.budget.ui.views.Setting
+import com.batsworks.budget.ui.views.SharedReceipt
 
 @Composable
 fun Navigate(
@@ -125,6 +127,24 @@ fun Navigate(
 		composable(Screen.SettingScreen.route) {
 			val model = viewModel<SettingsViewModel>()
 			Setting(navController, model::saveTheme)
+		}
+
+		composable(
+			Screen.SharedReceiptScreen.route + "/{uri}",
+			arguments = listOf(navArgument("uri") { type = NavType.StringType })
+		) { backStackEntry ->
+			val model = viewModel<AddViewModel>(
+				factory = factoryProvider(
+					AddViewModel(
+						repository = CustomRepository(
+							Collection.AMOUNTS.path,
+							AmountEntity::class.java
+						)
+					)
+				)
+			)
+			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
+			SharedReceipt(uri, model.state, model::onEvent)
 		}
 	}
 }
