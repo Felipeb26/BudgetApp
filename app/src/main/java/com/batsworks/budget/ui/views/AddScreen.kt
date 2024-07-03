@@ -342,7 +342,7 @@ private fun EntranceButton(
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		CustomText(
-			text = state.entranceError ?: "existe um erro aqui",
+			text = state.entranceError ?: "",
 			isUpperCase = true, color = Color400, textWeight = FontWeight.Bold,
 			textDecoration = TextDecoration.Underline
 		)

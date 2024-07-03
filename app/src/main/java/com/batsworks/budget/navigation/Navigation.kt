@@ -1,7 +1,5 @@
 package com.batsworks.budget.navigation
 
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,7 +12,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.entity.AmountEntity
@@ -36,7 +33,6 @@ import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
 import com.batsworks.budget.ui.views.ReceiptScreen
 import com.batsworks.budget.ui.views.Setting
-import com.batsworks.budget.ui.views.SharedReceipt
 
 @Composable
 fun Navigate(
@@ -130,14 +126,6 @@ fun Navigate(
 			val model = viewModel<SettingsViewModel>()
 			Setting(navController, model::saveTheme)
 		}
-
-		composable(
-			Screen.SharedReceiptScreen.route+"/{uri}",
-			arguments = listOf(navArgument("file") { type = NavType.StringType })
-		) { backStackEntry ->
-			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
-			SharedReceipt(uri)
-		}
 	}
 }
 
@@ -157,8 +145,4 @@ fun easyNavigate(
 		launchSingleTop = singleTop
 		restoreState = restore
 	}
-}
-
-private fun goTo(route: String): String {
-	return route.lowercase().substring(0, route.indexOf("_"))
 }

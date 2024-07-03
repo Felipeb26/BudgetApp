@@ -13,8 +13,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.dto.UserDTO
+import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.theme.customBackground
+import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.login.LoginViewModel
 import com.batsworks.budget.ui.view_model.login.SignInViewModel
@@ -22,7 +24,6 @@ import com.batsworks.budget.ui.views.Login
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.SharedReceipt
 import com.batsworks.budget.ui.views.SignUp
-import java.net.URI
 
 @Composable
 fun StartNavigate(
@@ -64,8 +65,20 @@ fun StartNavigate(
 				nullable = true
 			})
 		) { backStackEntry ->
+			val model = viewModel<AddViewModel>(
+				factory = factoryProvider(
+					AddViewModel(
+						repository = CustomRepository(
+							Collection.AMOUNTS.path,
+							AmountEntity::class.java
+						)
+					)
+				)
+			)
+
+
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
-			SharedReceipt(uri)
+			SharedReceipt(uri, model.state, model::onEvent)
 		}
 	}
 }

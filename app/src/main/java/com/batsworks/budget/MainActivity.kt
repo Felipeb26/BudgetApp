@@ -140,9 +140,9 @@ class MainActivity : AppCompatActivity() {
 
 				imageUri?.let {
 					val encodedUri = Uri.encode(it.toString())
-					StartNavigate(navController, Screen.MainScreen, true)
+					StartNavigate(navController, Screen.LoginScreen, true)
 					coroutine.launch {
-						delay(Duration.ofSeconds(3))
+						delay(Duration.ofSeconds(1))
 						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
 						return@launch
 					}
