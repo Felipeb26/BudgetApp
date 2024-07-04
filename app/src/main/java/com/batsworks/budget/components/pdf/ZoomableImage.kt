@@ -128,7 +128,7 @@ fun ZoomableImage(
     Spacer(modifier = Modifier.height(20.dp))
 }
 
-suspend fun ScrollableState.setScrolling(value: Boolean) {
+private suspend fun ScrollableState.setScrolling(value: Boolean) {
     scroll(scrollPriority = MutatePriority.PreventUserInput) {
         when (value) {
             true -> Unit
