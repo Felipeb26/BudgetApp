@@ -26,27 +26,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.capitalizeStrings
-import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.ModuleNavigation
+import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
-import com.batsworks.budget.ui.view_model.profile.ProfileViewModel
 import com.rollbar.android.Rollbar
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
@@ -57,7 +55,6 @@ class MainActivity : AppCompatActivity() {
 
 	private val promptManager by lazy { BiometricPromptManager(this) }
 	private val model by viewModels<MainViewModel>()
-	private val profile by viewModels<ProfileViewModel>()
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
 	private var rollbar: Rollbar? = null
 
@@ -70,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 		)
 
 		setContent {
+			if (rollbar == null) rollbar = Rollbar.init(applicationContext)
 			val view = LocalView.current
 			CustomTheme(LocalView.current)
 			val coroutine = rememberCoroutineScope()
@@ -100,17 +98,23 @@ class MainActivity : AppCompatActivity() {
 				delay(Duration.ofSeconds(2))
 				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
 			}
-			val context = LocalContext.current
+
+			val context = applicationContext
 			val toast = NotificationToast(context)
-			rollbar = Rollbar.init(context)
 			val navController = rememberNavController()
 			var imageUri by remember { mutableStateOf<Uri?>(null) }
-			val userState = profile.userEntity.collectAsState()
-			val user = rememberSaveable { mutableStateOf(userState.value?.nome) }
+			val userState = model.userEntity.collectAsState()
 
 			BudgetTheme {
 				ExtrasRequests(permissionsToRequest)
 				CustomTheme(view, findTheme(userState.value?.theme))
+
+				val networkConnectivityObserver = NetworkConnectivityObserver(this)
+				networkConnectivityObserver.observe(this) {
+					if (it) toast.show("ligado")
+					else toast.show("desligado")
+				}
+
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
@@ -127,7 +131,6 @@ class MainActivity : AppCompatActivity() {
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 							Log.d("biometria", context.getString(R.string.biometric_auth_error))
-							toast.show(context.getString(R.string.biometric_auth_error))
 							ModuleNavigation(navController, Screen.LoginScreen)
 							return@BudgetTheme
 						}
@@ -140,13 +143,12 @@ class MainActivity : AppCompatActivity() {
 					val encodedUri = Uri.encode(it.toString())
 					ModuleNavigation(navController, Screen.MainScreen, true)
 					coroutine.launch {
-						delay(Duration.ofSeconds(1))
+						delay(Duration.ofMillis(100))
 						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
 						return@launch
 					}
 					return@BudgetTheme
 				}
-
 				LaunchedEffect(intent) {
 					if (intent.action == Intent.ACTION_SEND && intent.type != null) {
 						val type = intent.type
@@ -162,7 +164,7 @@ class MainActivity : AppCompatActivity() {
 						.fillMaxSize()
 						.background(customBackground)
 				) {}
-				if (user.value != null) {
+				if (userState.value != null && userState.value?.loginWhenEnter == false) {
 					promptManager.showBiometricPrompt(
 						capitalizeStrings(
 							"${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"

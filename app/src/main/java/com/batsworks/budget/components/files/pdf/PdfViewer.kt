@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.pdf
+package com.batsworks.budget.components.files.pdf
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -33,13 +33,13 @@ enum class PdfListDirection {
 @ExperimentalFoundationApi
 @Composable
 fun PdfViewer(
-    @RawRes pdfResId: Int,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = Gray,
-    pageColor: Color = Color.White,
-    listDirection: PdfListDirection = PdfListDirection.VERTICAL,
-    arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
-    loadingListener: (
+	@RawRes pdfResId: Int,
+	modifier: Modifier = Modifier,
+	backgroundColor: Color = Gray,
+	pageColor: Color = Color.White,
+	listDirection: PdfListDirection = PdfListDirection.VERTICAL,
+	arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
+	loadingListener: (
         isLoading: Boolean,
         currentPage: Int?,
         maxPage: Int?,
@@ -60,13 +60,13 @@ fun PdfViewer(
 @ExperimentalFoundationApi
 @Composable
 fun PdfViewer(
-    pdfStream: InputStream,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = Gray,
-    pageColor: Color = Color.White,
-    listDirection: PdfListDirection = PdfListDirection.VERTICAL,
-    arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
-    loadingListener: (
+	pdfStream: InputStream,
+	modifier: Modifier = Modifier,
+	backgroundColor: Color = Gray,
+	pageColor: Color = Color.White,
+	listDirection: PdfListDirection = PdfListDirection.VERTICAL,
+	arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
+	loadingListener: (
         isLoading: Boolean,
         currentPage: Int?,
         maxPage: Int?,
@@ -91,17 +91,17 @@ fun PdfViewer(
 @ExperimentalFoundationApi
 @Composable
 fun PdfViewer(
-    pdfStream: InputStream,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = Gray,
-    listDirection: PdfListDirection = PdfListDirection.VERTICAL,
-    arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
-    loadingListener: (
+	pdfStream: InputStream,
+	modifier: Modifier = Modifier,
+	backgroundColor: Color = Gray,
+	listDirection: PdfListDirection = PdfListDirection.VERTICAL,
+	arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
+	loadingListener: (
         isLoading: Boolean,
         currentPage: Int?,
         maxPage: Int?,
     ) -> Unit = { _, _, _ -> },
-    page: @Composable (LazyListState, ImageBitmap) -> Unit
+	page: @Composable (LazyListState, ImageBitmap) -> Unit
 ) {
     val context = LocalContext.current
     val pagePaths = remember {

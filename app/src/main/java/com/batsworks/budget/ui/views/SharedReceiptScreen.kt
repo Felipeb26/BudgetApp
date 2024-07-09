@@ -2,6 +2,7 @@ package com.batsworks.budget.ui.views
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -30,15 +31,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.files.getByteArrayFromUri
+import com.batsworks.budget.components.files.image.getByteArrayFromUri
+import com.batsworks.budget.components.files.image.CustomImageShow
 import com.batsworks.budget.components.localDate
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
+import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.customBackground
@@ -47,21 +54,58 @@ import com.batsworks.budget.ui.view_model.add.AmountFormState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.time.delay
 import java.time.Duration
 import java.time.LocalDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SharedReceipt(file: Uri, state: AmountFormState, onEvent: (AmountFormEvent) -> Unit) {
+fun SharedReceipt(
+	navController: NavController,
+	file: Uri,
+	resourceEventFlow: Flow<Resource<Any>>,
+	state: AmountFormState,
+	onEvent: (AmountFormEvent) -> Unit,
+) {
 	Log.d("VALUE", file.toString())
-	val exchanges = arrayOf("entrance", "output")
-	val uri by remember { mutableStateOf(file) }
-	val entrance = remember { mutableStateOf(false) }
 	val context = LocalContext.current
+	var loading by remember { mutableStateOf(false) }
+	val toast = NotificationToast(context)
 
-	LaunchedEffect(Unit) {
+	val exchanges = arrayOf("entrance", "output")
+	val entrance = remember { mutableStateOf(false) }
+	var uri by remember { mutableStateOf(file) }
+	var billName by remember { mutableStateOf("") }
+	var billCost by remember { mutableStateOf("") }
+
+	LaunchedEffect(uri) {
 		delay(Duration.ofMillis(250))
 		onEvent(AmountFormEvent.FileVoucher(getByteArrayFromUri(context, uri)))
+	}
+
+	LaunchedEffect(context) {
+		resourceEventFlow.collect { event ->
+			when (event) {
+				is Resource.Loading -> {
+					loading = event.loading
+					toast.show(context.getString(R.string.loading))
+				}
+
+				is Resource.Failure -> {
+					loading = false
+					toast.show(event.error ?: context.getString(R.string.adding_bill_error))
+				}
+
+				is Resource.Sucess -> {
+					loading = false
+					toast.show(context.getString(R.string.adding_bill_sucess))
+					easyNavigate(navController, Screen.LoginScreen.route)
+				}
+			}
+		}
 	}
 
 	LazyColumn(
@@ -77,24 +121,37 @@ fun SharedReceipt(file: Uri, state: AmountFormState, onEvent: (AmountFormEvent) 
 			CustomOutlineTextField(
 				modifier = Modifier.fillMaxWidth(0.95f),
 				labelText = stringResource(id = R.string.bill_name),
-				onValueChange = {}
+				text = billName, onValueChange = {
+					billName = it
+					onEvent(AmountFormEvent.ChargeNameEventChange(it))
+				}, error = state.chargeNameError != null,
+				errorMessage = state.chargeNameError
 			)
 			CustomOutlineTextField(
 				modifier = Modifier.fillMaxWidth(0.95f),
 				transformation = CurrencyTransformation(),
 				labelText = stringResource(id = R.string.bill_value),
-				onValueChange = {}
+				text = billCost, onValueChange = {
+					billCost = it
+					if (it.isNotBlank()) onEvent(AmountFormEvent.ValueEventChange(it))
+				}, error = state.valueError != null,
+				errorMessage = state.valueError
 			)
 		}
 		item { CalendarPick(onEvent, state) }
 		item {
 			Row {
-				exchanges.forEach { exchange ->
-					EntranceButton(
+				exchanges.forEachIndexed { index, exchange ->
+					if ((index % 2) == 0) {
+						EntranceButton(
+							modifier = Modifier.weight(1f),
+							exchange = exchange,
+							entrance.value, entrance, onEvent, state
+						)
+					} else EntranceButton(
 						modifier = Modifier.weight(1f),
 						exchange = exchange,
-						entrance.value, entrance,
-						onEvent, state
+						!entrance.value, entrance, onEvent, state
 					)
 				}
 			}
@@ -105,18 +162,18 @@ fun SharedReceipt(file: Uri, state: AmountFormState, onEvent: (AmountFormEvent) 
 				enable = true,
 				onClick = {
 					onEvent(AmountFormEvent.Submit)
+					uri = Uri.EMPTY
 				}, text = stringResource(id = R.string.save)
 			)
 			Spacer(modifier = Modifier.height(15.dp))
 		}
 		item {
-			AsyncImage(
+			CustomImageShow(
 				modifier = Modifier
 					.fillMaxWidth()
 					.height(500.dp)
 					.border(1.dp, color = Color300),
-				model = uri,
-				contentDescription = "recepit"
+				image = uri
 			)
 			Spacer(modifier = Modifier.height(30.dp))
 		}
@@ -206,5 +263,9 @@ private fun EntranceButton(
 @PreviewLightDark
 @Composable
 private fun Preview() {
-	SharedReceipt(Uri.EMPTY, AmountFormState()) {}
+	val resource = Channel<Resource<Any>>()
+	SharedReceipt(
+		rememberNavController(), Uri.EMPTY,
+		resource.receiveAsFlow(),AmountFormState()
+	) {}
 }

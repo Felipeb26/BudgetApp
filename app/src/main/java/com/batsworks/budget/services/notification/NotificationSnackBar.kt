@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.notification
+package com.batsworks.budget.services.notification
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState

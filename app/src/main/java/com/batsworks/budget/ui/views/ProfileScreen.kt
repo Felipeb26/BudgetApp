@@ -39,7 +39,7 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.customBackground

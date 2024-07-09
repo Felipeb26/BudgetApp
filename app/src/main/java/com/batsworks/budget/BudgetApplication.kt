@@ -11,7 +11,7 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.batsworks.budget.components.notification.NotificationChannelId
+import com.batsworks.budget.services.notification.NotificationChannelId
 import com.batsworks.budget.domain.dao.Database
 import java.util.concurrent.Executors
 

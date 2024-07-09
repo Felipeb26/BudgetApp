@@ -144,7 +144,7 @@ fun Navigate(
 				)
 			)
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
-			SharedReceipt(uri, model.state, model::onEvent)
+			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)
 		}
 	}
 }

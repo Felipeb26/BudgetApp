@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.files
+package com.batsworks.budget.components.files.image
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,6 +13,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.decodeBitmap
 import com.batsworks.budget.R
+import com.batsworks.budget.components.files.getFileType
+import com.batsworks.budget.components.files.zipFile
 import java.io.ByteArrayOutputStream
 
 

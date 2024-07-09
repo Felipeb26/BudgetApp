@@ -139,7 +139,8 @@ class AddViewModel(
     private fun formatEventCharge(value: String): BigDecimal {
         if (value.length <= 1 && value.contains("."))
             return BigDecimal.ZERO
-        val valueToUse = value.replace("R$", "").trim()
+        var valueToUse = value.replace(Regex("[a-zA-Z]"), "")
+        valueToUse = valueToUse.replace("R$", "").trim()
         return BigDecimal(valueToUse)
     }
 

@@ -44,7 +44,7 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.CustomLottieAnimation
 import com.batsworks.budget.components.functions.SwipeToDeleteContainer
 import com.batsworks.budget.components.currency
-import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.Screen

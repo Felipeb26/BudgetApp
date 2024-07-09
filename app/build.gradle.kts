@@ -99,4 +99,6 @@ dependencies {
 	implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
 	//Rollbar
 	implementation("com.rollbar:rollbar-android:1.10.0")
+	//YCharts
+	implementation("co.yml:ycharts:2.1.0")
 }

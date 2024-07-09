@@ -1,9 +1,7 @@
-package com.batsworks.budget.components.image
+package com.batsworks.budget.components.files.image
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -21,11 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -38,7 +34,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun ZoomableImage(
+fun CustomImageShow(
 	image: Any?,
 	modifier: Modifier = Modifier,
 	imageAlign: Alignment = Alignment.Center,
@@ -61,7 +57,6 @@ fun ZoomableImage(
 	Box(
 		modifier = Modifier
 			.clip(shape)
-			.background(Color.White)
 			.combinedClickable(
 				interactionSource = remember { MutableInteractionSource() },
 				indication = null,

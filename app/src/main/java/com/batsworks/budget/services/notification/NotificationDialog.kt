@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.notification
+package com.batsworks.budget.services.notification
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column

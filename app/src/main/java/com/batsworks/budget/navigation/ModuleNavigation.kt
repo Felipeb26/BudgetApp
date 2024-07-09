@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.dto.UserDTO
@@ -27,7 +28,7 @@ import com.batsworks.budget.ui.views.SignUp
 
 @Composable
 fun ModuleNavigation(
-	navController: NavHostController,
+	navController: NavHostController = rememberNavController(),
 	screen: Screen,
 	route: Boolean = false,
 ) {
@@ -69,7 +70,7 @@ fun ModuleNavigation(
 				)
 			)
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
-			SharedReceipt(uri, model.state, model::onEvent)
+			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)
 		}
 		navigation(Screen.MainScreen.route, route = "main") {
 			composable(Screen.MainScreen.route) { Main() }

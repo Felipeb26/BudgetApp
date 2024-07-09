@@ -45,8 +45,8 @@ import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.annotedString
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.fields.CustomPasswordOutlineTextField
-import com.batsworks.budget.components.notification.CustomDialog
-import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.services.notification.CustomDialog
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.components.visual_transformation.PhoneTransformation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate

@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.notification
+package com.batsworks.budget.services.notification
 
 import android.content.Context
 import android.widget.Toast

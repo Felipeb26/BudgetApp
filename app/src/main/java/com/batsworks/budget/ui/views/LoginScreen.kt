@@ -49,7 +49,7 @@ import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.functions.composeBool
-import com.batsworks.budget.components.notification.NotificationToast
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color200

@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.pdf
+package com.batsworks.budget.components.files.pdf
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
