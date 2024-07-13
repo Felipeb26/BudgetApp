@@ -87,11 +87,11 @@ fun Navigate(
 		}
 		composable(Screen.HistoryScreen.route) {
 			val model = viewModel<HistoryViewModel>()
+			val (amounts, setAmounts) = model.amounts
 			Historico(
 				navController,
 				model.resourceEventFlow,
-				model.amounts,
-				model::onInit,
+				amounts, setAmounts,
 				model::deleteAmount
 			)
 		}

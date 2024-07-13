@@ -32,17 +32,6 @@ class HistoryViewModel(
         }
     }
 
-    fun onInit(){
-        viewModelScope.launch {
-            delay(Duration.ofSeconds(2))
-            amounts.value = repository.findAll()
-        }
-    }
-    fun findByEntrace(entrance: String) {
-        val value = entrance == "entrance"
-        amounts.value = amounts.value.filter { it.entrance == value }.toList()
-    }
-
     fun deleteAmount(id: Int) = viewModelScope.launch {
         resourceEventChannel.send(Resource.Loading(true))
         try {

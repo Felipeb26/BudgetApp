@@ -31,7 +31,6 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 				DiskCache.Builder()
 					.maxSizePercent(0.03)
 					.directory(cacheDir)
-
 					.build()
 			}.logger(DebugLogger())
 			.build()
