@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.dto.UserDTO
-import com.batsworks.budget.domain.dto.toDTO
+import com.batsworks.budget.domain.entity.UserFirebaseEntity
+import com.batsworks.budget.domain.entity.toDTO
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +23,7 @@ class LoginViewModel(
 	private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
 	private val validateTerms: ValidateTerms = ValidateTerms(),
-	private val repository: CustomRepository<UserDTO>? = null,
+	private val repository: CustomRepository<UserFirebaseEntity>? = null,
 ) : ViewModel() {
 
 	private val tag = LoginViewModel::class.java.name
@@ -114,10 +114,10 @@ class LoginViewModel(
 			repository.findByLogin("email", user.email)
 				.addOnSuccessListener { documents ->
 					viewModelScope.launch {
-						val users = documents.toObjects(UserDTO::class.java)
+						val users = documents.toObjects(UserFirebaseEntity::class.java)
 						Log.d(AJUST_TAG(tag), "${users.size}")
 						for (document in documents) {
-							val userDTO = document.toObject(UserDTO::class.java).toEntity()
+							val userDTO = document.toObject(UserFirebaseEntity::class.java).toEntity()
 							if (userDTO.email == user.email) {
 								resourceEventChannel.send(Resource.Loading(false))
 								resourceEventChannel.send(Resource.Failure("Email already in use"))

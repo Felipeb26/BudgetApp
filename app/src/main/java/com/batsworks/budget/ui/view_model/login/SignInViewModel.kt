@@ -11,7 +11,7 @@ import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.Collection
 import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.dto.UserDTO
+import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import kotlinx.coroutines.channels.Channel
@@ -94,7 +94,7 @@ class SignInViewModel(
 							Log.d(AJUST_TAG(tag), "Encontrou ${documents.size()} usuarios assim ")
 							for (document in documents) {
 								viewModelScope.launch {
-									val userDTO = document.toObject(UserDTO::class.java)
+									val userDTO = document.toObject(UserFirebaseEntity::class.java)
 									if (userDTO.email == state.email) {
 										user = userDTO.toEntity()
 										localRepository.save(user!!)

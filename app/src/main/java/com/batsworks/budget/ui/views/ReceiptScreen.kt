@@ -88,7 +88,7 @@ fun ReceiptScreen(
 
 				is Resource.Sucess -> {
 					val values = event.result.toString().split("|")
-                    notifications.showBasicNotification(
+                    notifications.showPendingNotification(
                         text = "Download complete of ${values[1]}",
                         filePath = values[0]
                     )

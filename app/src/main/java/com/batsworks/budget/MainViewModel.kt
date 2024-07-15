@@ -1,23 +1,22 @@
 package com.batsworks.budget
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.domain.dao.Collection
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.dto.UserDTO
-import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.services.worker.SyncData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 class MainViewModel(private val repository: UsersDao = BudgetApplication.database.getUsersDao()) :
 	ViewModel() {
 
-	private var userRepository: CustomRepository<UserDTO>
-	private var amountRepository: CustomRepository<AmountEntity>
 
 	private val _isReady = MutableStateFlow(false)
 	val isReady = _isReady.asStateFlow()
@@ -33,7 +32,11 @@ class MainViewModel(private val repository: UsersDao = BudgetApplication.databas
 		viewModelScope.launch {
 			userEntityStateFlow.emit(repository.findUser())
 		}
-		userRepository = CustomRepository(Collection.USERS.path, UserDTO::class.java)
-		amountRepository = CustomRepository(Collection.AMOUNTS.path, AmountEntity::class.java)
 	}
+
+	fun syncData(context: Context) {
+		val workerRequest = PeriodicWorkRequestBuilder<SyncData>(Duration.ofSeconds(75)).build()
+		WorkManager.getInstance(context).enqueue(workerRequest)
+	}
+
 }

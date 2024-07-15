@@ -22,7 +22,25 @@ data class AmountEntity(
 	val fileRef: Uri? = null,
 	val amountDate: LocalDate = LocalDate.now(),
 	val creatAt: LocalDateTime = LocalDateTime.now(),
+	val isSync: Boolean = false,
 ) {
+
+	fun withSync(isSync: Boolean?): AmountEntity {
+		return AmountEntity(
+			this.id,
+			this.chargeName,
+			this.value,
+			this.entrance,
+			this.file,
+			this.user,
+			this.extension,
+			this.size,
+			this.fileRef,
+			this.amountDate,
+			this.creatAt,
+			isSync = isSync ?: false
+		)
+	}
 
 	fun withRef(reference: Uri?): AmountEntity {
 		return AmountEntity(
@@ -39,6 +57,7 @@ data class AmountEntity(
 			this.creatAt,
 		)
 	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

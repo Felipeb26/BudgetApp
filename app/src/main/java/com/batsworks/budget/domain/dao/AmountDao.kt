@@ -22,4 +22,7 @@ interface AmountDao {
 
     @Query("DELETE FROM AMOUNTENTITY WHERE id=:id")
     suspend fun delete(id: Int)
+
+    @Query("SELECT * FROM AMOUNTENTITY WHERE isSync = 0")
+    suspend fun findNotSync(): List<AmountEntity>
 }

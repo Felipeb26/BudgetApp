@@ -13,7 +13,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.batsworks.budget.domain.dao.Collection
-import com.batsworks.budget.domain.dto.UserDTO
+import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.theme.customBackground
@@ -47,7 +47,7 @@ fun ModuleNavigation(
 					LoginViewModel(
 						repository = CustomRepository(
 							Collection.USERS.path,
-							UserDTO::class.java
+							UserFirebaseEntity::class.java
 						)
 					)
 				)

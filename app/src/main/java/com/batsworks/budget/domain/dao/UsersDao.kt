@@ -25,4 +25,7 @@ interface UsersDao {
 
     @Query("UPDATE USERENTITY SET theme=:theme")
     suspend fun updateTheme(theme: String)
+
+    @Query("SELECT * FROM USERENTITY WHERE isSync = 0")
+    suspend fun findNotSyncData(): List<UserEntity>
 }

@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
 		)
 
 		setContent {
-			if (rollbar == null) rollbar = Rollbar.init(applicationContext)
+			val context = applicationContext
+			if (rollbar == null) rollbar = Rollbar.init(context)
 			val view = LocalView.current
 			CustomTheme(LocalView.current)
 			val coroutine = rememberCoroutineScope()
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
 					}
 				}
 			}
+
 			val permissionsResultLauncher = rememberLauncherForActivityResult(
 				contract = ActivityResultContracts.RequestMultiplePermissions(),
 				onResult = { })
@@ -97,9 +99,9 @@ class MainActivity : AppCompatActivity() {
 			LaunchedEffect(Unit) {
 				delay(Duration.ofSeconds(2))
 				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+				model.syncData(applicationContext)
 			}
 
-			val context = applicationContext
 			val toast = NotificationToast(context)
 			val navController = rememberNavController()
 			var imageUri by remember { mutableStateOf<Uri?>(null) }

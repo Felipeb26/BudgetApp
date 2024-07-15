@@ -1,10 +1,8 @@
-package com.batsworks.budget.domain.dto
+package com.batsworks.budget.domain.entity
 
-import com.batsworks.budget.domain.entity.AbstractEntity
-import com.batsworks.budget.domain.entity.UserEntity
 import java.time.LocalDateTime
 
-data class UserDTO(
+data class UserFirebaseEntity(
 	val nome: String = "",
 	val email: String = "",
 	val phone: String = "",
@@ -20,24 +18,14 @@ data class UserDTO(
 			phone = this.phone,
 			password = this.password,
 			creatAt = this.creatAt,
-			firebaseId = this.id
+			firebaseId = this.id,
+			isSync = true
 		)
 	}
 }
 
-fun toEntity(dto: UserDTO): UserEntity {
-	return UserEntity(
-		nome = dto.nome,
-		email = dto.email,
-		phone = dto.phone,
-		password = dto.password,
-		creatAt = dto.creatAt,
-		firebaseId = dto.id
-	)
-}
-
-fun toDTO(entity: UserEntity): UserDTO {
-	return UserDTO(
+fun toDTO(entity: UserEntity): UserFirebaseEntity {
+	return UserFirebaseEntity(
 		nome = entity.nome,
 		email = entity.email,
 		phone = entity.phone,
