@@ -23,7 +23,6 @@ class HomeViewModel(
     private var repository: AmountDao = BudgetApplication.database.getAmountDao(),
 ) : ViewModel() {
 
-    private val tag = HomeViewModel::class.java.name
     private val _profileCardValues = MutableStateFlow<AmountState?>(null)
 
     val lastAmounts = flow {

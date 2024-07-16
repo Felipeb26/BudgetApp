@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +42,7 @@ import com.batsworks.budget.components.animations.CustomLottieAnimation
 import com.batsworks.budget.components.animations.SwitchElementsView
 import com.batsworks.budget.components.buttons.CustomIconButton
 import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.functions.PullToRefreshLazyColumn
 import com.batsworks.budget.components.functions.SwipeToDeleteContainer
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
@@ -55,6 +55,9 @@ import com.batsworks.budget.ui.theme.textColor
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 
 @Composable
 fun Historico(
@@ -63,7 +66,9 @@ fun Historico(
 	amounts: List<AmountEntity>,
 	setAmountList: (List<AmountEntity>) -> Unit,
 	deleteAmount: (Int) -> Unit,
+	searchAmount: () -> Unit,
 ) {
+	val coroutine = rememberCoroutineScope()
 	val context = LocalContext.current
 	val toast = NotificationToast(context)
 
@@ -83,8 +88,8 @@ fun Historico(
 		}
 	}
 
-
 	val (moneyFlow, setMoneyFlow) = remember { mutableStateOf("") }
+	var isRefreshing by remember { mutableStateOf(false) }
 
 	Column(
 		modifier = Modifier
@@ -104,15 +109,23 @@ fun Historico(
 				isUpperCase = true
 			)
 		}) {
-			LazyColumn {
-				items(items = amounts, key = { it.id }) { amount ->
-					SwipeToDeleteContainer(
-						item = amount,
+			PullToRefreshLazyColumn(itens = amounts,
+				isRefreshing = isRefreshing,
+				onRefresh = {
+					isRefreshing = true
+					searchAmount()
+					coroutine.launch {
+						delay(Duration.ofMillis(2500))
+						isRefreshing = !isRefreshing
+					}
+				},
+				content = { amount ->
+					SwipeToDeleteContainer(item = amount,
 						onDelete = { am -> deleteAmount(am.id) }) {
 						Content(amount, navController)
 					}
 				}
-			}
+			)
 		}
 	}
 }
@@ -123,7 +136,6 @@ private fun CustomFilter(
 	setAmountList: (List<AmountEntity>) -> Unit,
 	moneyFlow: String, selectMoneyFlow: (String) -> Unit,
 ) {
-
 	var expandedEntrance by remember { mutableStateOf(false) }
 	var expanded by remember { mutableStateOf(false) }
 
@@ -134,7 +146,8 @@ private fun CustomFilter(
 			onExpandChage = { expandedEntrance = !expandedEntrance },
 			onDismiss = { expandedEntrance = !expandedEntrance },
 			expanded = expandedEntrance, selectText = moneyFlow,
-			onValueChange = { selectMoneyFlow(it)
+			onValueChange = {
+				selectMoneyFlow(it)
 				setAmountList.invoke(emptyList())
 			}
 		)
@@ -210,5 +223,5 @@ fun PreviewHistorico() {
 			file = "teste.".encodeToByteArray()
 		)
 	)
-	Historico(navController = rememberNavController(), resource.receiveAsFlow(), amounts, {}) {}
+	Historico(navController = rememberNavController(), resource.receiveAsFlow(), amounts, {}, {}) {}
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import co.yml.charts.common.extensions.isNotNull
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.Collection
@@ -14,15 +15,20 @@ import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.entity.toDTO
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.services.notification.Notifications
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
-class SyncData(val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+class SyncData(val context: Context, private val params: WorkerParameters) :
+	CoroutineWorker(context, params) {
 
-	private val TAG: String = "SYNC_DATA"
 	private val userDaoRepository: UsersDao = BudgetApplication.database.getUsersDao()
 	private val amountDaoRepository: AmountDao = BudgetApplication.database.getAmountDao()
+
+	companion object {
+		const val TAG: String = "SYNC_DATA"
+		var syncId: UUID? = null
+		var time = 0
+	}
 
 	/** Remote Repository dependency
 	 * UserDTO && AmountEntity
@@ -33,31 +39,37 @@ class SyncData(val context: Context, params: WorkerParameters) : CoroutineWorker
 		CustomRepository(Collection.AMOUNTS.path, AmountFirebaseEntity::class.java)
 
 	override suspend fun doWork(): Result {
-		val scope = CoroutineScope(Dispatchers.Main)
 		val notification = Notifications(context)
-		Log.d(TAG, "working")
 		return try {
+			Log.d(TAG, "RODOU $time")
+			if (syncId.isNotNull()) return Result.success()
+			syncId = params.id
 			val usersNotSync = userDaoRepository.findNotSyncData()
 			val amountsNotSync = amountDaoRepository.findNotSync()
 
-			if (usersNotSync.isNotEmpty() || amountsNotSync.isNotEmpty()) {
+			usersNotSync.forEach { syncUsers(it) }
+
+
+			if (amountsNotSync.isNotEmpty()) {
 				notification.showLoadingNotification(context, "Syncing saved data")
 			} else return Result.success()
 
-			usersNotSync.forEach { syncUsers(it) }
 			amountsNotSync.forEach {
-				var amount = i
+				var amount = it
 				amount.file?.let { file ->
 					val taskSnapshot =
-						amountRepository.saveFile(file, "${amount.chargeName}.${amount.extension}")
-							.await()
+						amountRepository.saveFile(
+							file,
+							"${amount.chargeName}.${amount.extension}"
+						).await()
 					amount = amount.withRef(taskSnapshot.uploadSessionUri)
 				}
 				amountRepository.save(toDTO(amount)).await()
 				amountDaoRepository.save(amount.withSync(true))
 			}
-
 			Log.d(TAG, "worked")
+			syncId = null
+			notification.showBasicNotification("Synchronization has finalize")
 			Result.success()
 		} catch (e: Exception) {
 			Log.d(TAG, e.message ?: "an error happer")
@@ -67,7 +79,7 @@ class SyncData(val context: Context, params: WorkerParameters) : CoroutineWorker
 	}
 
 	private fun syncUsers(user: UserEntity) {
-
+		Log.d(TAG, "Updating user: ${user.email}")
 	}
 
 

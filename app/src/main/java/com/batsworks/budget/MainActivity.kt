@@ -34,11 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.capitalizeStrings
-import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.ModuleNavigation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.services.connection.NetworkConnectivityObserver
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
 			LaunchedEffect(Unit) {
 				delay(Duration.ofSeconds(2))
 				permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
-				model.syncData(applicationContext)
 			}
 
 			val toast = NotificationToast(context)

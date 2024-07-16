@@ -92,7 +92,8 @@ fun Navigate(
 				navController,
 				model.resourceEventFlow,
 				amounts, setAmounts,
-				model::deleteAmount
+				model::deleteAmount,
+				model::searchAmounts
 			)
 		}
 		composable(

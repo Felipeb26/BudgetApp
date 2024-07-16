@@ -23,6 +23,7 @@ data class AmountEntity(
 	val amountDate: LocalDate = LocalDate.now(),
 	val creatAt: LocalDateTime = LocalDateTime.now(),
 	val isSync: Boolean = false,
+	val firebaseId: String? = null,
 ) {
 
 	fun withSync(isSync: Boolean?): AmountEntity {
@@ -38,7 +39,8 @@ data class AmountEntity(
 			this.fileRef,
 			this.amountDate,
 			this.creatAt,
-			isSync = isSync ?: false
+			isSync = isSync ?: false,
+			this.firebaseId
 		)
 	}
 
@@ -55,6 +57,8 @@ data class AmountEntity(
 			reference,
 			this.amountDate,
 			this.creatAt,
+			this.isSync,
+			this.firebaseId
 		)
 	}
 
