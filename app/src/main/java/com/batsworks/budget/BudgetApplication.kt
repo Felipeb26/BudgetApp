@@ -88,10 +88,11 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 			.setRequiredNetworkType(NetworkType.CONNECTED)
 			.build()
 
-
 		val workerRequest = PeriodicWorkRequestBuilder<SyncData>(
 			repeatInterval = 1,
-			repeatIntervalTimeUnit = TimeUnit.MINUTES
+			repeatIntervalTimeUnit = TimeUnit.MINUTES,
+			flexTimeInterval = 10,
+			flexTimeIntervalUnit = TimeUnit.SECONDS
 		).setBackoffCriteria(
 			backoffPolicy = BackoffPolicy.LINEAR,
 			duration = Duration.ofSeconds(15)
@@ -100,7 +101,7 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 		val workManager = WorkManager.getInstance(this)
 		workManager.cancelAllWork()
 
-		workManager.enqueueUniquePeriodicWork(FINAL_TAG, ExistingPeriodicWorkPolicy.KEEP, workerRequest)
+		workManager.enqueueUniquePeriodicWork(FINAL_TAG, ExistingPeriodicWorkPolicy.UPDATE, workerRequest)
 		workManager.getWorkInfosForUniqueWorkLiveData(FINAL_TAG)
 			.observeForever {
 				it.forEach { workInfo ->

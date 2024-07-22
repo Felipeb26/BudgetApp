@@ -26,6 +26,24 @@ data class AmountEntity(
 	val firebaseId: String? = null,
 ) {
 
+	fun withFirebaseId(id: String?): AmountEntity {
+		return AmountEntity(
+			this.id,
+			this.chargeName,
+			this.value,
+			this.entrance,
+			this.file,
+			this.user,
+			this.extension,
+			this.size,
+			this.fileRef,
+			this.amountDate,
+			this.creatAt,
+			this.isSync,
+			firebaseId = id ?: ""
+		)
+	}
+
 	fun withSync(isSync: Boolean?): AmountEntity {
 		return AmountEntity(
 			this.id,

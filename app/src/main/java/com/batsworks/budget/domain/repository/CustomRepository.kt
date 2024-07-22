@@ -1,6 +1,7 @@
 package com.batsworks.budget.domain.repository
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,8 +24,8 @@ class CustomRepository<T>(
 	private val _fullList = MutableStateFlow<MutableList<T>>(mutableListOf())
 	private val fullList: StateFlow<MutableList<T>> = _fullList
 
-	fun save(t: T): Task<Void> {
-		return db.collection(collection).document().set(t as Any)
+	fun save(data: T) :Task<DocumentReference>{
+		return db.collection(collection).add(data as Any)
 	}
 
 	fun findAll(): StateFlow<MutableList<T>> {
@@ -53,7 +54,7 @@ class CustomRepository<T>(
 		return db.collection(collection).document().update(data).await()
 	}
 
-	suspend fun findByLogin(param: String, value: Any): Task<QuerySnapshot> {
+	fun findByParam(param: String, value: Any): Task<QuerySnapshot> {
 		return db.collection(collection).whereEqualTo(param, value).get()
 	}
 

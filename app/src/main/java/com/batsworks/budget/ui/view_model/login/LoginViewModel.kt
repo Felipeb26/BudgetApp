@@ -111,7 +111,7 @@ class LoginViewModel(
 				password = state.password.toLong(),
 				termsAccepted = state.acceptedTerms
 			)
-			repository.findByLogin("email", user.email)
+			repository.findByParam("email", user.email)
 				.addOnSuccessListener { documents ->
 					viewModelScope.launch {
 						val users = documents.toObjects(UserFirebaseEntity::class.java)
