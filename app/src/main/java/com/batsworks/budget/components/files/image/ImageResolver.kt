@@ -22,8 +22,8 @@ fun getImageFromUri(context: Context, uri: Uri): Bitmap {
     return ImageDecoder.createSource(context.contentResolver, uri).decodeBitmap { _, _ -> }
 }
 
-
-fun getByteArrayFromUri(context: Context, uri: Uri, name: String? = null): ByteArray {
+fun getByteArrayFromUri(context: Context, uri: Uri?, name: String? = null): ByteArray {
+    if(uri == null) return byteArrayOf()
     val fileType = getFileType(context, uri)
     Log.d("FILE", fileType)
     return when (fileType) {

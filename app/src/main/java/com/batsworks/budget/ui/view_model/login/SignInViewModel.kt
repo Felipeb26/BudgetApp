@@ -111,10 +111,7 @@ class SignInViewModel(
 							}
 						}
 				} else {
-					if (user!!.loginWhenEnter != state.acceptedTerms) {
-						localRepository.save(user!!.withLoginWhenEnter(state.acceptedTerms))
-					}
-
+					user?.loginWhenEnter.let { localRepository.save(user!!.withLoginWhenEnter(true)) }
 					validationEventChannel.send(Resource.Loading(false))
 					validationEventChannel.send(Resource.Sucess(""))
 				}

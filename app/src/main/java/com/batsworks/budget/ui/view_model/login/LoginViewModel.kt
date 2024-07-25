@@ -109,7 +109,7 @@ class LoginViewModel(
 				email = state.email,
 				phone = state.telefone,
 				password = state.password.toLong(),
-				termsAccepted = state.acceptedTerms
+				termsAccepted = state.acceptedTerms,
 			)
 			repository.findByParam("email", user.email)
 				.addOnSuccessListener { documents ->

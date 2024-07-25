@@ -111,5 +111,4 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 
 	}
 
-
 }

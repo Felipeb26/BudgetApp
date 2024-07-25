@@ -5,11 +5,15 @@ class SyncUserData:DataSyncFactory {
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun bring() {
+	override suspend fun update() {
 		TODO("Not yet implemented")
 	}
 
 	override suspend fun needsUpdate(): Boolean {
+		return false
+	}
+
+	override suspend fun needsBringData(): Boolean {
 		return false
 	}
 }

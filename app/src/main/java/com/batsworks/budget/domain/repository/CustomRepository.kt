@@ -15,63 +15,67 @@ import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 class CustomRepository<T>(
-	private val collection: String,
-	private val type: Class<T>,
-	private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
-	private val storage: StorageReference = FirebaseStorage.getInstance().reference,
+    private val collection: String,
+    private val type: Class<T>,
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val storage: StorageReference = FirebaseStorage.getInstance().reference,
 ) {
 
-	private val _fullList = MutableStateFlow<MutableList<T>>(mutableListOf())
-	private val fullList: StateFlow<MutableList<T>> = _fullList
+    private val _fullList = MutableStateFlow<MutableList<T>>(mutableListOf())
+    private val fullList: StateFlow<MutableList<T>> = _fullList
 
-	fun save(data: T) :Task<DocumentReference>{
-		return db.collection(collection).add(data as Any)
-	}
+    fun save(data: T): Task<DocumentReference> {
+        return db.collection(collection).add(data as Any)
+    }
 
-	fun findAll(): StateFlow<MutableList<T>> {
-		val list: MutableList<T> = mutableListOf()
-		db.collection(collection).get().addOnCompleteListener { query ->
-			if (query.isSuccessful) {
-				for (documents in query.result) {
-					val document = documents.toObject(type)
-					list.add(document)
-					_fullList.value = list
-				}
-			}
-		}
-		return fullList
-	}
+    fun findAll(): StateFlow<MutableList<T>> {
+        val list: MutableList<T> = mutableListOf()
+        db.collection(collection).get().addOnCompleteListener { query ->
+            if (query.isSuccessful) {
+                for (documents in query.result) {
+                    val document = documents.toObject(type)
+                    list.add(document)
+                    _fullList.value = list
+                }
+            }
+        }
+        return fullList
+    }
 
-	suspend fun findByDocument(document: String): DocumentSnapshot {
-		return db.collection(collection).document(document).get().await()
-	}
+    suspend fun findByDocument(document: String): DocumentSnapshot {
+        return db.collection(collection).document(document).get().await()
+    }
 
-	suspend fun delete(document: String): Void {
-		return db.collection(collection).document(document).delete().await()
-	}
+    suspend fun delete(document: String): Void {
+        return db.collection(collection).document(document).delete().await()
+    }
 
-	suspend fun update(data: MutableMap<String, Any>): Void {
-		return db.collection(collection).document().update(data).await()
-	}
+    suspend fun update(data: MutableMap<String, Any>): Void {
+        return db.collection(collection).document().update(data).await()
+    }
 
-	fun findByParam(param: String, value: Any): Task<QuerySnapshot> {
-		return db.collection(collection).whereEqualTo(param, value).get()
-	}
+    fun findByParam(param: String, value: Any): Task<QuerySnapshot> {
+        return db.collection(collection).whereEqualTo(param, value).get()
+    }
 
-	fun findByLogin(querys: HashMap<String, Any>): Task<QuerySnapshot> {
-		val reference = db.collection(collection)
-		return reference.whereEqualTo("email", querys["email"])
-			.whereEqualTo("password", querys["password"]).get()
-	}
+    fun findAfterId(id: String): Task<QuerySnapshot> {
+        return db.collection(collection).startAfter(id).get()
+    }
 
-	fun findByLogin(vararg filter: Filter): Task<QuerySnapshot> {
-		val dbConst = db.collection(collection)
-		filter.forEach { dbConst.where(it) }
-		return dbConst.get()
-	}
+    fun findByLogin(querys: HashMap<String, Any>): Task<QuerySnapshot> {
+        val reference = db.collection(collection)
+        return reference.whereEqualTo("email", querys["email"])
+            .whereEqualTo("password", querys["password"]).get()
+    }
 
-	fun saveFile(file: ByteArray, document: String = UUID.randomUUID().toString()): UploadTask {
-		val fileReference = storage.child("comprovantes/$document")
-		return fileReference.putBytes(file)
-	}
+    fun findByLogin(vararg filter: Filter): Task<QuerySnapshot> {
+        val dbConst = db.collection(collection)
+        filter.forEach { dbConst.where(it) }
+        return dbConst.get()
+    }
+
+    fun saveFile(file: ByteArray, document: String = UUID.randomUUID().toString()): UploadTask {
+        val fileReference = storage.child("comprovantes/$document")
+        return fileReference.putBytes(file)
+    }
 }

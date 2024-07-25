@@ -25,4 +25,8 @@ interface AmountDao {
 
     @Query("SELECT * FROM AMOUNTENTITY WHERE isSync = 0")
     suspend fun findNotSync(): List<AmountEntity>
+
+    @Query("SELECT * FROM AMOUNTENTITY ae ORDER BY amountDate DESC LIMIT 1")
+    suspend fun findLastAmount():AmountEntity?
+
 }
