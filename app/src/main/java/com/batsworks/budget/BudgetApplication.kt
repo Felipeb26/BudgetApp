@@ -18,9 +18,14 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.batsworks.budget.components.AJUST_TAG
+import com.batsworks.budget.di.AppModule
+import com.batsworks.budget.di.AppModuleImpl
 import com.batsworks.budget.domain.dao.Database
+import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.services.notification.NotificationChannelId
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.services.worker.SyncData
+import com.rollbar.android.Rollbar
 import java.time.Duration
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -28,6 +33,48 @@ import java.util.concurrent.TimeUnit
 class BudgetApplication : Application(), ImageLoaderFactory {
 
 	private val tag = BudgetApplication::class.java.name
+
+	companion object {
+		lateinit var rollbar: Rollbar
+		lateinit var database: Database
+		lateinit var appModule: AppModule
+	}
+
+	override fun onCreate() {
+		super.onCreate()
+		rollbar = Rollbar(this)
+		roomDatabase()
+		appModule = AppModuleImpl(this)
+		notification()
+		networkState()
+		syncData()
+	}
+
+	private fun roomDatabase() {
+		database = Room.databaseBuilder(
+			applicationContext,
+			Database::class.java,
+			Database.NAME
+		).setQueryCallback({ query, args ->
+			Log.d("QUERY", query)
+			if (args.isNotEmpty()) Log.d("ARGS", "$args")
+		}, Executors.newSingleThreadExecutor())
+			.fallbackToDestructiveMigration()
+			.build()
+	}
+
+	private fun notification() {
+		val notificationChannel = NotificationChannel(
+			NotificationChannelId.CHANNEL.id,
+			"Notification BatsWorks Budget",
+			NotificationManager.IMPORTANCE_HIGH
+		)
+
+		notificationChannel.description = "A notification from you budget app"
+		val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+		notificationManager.createNotificationChannel(notificationChannel)
+
+	}
 
 	override fun newImageLoader(): ImageLoader {
 		return ImageLoader(this).newBuilder()
@@ -48,42 +95,7 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 			.build()
 	}
 
-	companion object {
-		lateinit var database: Database
-	}
-
-	override fun onCreate() {
-		super.onCreate()
-		database = Room.databaseBuilder(
-			applicationContext,
-			Database::class.java,
-			Database.NAME
-		).setQueryCallback({ query, args ->
-			Log.d("QUERY", query)
-			if (args.isNotEmpty()) Log.d("ARGS", "$args")
-		}, Executors.newSingleThreadExecutor())
-			.fallbackToDestructiveMigration()
-			.build()
-
-		val notificationChannel = NotificationChannel(
-			NotificationChannelId.CHANNEL.id,
-			"Notification BatsWorks Budget",
-			NotificationManager.IMPORTANCE_HIGH
-		)
-
-		notificationChannel.description = "A notification from you budget app"
-		val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-		notificationManager.createNotificationChannel(notificationChannel)
-
-		syncData()
-	}
-
-	var int = 0
 	private fun syncData() {
-		int = int.inc()
-		Log.d("STARTED", "$int times")
-		val FINAL_TAG = AJUST_TAG(tag)
-
 		val contraints = Constraints.Builder()
 			.setRequiredNetworkType(NetworkType.CONNECTED)
 			.build()
@@ -96,13 +108,17 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 		).setBackoffCriteria(
 			backoffPolicy = BackoffPolicy.LINEAR,
 			duration = Duration.ofSeconds(15)
-		).setConstraints(contraints).addTag(FINAL_TAG).build()
+		).setConstraints(contraints).addTag(AJUST_TAG(tag)).build()
 
 		val workManager = WorkManager.getInstance(this)
 		workManager.cancelAllWork()
 
-		workManager.enqueueUniquePeriodicWork(FINAL_TAG, ExistingPeriodicWorkPolicy.UPDATE, workerRequest)
-		workManager.getWorkInfosForUniqueWorkLiveData(FINAL_TAG)
+		workManager.enqueueUniquePeriodicWork(
+			AJUST_TAG(tag),
+			ExistingPeriodicWorkPolicy.UPDATE,
+			workerRequest
+		)
+		workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
 			.observeForever {
 				it.forEach { workInfo ->
 					Log.d("DATA_SYNC", "${workInfo.state}")
@@ -111,4 +127,13 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 
 	}
 
+	private fun networkState() {
+		val toast = NotificationToast(this)
+		val networkConnectivityObserver = NetworkConnectivityObserver(this)
+		networkConnectivityObserver.observeForever {
+			Log.d("TEST", "MUDOU O ESTADO")
+			if (it) toast.show("ligado")
+			else toast.show("desligado")
+		}
+	}
 }

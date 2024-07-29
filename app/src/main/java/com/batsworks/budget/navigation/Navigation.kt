@@ -14,10 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.batsworks.budget.domain.dao.Collection
-import com.batsworks.budget.domain.entity.AmountEntity
-import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.history.HistoryViewModel
@@ -48,20 +45,15 @@ fun Navigate(
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
 		composable(Screen.MainScreen.route) { Main(navController) }
+
 		composable(Screen.HomeScreen.route) {
 			val model = viewModel<HomeViewModel>()
 			Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
 		}
+
 		composable(Screen.ProfileScreen.route) {
 			val model = viewModel<ProfileViewModel>(
-				factory = factoryProvider(
-					ProfileViewModel(
-						repository = CustomRepository(
-							Collection.USERS.path,
-							UserEntity::class.java
-						)
-					)
-				)
+				factory = factoryProvider{ProfileViewModel(repository = BudgetApplication.appModule.userRepository) }
 			)
 			Profile(
 				navController,
@@ -71,20 +63,16 @@ fun Navigate(
 				model::onEvent
 			)
 		}
+
 		composable(Screen.AccountsScreen.route) { Accounts(navController) }
+
 		composable(Screen.AdicionarScreen.route) {
 			val model = viewModel<AddViewModel>(
-				factory = factoryProvider(
-					AddViewModel(
-						repository = CustomRepository(
-							Collection.AMOUNTS.path,
-							AmountEntity::class.java
-						)
-					)
-				)
+				factory = factoryProvider { AddViewModel(repository = BudgetApplication.appModule.amountRepository) }
 			)
 			Add(model.resourceEventFlow, model::onEvent, model.state)
 		}
+
 		composable(Screen.HistoryScreen.route) {
 			val model = viewModel<HistoryViewModel>()
 			val (amounts, setAmounts) = model.amounts
@@ -96,6 +84,7 @@ fun Navigate(
 				model::searchAmounts
 			)
 		}
+
 		composable(
 			Screen.ReceiptScreen.route + "/{id}",
 			arguments = listOf(navArgument("id") {
@@ -105,13 +94,9 @@ fun Navigate(
 			})
 		) { entry ->
 			val context = LocalContext.current
+			val id = entry.arguments?.getString("id") ?: return@composable
 			val model = viewModel<ReceiptViewModel>(
-				factory = factoryProvider(
-					ReceiptViewModel(
-						context = context,
-						id = entry.arguments?.getString("id") ?: "0"
-					)
-				)
+				factory = factoryProvider { ReceiptViewModel(context, id = id) }
 			)
 			ReceiptScreen(
 				model.entityAmount,
@@ -135,14 +120,7 @@ fun Navigate(
 			arguments = listOf(navArgument("uri") { type = NavType.StringType })
 		) { backStackEntry ->
 			val model = viewModel<AddViewModel>(
-				factory = factoryProvider(
-					AddViewModel(
-						repository = CustomRepository(
-							Collection.AMOUNTS.path,
-							AmountEntity::class.java
-						)
-					)
-				)
+				factory = factoryProvider { AddViewModel(repository = BudgetApplication.appModule.amountRepository) }
 			)
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
 			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)

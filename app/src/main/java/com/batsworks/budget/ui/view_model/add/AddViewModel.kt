@@ -15,6 +15,7 @@ import com.batsworks.budget.components.localDate
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.view_model.ValidationResult
 import kotlinx.coroutines.channels.Channel
@@ -31,7 +32,7 @@ class AddViewModel(
     private val amountDateValidate: ValidateAmountDate = ValidateAmountDate(),
     private val userLocalRepository: UsersDao = BudgetApplication.database.getUsersDao(),
     private val amountLocalRepository: AmountDao = BudgetApplication.database.getAmountDao(),
-	private val repository: CustomRepository<AmountEntity>
+	private val repository: CustomRepository<AmountFirebaseEntity>
 ) : ViewModel() {
 
     private val tag: String = AddViewModel::class.java.name

@@ -12,10 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.batsworks.budget.domain.dao.Collection
-import com.batsworks.budget.domain.entity.UserFirebaseEntity
-import com.batsworks.budget.domain.entity.AmountEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.factoryProvider
@@ -43,14 +40,7 @@ fun ModuleNavigation(
 		}
 		composable(Screen.SignUpScreen.route) {
 			val model = viewModel<LoginViewModel>(
-				factory = factoryProvider(
-					LoginViewModel(
-						repository = CustomRepository(
-							Collection.USERS.path,
-							UserFirebaseEntity::class.java
-						)
-					)
-				)
+				factory = factoryProvider { LoginViewModel(repository = BudgetApplication.appModule.userRepository) }
 			)
 			SignUp(navController, model)
 		}
@@ -60,14 +50,7 @@ fun ModuleNavigation(
 			arguments = listOf(navArgument("uri") { type = NavType.StringType })
 		) { backStackEntry ->
 			val model = viewModel<AddViewModel>(
-				factory = factoryProvider(
-					AddViewModel(
-						repository = CustomRepository(
-							Collection.AMOUNTS.path,
-							AmountEntity::class.java
-						)
-					)
-				)
+				factory = factoryProvider { AddViewModel(repository = BudgetApplication.appModule.amountRepository) }
 			)
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
 			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)

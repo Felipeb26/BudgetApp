@@ -11,6 +11,7 @@ import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 import com.batsworks.budget.ui.view_model.login.RegistrationFormState
@@ -29,7 +30,7 @@ class ProfileViewModel(
     private val validatePhone: ValidatePhone = ValidatePhone(),
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: ValidatePassword = ValidatePassword(),
-    private val repository: CustomRepository<UserEntity>? = null,
+    private val repository: CustomRepository<UserFirebaseEntity>? = null,
     private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
 ) : ViewModel() {
 

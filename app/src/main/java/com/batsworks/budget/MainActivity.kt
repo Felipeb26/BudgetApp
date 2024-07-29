@@ -37,7 +37,6 @@ import com.batsworks.budget.components.capitalizeStrings
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.ModuleNavigation
 import com.batsworks.budget.navigation.Screen
-import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
@@ -45,7 +44,6 @@ import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
-import com.rollbar.android.Rollbar
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import java.time.Duration
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 	private val promptManager by lazy { BiometricPromptManager(this) }
 	private val model by viewModels<MainViewModel>()
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
-	private var rollbar: Rollbar? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -68,7 +65,6 @@ class MainActivity : AppCompatActivity() {
 
 		setContent {
 			val context = applicationContext
-			if (rollbar == null) rollbar = Rollbar.init(context)
 			val view = LocalView.current
 			CustomTheme(LocalView.current)
 			val coroutine = rememberCoroutineScope()
@@ -110,12 +106,6 @@ class MainActivity : AppCompatActivity() {
 				ExtrasRequests(permissionsToRequest)
 				CustomTheme(view, findTheme(userState.value?.theme))
 
-				val networkConnectivityObserver = NetworkConnectivityObserver(this)
-				networkConnectivityObserver.observe(this) {
-					if (it) toast.show("ligado")
-					else toast.show("desligado")
-				}
-
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
@@ -150,10 +140,11 @@ class MainActivity : AppCompatActivity() {
 					}
 					return@BudgetTheme
 				}
+
 				LaunchedEffect(intent) {
 					if (intent.action == Intent.ACTION_SEND && intent.type != null) {
 						val type = intent.type
-						Log.d("hvjsb", "${intent.type}")
+						Log.d("INTENT_TYPE_TO_CHECK", "${intent.type}")
 						if (type?.startsWith("image") == true) {
 							imageUri = intent.clipData?.getItemAt(0)?.uri ?: intent.data
 						}
