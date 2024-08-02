@@ -13,8 +13,10 @@ import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.services.notification.Notifications
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.withContext
 
 class SyncData(val context: Context, params: WorkerParameters) :
 	CoroutineWorker(context, params) {
@@ -41,13 +43,16 @@ class SyncData(val context: Context, params: WorkerParameters) :
 		userDaoRepository = BudgetApplication.database.getUsersDao()
 		amountDaoRepository = BudgetApplication.database.getAmountDao()
 
-		dataSync = listOf(SyncUserData(), SyncAmountData(
-			context,
-			resourceEventChannel,
-			userDaoRepository,
-			amountDaoRepository,
-			amountRepository
-		))
+		dataSync = listOf(
+			SyncUserData(),
+			SyncAmountData(
+				context,
+				resourceEventChannel,
+				userDaoRepository,
+				amountDaoRepository,
+				amountRepository,
+			)
+		)
 	}
 
 	/** Remote Repository dependency
@@ -58,28 +63,29 @@ class SyncData(val context: Context, params: WorkerParameters) :
 		val notification = Notifications(context)
 		return try {
 			Log.d(TAG, "RODOU $time")
-			resourceEventFlow.collect { event ->
-				when (event) {
-					is Resource.Loading -> {
-						notification.showLoadingNotification(context)
-					}
-
-					is Resource.Failure -> {
-						notification.showBasicNotification(
-							event.error ?: context.getString(R.string.adding_bill_error)
-						)
-					}
-
-					is Resource.Sucess -> {
-						notification.showBasicNotification(context.getString(R.string.adding_bill_sucess))
-					}
-				}
-			}
+//			withContext(Dispatchers.IO) {
+//				resourceEventFlow.collect { event ->
+//					when (event) {
+//						is Resource.Loading -> {
+//							notification.showLoadingNotification(context)
+//						}
+//
+//						is Resource.Failure -> {
+//							notification.showBasicNotification(
+//								event.error ?: context.getString(R.string.adding_bill_error)
+//							)
+//						}
+//
+//						is Resource.Sucess -> {
+//							notification.showBasicNotification(context.getString(R.string.adding_bill_sucess))
+//						}
+//					}
+//				}
+//			}
 
 			val toSync = dataSync.firstOrNull { it.needsUpdate() }
 			if (toSync == null) {
 				notification.showBasicNotification("nada para atualizar agora")
-				return Result.success()
 			} else toSync.update()
 
 
@@ -87,7 +93,7 @@ class SyncData(val context: Context, params: WorkerParameters) :
 			if (toBring == null) {
 				notification.showBasicNotification("nenhum dado para trazer")
 				return Result.success()
-			} else toSync.save()
+			} else toBring.save()
 
 			Result.success()
 		} catch (e: Exception) {

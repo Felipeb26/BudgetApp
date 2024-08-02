@@ -8,7 +8,6 @@ import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.toDTO
 import com.batsworks.budget.domain.repository.CustomRepository
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.tasks.await
 
 class SyncAmountData(
@@ -49,9 +48,15 @@ class SyncAmountData(
     }
 
     override suspend fun needsBringData(): Boolean {
+        val amountToFilter = amountDao.findAllAmountSync()
+
+        amountRepository.idNotIn(amountToFilter)
+
         val amount = amountDao.findLastAmount() ?: return false
         val remoteAmounts = amount.firebaseId?.let { amountRepository.findAfterId(it) } ?: return false
-        val amounts = remoteAmounts.await()
-        return amounts.size() > 0
+        val haveDataToBring = remoteAmounts.await().size() > 0
+        if(haveDataToBring) return true
+        val content = amountRepository.findAll().value
+        return content.isNotEmpty()
     }
 }
