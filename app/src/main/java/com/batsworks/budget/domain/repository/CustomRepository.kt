@@ -63,11 +63,9 @@ class CustomRepository<T>(
 		return fileReference.putBytes(file)
 	}
 
-	suspend fun idNotIn(ids: List<String>): Task<List<DocumentSnapshot>> {
+	fun idNotIn(ids: List<String>): Task<List<DocumentSnapshot>> {
 		if (ids.size <= 10) {
-			val docs = findAll()
-			Log.d("SIZe", "${docs.size}")
-			return db.collection(collection.path).whereIn("id", ids).get()
+			return db.collection(collection.path).whereNotIn("id", ids).get()
 				.continueWith { task -> task.result?.documents ?: emptyList() }
 		} else {
 			val tasks = mutableListOf<Task<QuerySnapshot>>()
