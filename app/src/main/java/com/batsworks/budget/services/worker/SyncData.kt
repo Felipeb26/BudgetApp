@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.batsworks.budget.BudgetApplication
-import com.batsworks.budget.R
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
@@ -13,10 +12,8 @@ import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.batsworks.budget.services.notification.Notifications
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.withContext
 
 class SyncData(val context: Context, params: WorkerParameters) :
 	CoroutineWorker(context, params) {
@@ -63,25 +60,6 @@ class SyncData(val context: Context, params: WorkerParameters) :
 		val notification = Notifications(context)
 		return try {
 			Log.d(TAG, "RODOU $time")
-//			withContext(Dispatchers.IO) {
-//				resourceEventFlow.collect { event ->
-//					when (event) {
-//						is Resource.Loading -> {
-//							notification.showLoadingNotification(context)
-//						}
-//
-//						is Resource.Failure -> {
-//							notification.showBasicNotification(
-//								event.error ?: context.getString(R.string.adding_bill_error)
-//							)
-//						}
-//
-//						is Resource.Sucess -> {
-//							notification.showBasicNotification(context.getString(R.string.adding_bill_sucess))
-//						}
-//					}
-//				}
-//			}
 
 			val toSync = dataSync.firstOrNull { it.needsUpdate() }
 			if (toSync == null) {

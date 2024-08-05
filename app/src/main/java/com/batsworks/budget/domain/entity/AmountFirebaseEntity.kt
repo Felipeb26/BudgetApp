@@ -33,10 +33,10 @@ data class AmountFirebaseEntity(
             fileRef = this.fileRef,
             file = fileRef?.let { getByteArrayFromUri(context, it) },
             firebaseId = this.id,
-            isSync = true,
             amountDate = this.amountDate,
             creatAt = this.creatAt
         )
+
     }
 
     fun toEntity(): AmountEntity {

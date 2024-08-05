@@ -2,7 +2,7 @@ package com.batsworks.budget.di
 
 import android.content.Context
 import android.util.Log
-import com.batsworks.budget.domain.dao.Collection
+import com.batsworks.budget.domain.dao.FirebaseCollection
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -19,11 +19,11 @@ class AppModuleImpl(appContext: Context) : AppModule {
 	}
 
 	override val amountRepository: CustomRepository<AmountFirebaseEntity> by lazy {
-		CustomRepository(Collection.AMOUNTS.path, AmountFirebaseEntity::class.java)
+		CustomRepository(FirebaseCollection.AMOUNTS, AmountFirebaseEntity::class.java)
 	}
 
 	override val userRepository: CustomRepository<UserFirebaseEntity> by lazy {
-		CustomRepository(Collection.USERS.path, UserFirebaseEntity::class.java)
+		CustomRepository(FirebaseCollection.USERS, UserFirebaseEntity::class.java)
 	}
 
 }

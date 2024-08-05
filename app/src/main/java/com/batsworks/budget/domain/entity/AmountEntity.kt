@@ -80,6 +80,24 @@ data class AmountEntity(
 		)
 	}
 
+	fun withUser(userId:String): AmountEntity{
+		return AmountEntity(
+			this.id,
+			this.chargeName,
+			this.value,
+			this.entrance,
+			this.file,
+			userId,
+			this.extension,
+			this.size,
+			this.fileRef,
+			this.amountDate,
+			this.creatAt,
+			this.isSync,
+			this.firebaseId
+		)
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

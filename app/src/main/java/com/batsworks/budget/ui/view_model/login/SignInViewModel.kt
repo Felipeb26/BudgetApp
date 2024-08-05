@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.dao.Collection
+import com.batsworks.budget.domain.dao.FirebaseCollection
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.entity.UserEntity
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class SignInViewModel(
 	private val repository: CustomRepository<UserEntity> = CustomRepository(
-		Collection.USERS.path,
+		FirebaseCollection.USERS,
 		UserEntity::class.java
 	),
 	private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
