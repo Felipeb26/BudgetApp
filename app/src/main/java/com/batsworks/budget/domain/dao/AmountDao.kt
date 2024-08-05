@@ -29,7 +29,7 @@ interface AmountDao {
     @Query("SELECT * FROM AMOUNTENTITY ae ORDER BY amountDate DESC LIMIT 1")
     suspend fun findLastAmount():AmountEntity?
 
-    @Query("SELECT ae.firebaseId FROM AMOUNTENTITY ae WHERE ae.isSync = 1")
+    @Query("SELECT ae.chargeName FROM AMOUNTENTITY ae WHERE ae.isSync = 1")
     suspend fun findAllAmountSync(): List<String>
 
 }

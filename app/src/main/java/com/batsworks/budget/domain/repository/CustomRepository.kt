@@ -65,7 +65,7 @@ class CustomRepository<T>(
 
 	fun idNotIn(ids: List<String>): Task<List<DocumentSnapshot>> {
 		if (ids.size <= 10) {
-			return db.collection(collection.path).whereNotIn("id", ids).get()
+			return db.collection(collection.path).whereNotIn("chargeName", ids).get()
 				.continueWith { task -> task.result?.documents ?: emptyList() }
 		} else {
 			val tasks = mutableListOf<Task<QuerySnapshot>>()
