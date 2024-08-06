@@ -3,6 +3,7 @@ package com.batsworks.budget.domain.entity
 import android.content.Context
 import android.net.Uri
 import com.batsworks.budget.components.files.image.getByteArrayFromUri
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -18,10 +19,11 @@ data class AmountFirebaseEntity(
     val extension: String = "",
     val size: Int = 0,
     val fileRef: Uri? = null,
-    val amountDate: LocalDate = LocalDate.now(),
-    val creatAt: LocalDateTime = LocalDateTime.now(),
+    val amountDate: Long = 0,
+    val creatAt: Long = 0,
     val isSync: Boolean = false,
 ) {
+
     fun toEntity(context: Context): AmountEntity {
         return AmountEntity(
             chargeName = this.chargeName,
@@ -33,10 +35,9 @@ data class AmountFirebaseEntity(
             fileRef = this.fileRef,
             file = fileRef?.let { getByteArrayFromUri(context, it) },
             firebaseId = this.id,
-            amountDate = this.amountDate,
+            amountDate = LocalDateTime.of(this.amountDate),
             creatAt = this.creatAt
         )
-
     }
 
     fun toEntity(): AmountEntity {

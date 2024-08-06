@@ -1,20 +1,9 @@
-package com.batsworks.budget.components
+package com.batsworks.budget.components.formatter
 
 import android.icu.text.NumberFormat
 import android.icu.util.ULocale
 import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Locale
-
-
-fun formatter(): DateTimeFormatter {
-	return DateTimeFormatter.ofPattern("dd/MM/yyyy")
-}
-
-fun formatter(pattern: String): DateTimeFormatter {
-	return DateTimeFormatter.ofPattern(pattern)
-}
 
 fun currency(value: BigDecimal?): String {
 	val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt-BR"))
@@ -30,14 +19,4 @@ fun currency(value: String?): String {
 fun currency(value: BigDecimal, locale: ULocale): String {
 	val currencyFormat = NumberFormat.getCurrencyInstance(locale)
 	return currencyFormat.format(value)
-}
-
-fun localDate(date: LocalDate?, pattern: String = "dd/MM/yyyy"): String {
-	if (date == null) return LocalDate.now().format(formatter())
-	return DateTimeFormatter.ofPattern(pattern).format(date)
-}
-
-fun localDate(date: String?, pattern: String = "dd/MM/yyyy"): LocalDate {
-	if (date.isNullOrEmpty()) return LocalDate.now()
-	return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern))
 }

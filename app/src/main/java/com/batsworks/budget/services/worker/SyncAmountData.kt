@@ -52,14 +52,14 @@ class SyncAmountData(
 	suspend fun save(amounts: List<DocumentSnapshot>) {
 		val user = userDao.findUser()
 		amounts.forEach { document ->
-			resourceEventChannel.send(Resource.Loading(false))
+//			resourceEventChannel.(Resource.Loading(false))
 			val amount = document.toObject(AmountFirebaseEntity::class.java)
 			amount?.let {
 				val entity = it.toEntity(context)
 				amountDao.save(entity.withUser(user.firebaseId))
 			}
 		}
-		resourceEventChannel.send(Resource.Sucess(""))
+//		resourceEventChannel.send(Resource.Sucess(""))
 	}
 
 	override suspend fun needsBringData(): Boolean {
