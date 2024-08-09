@@ -1,6 +1,6 @@
 package com.batsworks.budget.ui.view_model.add
 
-import com.batsworks.budget.components.localDate
+import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.ui.view_model.ValidationResult
 import java.time.LocalDate
 

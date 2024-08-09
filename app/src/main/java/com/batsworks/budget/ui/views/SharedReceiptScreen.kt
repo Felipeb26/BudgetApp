@@ -41,7 +41,7 @@ import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.files.image.getByteArrayFromUri
 import com.batsworks.budget.components.files.image.CustomImageShow
-import com.batsworks.budget.components.localDate
+import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.navigation.Screen

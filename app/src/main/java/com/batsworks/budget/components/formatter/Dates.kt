@@ -24,6 +24,18 @@ fun localDate(date: String?, pattern: String = "dd/MM/yyyy"): LocalDate {
 	return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern))
 }
 
-fun fromMillis(millis:Long, zone){
-	LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.of())
+fun fromMillis(millis: Long, zone: ZoneId? = ZoneId.systemDefault()): LocalDateTime {
+	return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), zone)
+}
+
+fun fromMillis(millis: Long): LocalDate {
+	return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
+}
+
+fun toMillis(date: LocalDateTime): Long {
+	return date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+fun toMillis(date: LocalDate): Long {
+	return date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

@@ -73,13 +73,13 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.animations.SwitchElementsView
 import com.batsworks.budget.components.animations.Visible
-import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.formatScreenTitle
-import com.batsworks.budget.components.formatter
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.functions.notEnableIfEmpty
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.components.files.image.visibilityIsOn
+import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance

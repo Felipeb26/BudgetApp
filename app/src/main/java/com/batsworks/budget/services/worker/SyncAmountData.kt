@@ -55,7 +55,8 @@ class SyncAmountData(
 //			resourceEventChannel.(Resource.Loading(false))
 			val amount = document.toObject(AmountFirebaseEntity::class.java)
 			amount?.let {
-				val entity = it.toEntity(context)
+				val entity = it.toEntity()
+				var file = amountRepository.retrieveFile(entity.chargeName.plus(entity.extension))
 				amountDao.save(entity.withUser(user.firebaseId))
 			}
 		}

@@ -1,13 +1,10 @@
 package com.batsworks.budget.domain.entity
 
-import android.content.Context
 import android.net.Uri
-import com.batsworks.budget.components.files.image.getByteArrayFromUri
-import com.google.firebase.Timestamp
+import com.batsworks.budget.components.formatter.fromMillis
+import com.batsworks.budget.components.formatter.toMillis
 import com.google.firebase.firestore.DocumentId
 import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class AmountFirebaseEntity(
     @DocumentId
@@ -18,27 +15,11 @@ data class AmountFirebaseEntity(
     val user: String = "",
     val extension: String = "",
     val size: Int = 0,
-    val fileRef: Uri? = null,
+    val fileRef: String? = null,
     val amountDate: Long = 0,
     val creatAt: Long = 0,
     val isSync: Boolean = false,
 ) {
-
-    fun toEntity(context: Context): AmountEntity {
-        return AmountEntity(
-            chargeName = this.chargeName,
-            value = BigDecimal.valueOf(this.value.toDouble()),
-            entrance = this.entrance,
-            user = this.user,
-            extension = this.extension,
-            size = this.size,
-            fileRef = this.fileRef,
-            file = fileRef?.let { getByteArrayFromUri(context, it) },
-            firebaseId = this.id,
-            amountDate = LocalDateTime.of(this.amountDate),
-            creatAt = this.creatAt
-        )
-    }
 
     fun toEntity(): AmountEntity {
         return AmountEntity(
@@ -48,11 +29,10 @@ data class AmountFirebaseEntity(
             user = this.user,
             extension = this.extension,
             size = this.size,
-            fileRef = this.fileRef,
+            fileRef = this.fileRef?.let { Uri.parse(it) },
             firebaseId = this.id,
-            isSync = true,
-            amountDate = this.amountDate,
-            creatAt = this.creatAt
+            amountDate = fromMillis(this.amountDate),
+            creatAt = fromMillis(this.creatAt, null)
         )
     }
 }
@@ -66,9 +46,9 @@ fun toDTO(amount: AmountEntity): AmountFirebaseEntity {
         extension = amount.extension,
         user = amount.user ?: "",
         size = amount.size,
-        fileRef = amount.fileRef,
-        amountDate = amount.amountDate,
-        creatAt = amount.creatAt,
+        fileRef = amount.fileRef?.toString(),
+        amountDate = toMillis(amount.amountDate),
+        creatAt = toMillis(amount.creatAt),
         isSync = amount.isSync
     )
 }

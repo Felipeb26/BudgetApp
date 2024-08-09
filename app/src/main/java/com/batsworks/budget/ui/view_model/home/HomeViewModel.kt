@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.BudgetApplication
-import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity

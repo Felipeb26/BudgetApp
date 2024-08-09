@@ -1,6 +1,5 @@
 package com.batsworks.budget.domain.repository
 
-import android.util.Log
 import com.batsworks.budget.domain.dao.FirebaseCollection
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -8,12 +7,16 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.UUID
 
 class CustomRepository<T>(
@@ -57,12 +60,6 @@ class CustomRepository<T>(
 			.whereEqualTo("password", querys["password"]).get()
 	}
 
-
-	fun saveFile(file: ByteArray, document: String = UUID.randomUUID().toString()): UploadTask {
-		val fileReference = storage.child("comprovantes/$document")
-		return fileReference.putBytes(file)
-	}
-
 	fun idNotIn(ids: List<String>): Task<List<DocumentSnapshot>> {
 		if (ids.size <= 10) {
 			return db.collection(collection.path).whereNotIn("chargeName", ids).get()
@@ -76,6 +73,25 @@ class CustomRepository<T>(
 			return Tasks.whenAllSuccess<QuerySnapshot>(tasks)
 				.continueWith { task -> task.result?.flatMap { it.documents } ?: emptyList() }
 		}
+	}
+
+	fun saveFile(file: ByteArray, document: String = UUID.randomUUID().toString()): UploadTask {
+		val fileReference = storage.child("comprovantes/$document")
+		return fileReference.putBytes(file)
+	}
+
+	suspend fun retrieveFile(document: String): FileDownloadTask.TaskSnapshot? {
+		val fileReference = storage.child("comprovantes/$document")
+		val fileInfo = fileAndType(document)
+		val localFile = withContext(Dispatchers.IO) {
+			File.createTempFile(fileInfo.first, fileInfo.second)
+		}
+		return fileReference.getFile(localFile).await()
+	}
+
+	private fun fileAndType(document: String): Pair<String, String> {
+		val file =document.split(".")
+		return Pair(file[0], file[1])
 	}
 
 }

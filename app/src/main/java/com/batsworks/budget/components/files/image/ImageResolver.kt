@@ -32,6 +32,17 @@ fun getByteArrayFromUri(context: Context, uri: Uri?, name: String? = null): Byte
         else -> compressImage(context, uri)
     }
 }
+fun getByteArrayFromUri(context: Context, stringUri: String?, name: String? = null): ByteArray {
+    if(stringUri == null) return byteArrayOf()
+    val uri = Uri.parse(stringUri)
+    val fileType = getFileType(context, uri)
+    Log.d("FILE", fileType)
+    return when (fileType) {
+        "txt" -> zipFile(context, uri, name)
+        "pdf" -> zipFile(context, uri, name)
+        else -> compressImage(context, uri)
+    }
+}
 
 fun compressImage(context: Context, uri: Uri): ByteArray {
     val bitmap = ImageDecoder.createSource(context.contentResolver, uri).decodeBitmap { _, _ -> }

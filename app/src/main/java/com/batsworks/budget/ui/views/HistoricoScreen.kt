@@ -41,7 +41,7 @@ import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.CustomLottieAnimation
 import com.batsworks.budget.components.animations.SwitchElementsView
 import com.batsworks.budget.components.buttons.CustomIconButton
-import com.batsworks.budget.components.currency
+import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.functions.PullToRefreshLazyColumn
 import com.batsworks.budget.components.functions.SwipeToDeleteContainer
 import com.batsworks.budget.domain.entity.AmountEntity

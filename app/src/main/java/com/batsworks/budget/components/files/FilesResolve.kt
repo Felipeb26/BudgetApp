@@ -21,12 +21,17 @@ import kotlin.coroutines.resumeWithException
 
 
 fun getFileType(context: Context, uri: Uri): String {
-	Log.d("TPath", uri.path ?: "vazio p")
-	Log.d("THost", uri.host ?: "vazio h")
+	return try {
+		Log.d("TPath", uri.path ?: "vazio p")
+		Log.d("THost", uri.host ?: "vazio h")
 
-	val `is` = context.contentResolver.openInputStream(uri)
-	val mimeType = URLConnection.guessContentTypeFromStream(`is`)
-	return if (mimeType.isNullOrBlank()) extension(uri.path) else mimeType
+		val `is` = context.contentResolver.openInputStream(uri)
+		val mimeType = URLConnection.guessContentTypeFromStream(`is`)
+		if (mimeType.isNullOrBlank()) extension(uri.path) else mimeType
+	} catch (e: Exception) {
+		Log.d("FILE_TYPE", e.message ?: "erro ao ver tipo do arquivo")
+		"break"
+	}
 }
 
 fun getFileType(bytes: ByteArray?): String {
@@ -123,8 +128,8 @@ fun getImageUriFromByteArray(
 ): Uri? {
 
 	val contentValues = ContentValues()
-	title?.let{ contentValues.put(MediaStore.Images.Media.TITLE, title) }
-	description?.let { 	contentValues.put(MediaStore.Images.Media.DESCRIPTION, it) }
+	title?.let { contentValues.put(MediaStore.Images.Media.TITLE, title) }
+	description?.let { contentValues.put(MediaStore.Images.Media.DESCRIPTION, it) }
 	contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
 
 	val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
