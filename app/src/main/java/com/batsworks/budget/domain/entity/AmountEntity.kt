@@ -80,7 +80,7 @@ data class AmountEntity(
 		)
 	}
 
-	fun withUser(userId:String): AmountEntity{
+	fun withUser(userId: String): AmountEntity {
 		return AmountEntity(
 			this.id,
 			this.chargeName,
@@ -90,6 +90,24 @@ data class AmountEntity(
 			userId,
 			this.extension,
 			this.size,
+			this.fileRef,
+			this.amountDate,
+			this.creatAt,
+			this.isSync,
+			this.firebaseId
+		)
+	}
+
+	fun withFile(file: ByteArray?): AmountEntity {
+		return AmountEntity(
+			this.id,
+			this.chargeName,
+			this.value,
+			this.entrance,
+			file,
+			this.user,
+			this.extension,
+			file?.let { it.size / 1048576} ?: 0,
 			this.fileRef,
 			this.amountDate,
 			this.creatAt,
@@ -115,6 +133,7 @@ data class AmountEntity(
 	override fun hashCode(): Int {
 		return file?.contentHashCode() ?: 0
 	}
+
 }
 
 fun isEntrance(amount: AmountEntity): Color {

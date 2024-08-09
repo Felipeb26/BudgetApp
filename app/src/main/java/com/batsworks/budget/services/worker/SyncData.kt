@@ -2,15 +2,18 @@ package com.batsworks.budget.services.worker
 
 import android.content.Context
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.batsworks.budget.BudgetApplication
+import com.batsworks.budget.R
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.services.notification.NotificationChannelId
 import com.batsworks.budget.services.notification.Notifications
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -43,7 +46,6 @@ class SyncData(val context: Context, params: WorkerParameters) :
 		dataSync = listOf(
 			SyncUserData(),
 			SyncAmountData(
-				context,
 				resourceEventChannel,
 				userDaoRepository,
 				amountDaoRepository,
@@ -59,20 +61,36 @@ class SyncData(val context: Context, params: WorkerParameters) :
 	override suspend fun doWork(): Result {
 		val notification = Notifications(context)
 		return try {
+			var currentProgress = 0
+			val steps = dataSync.size
+			val builder = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
+				.setSmallIcon(R.drawable.logo)
+				.setContentTitle("Data Synchronization Started")
+				.setContentText("Your data synchronization has started.")
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setAutoCancel(true).setOngoing(true)
+				.setProgress(100, 0, false)
+			notification.showLoadingNotification(builder)
+
+
 			Log.d(TAG, "RODOU $time")
 
-			val toSync = dataSync.firstOrNull { it.needsUpdate() }
-			if (toSync == null) {
-				notification.showBasicNotification("nada para atualizar agora")
-			} else toSync.update()
+			for (syncItem in dataSync) {
+				if (syncItem.needsUpdate()) {
+					syncItem.update()
+				}
+				if (syncItem.needsBringData()) {
+					syncItem.save()
+				}
 
+				currentProgress += (100 / steps)
+				builder.setProgress(100, currentProgress, false)
+				notification.showLoadingNotification(builder)
+			}
 
-			val toBring = dataSync.firstOrNull { it.needsBringData() }
-			if (toBring == null) {
-				notification.showBasicNotification("nenhum dado para trazer")
-				return Result.success()
-			} else toBring.save()
-
+			builder.setContentText("Sync process finished. All data is up to date.").setOngoing(false)
+				.setProgress(0, 0, false)
+			notification.showLoadingNotification(builder)
 			Result.success()
 		} catch (e: Exception) {
 			Log.d(TAG, e.message ?: "an error happer")

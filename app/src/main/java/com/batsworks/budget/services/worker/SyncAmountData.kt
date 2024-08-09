@@ -1,6 +1,5 @@
 package com.batsworks.budget.services.worker
 
-import android.content.Context
 import android.util.Log
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
@@ -13,7 +12,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.tasks.await
 
 class SyncAmountData(
-	private val context: Context,
 	private val resourceEventChannel: Channel<Resource<Any>>,
 	private val userDao: UsersDao,
 	private val amountDao: AmountDao,
@@ -25,7 +23,7 @@ class SyncAmountData(
 		val amountsSaved = amountRepository.findByParam("user", user.firebaseId).await()
 		amountsSaved.forEach { documents ->
 			resourceEventChannel.send(Resource.Loading(false))
-			val amount = documents.toObject(AmountFirebaseEntity::class.java).toEntity(context)
+			val amount = documents.toObject(AmountFirebaseEntity::class.java).toEntity()
 			amountDao.save(amount)
 		}
 		resourceEventChannel.send(Resource.Sucess(""))
@@ -56,8 +54,8 @@ class SyncAmountData(
 			val amount = document.toObject(AmountFirebaseEntity::class.java)
 			amount?.let {
 				val entity = it.toEntity()
-				var file = amountRepository.retrieveFile(entity.chargeName.plus(entity.extension))
-				amountDao.save(entity.withUser(user.firebaseId))
+				val file = amountRepository.retrieveFile(entity.chargeName.plus(".").plus(entity.extension))
+				amountDao.save(entity.withUser(user.firebaseId).withFile(file))
 			}
 		}
 //		resourceEventChannel.send(Resource.Sucess(""))

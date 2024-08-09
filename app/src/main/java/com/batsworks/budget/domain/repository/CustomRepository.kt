@@ -80,18 +80,9 @@ class CustomRepository<T>(
 		return fileReference.putBytes(file)
 	}
 
-	suspend fun retrieveFile(document: String): FileDownloadTask.TaskSnapshot? {
+	suspend fun retrieveFile(document: String): ByteArray {
 		val fileReference = storage.child("comprovantes/$document")
-		val fileInfo = fileAndType(document)
-		val localFile = withContext(Dispatchers.IO) {
-			File.createTempFile(fileInfo.first, fileInfo.second)
-		}
-		return fileReference.getFile(localFile).await()
-	}
-
-	private fun fileAndType(document: String): Pair<String, String> {
-		val file =document.split(".")
-		return Pair(file[0], file[1])
+		return 	fileReference.getBytes(Long.MAX_VALUE).await()
 	}
 
 }
