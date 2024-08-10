@@ -25,14 +25,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.capitalizeStrings
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Navigate
@@ -44,7 +42,6 @@ import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import java.time.Duration
 
@@ -67,7 +64,6 @@ class MainActivity : AppCompatActivity() {
 			val context = applicationContext
 			val view = LocalView.current
 			CustomTheme(LocalView.current)
-			val coroutine = rememberCoroutineScope()
 			val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 			val enrollLauncher = rememberLauncherForActivityResult(
 				contract = ActivityResultContracts.StartActivityForResult(),
@@ -98,7 +94,6 @@ class MainActivity : AppCompatActivity() {
 			}
 
 			val toast = NotificationToast(context)
-			val navController = rememberNavController()
 			var imageUri by remember { mutableStateOf<Uri?>(null) }
 			val userState = model.userEntity.collectAsState()
 
@@ -109,20 +104,20 @@ class MainActivity : AppCompatActivity() {
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
-							Navigate(navController, Screen.MainScreen.route, route = true)
+							Navigate(screen = Screen.MainScreen.route, route = true)
 							return@BudgetTheme
 						}
 
 						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
 							Log.d("biometria", result.error)
 							toast.show(result.error)
-							Navigate(navController, Screen.LoginScreen.route, route = true)
+							Navigate(screen = Screen.LoginScreen.route, route = true)
 							return@BudgetTheme
 						}
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 							Log.d("biometria", context.getString(R.string.biometric_auth_error))
-							Navigate(navController, Screen.LoginScreen.route, route = true)
+							Navigate(screen = Screen.LoginScreen.route, route = true)
 							return@BudgetTheme
 						}
 
@@ -132,12 +127,7 @@ class MainActivity : AppCompatActivity() {
 
 				imageUri?.let {
 					val encodedUri = Uri.encode(it.toString())
-					Navigate(navController, Screen.MainScreen.route, route = true)
-					coroutine.launch {
-						delay(Duration.ofMillis(100))
-						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
-						return@launch
-					}
+					Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri))
 					return@BudgetTheme
 				}
 
@@ -183,14 +173,8 @@ private fun ExtrasRequests(permissionsToRequest: MutableList<String>) {
 @Composable
 private fun SelectScreen(user: UserEntity?) {
 	if (user?.loginWhenEnter == true) {
-		Navigate(
-			navController = rememberNavController(),
-			Screen.MainScreen.route, route = true
-		)
+		Navigate(screen = Screen.MainScreen.route, route = true)
 	} else {
-		Navigate(
-			navController = rememberNavController(),
-			Screen.LoginScreen.route, route = true
-		)
+		Navigate(screen = Screen.LoginScreen.route, route = true)
 	}
 }

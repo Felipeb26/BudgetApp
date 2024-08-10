@@ -14,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.ui.view_model.add.AddViewModel
@@ -40,15 +41,14 @@ import com.batsworks.budget.ui.views.SignUp
 
 @Composable
 fun Navigate(
-	navController: NavHostController,
+	navController: NavHostController = rememberNavController(),
 	screen: String,
 	paddingValues: PaddingValues? = null,
 	route: Boolean = false,
 ) {
 	NavHost(
 		navController = navController,
-		startDestination = screen,
-		route = if (route) formatNavigation(screen) else null,
+		startDestination = if(route) formatNavigation(screen) else screen,
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
 
