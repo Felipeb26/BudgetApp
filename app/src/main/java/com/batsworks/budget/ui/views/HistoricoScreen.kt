@@ -181,7 +181,7 @@ private fun Content(amount: AmountEntity, navController: NavController) {
 			Modifier
 				.fillMaxWidth()
 				.border(2.dp, color = backgroundColor.copy(0.6f), RoundedCornerShape(10))
-				.background(backgroundColor.copy(0.4f))
+				.background(backgroundColor.copy(0.6f))
 				.padding(10.dp, 15.dp, 15.dp, 10.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically

@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import com.batsworks.budget.components.fields.CustomTextField
-import com.batsworks.budget.ui.theme.Color600
+import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.customBackground
 
 
@@ -34,7 +36,7 @@ fun <T> DropDownMenu(
     onValueChange: (String) -> Unit,
     selectText: String = "",
     isUpper: Boolean = true,
-    weight: FontWeight = FontWeight.Normal
+    weight: FontWeight = FontWeight.Bold
 ) {
     var text by remember { mutableStateOf(selectText) }
 
@@ -53,7 +55,7 @@ fun <T> DropDownMenu(
             )
 
             ExposedDropdownMenu(
-                modifier = Modifier.background(Color600),
+                modifier = Modifier.background(Color400.copy(0.8f)),
                 expanded = expanded,
                 onDismissRequest = onDismiss
             ) {
@@ -68,6 +70,7 @@ fun <T> DropDownMenu(
                                     isUpperCase = isUpper,
                                     capitalize = !isUpper,
                                     textWeight = weight,
+                                    space = TextUnit(2f, TextUnitType.Sp)
                                 )
                             },
                             onClick = {
@@ -85,6 +88,8 @@ fun <T> DropDownMenu(
                                     text = s,
                                     isUpperCase = isUpper,
                                     capitalize = !isUpper,
+                                    textWeight = weight,
+                                    space = TextUnit(2f, TextUnitType.Sp)
                                 )
                             },
                             onClick = {

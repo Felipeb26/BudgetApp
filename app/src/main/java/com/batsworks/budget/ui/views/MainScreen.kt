@@ -32,7 +32,6 @@ import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
-import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.Color950

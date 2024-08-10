@@ -42,16 +42,15 @@ import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.buttons.CustomButton
-import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.files.decompressData
 import com.batsworks.budget.components.files.getImageUriFromByteArray
-import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.files.image.CustomImageShow
-import com.batsworks.budget.components.formatter.localDate
-import com.batsworks.budget.services.notification.NotificationSnackBar
-import com.batsworks.budget.services.notification.Notifications
 import com.batsworks.budget.components.files.pdf.ComposePDFViewer
+import com.batsworks.budget.components.formatter.currency
+import com.batsworks.budget.components.formatter.localDate
+import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.services.notification.NotificationSnackBar
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color500
@@ -70,7 +69,6 @@ fun ReceiptScreen(
 	downloadReceipt: (AmountEntity) -> Unit,
 ) {
 	val context = LocalContext.current
-    val notifications = Notifications(context)
 	val coroutine = rememberCoroutineScope()
 	val snackBarHostState = remember { SnackbarHostState() }
 	val (isLoading, setLoading) = mutableStateOf(false)
@@ -88,10 +86,7 @@ fun ReceiptScreen(
 
 				is Resource.Sucess -> {
 					val values = event.result.toString().split("|")
-                    notifications.showPendingNotification(
-                        text = "Download complete of ${values[1]}",
-                        filePath = values[0]
-                    )
+					snackBar.show("Download completed of ${values[1]}")
 				}
 			}
 		}
@@ -142,7 +137,7 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
 		)
 		CustomText(
 			textStyle = MaterialTheme.typography.titleMedium,
-			text = stringResource(id = R.string.bill_value).plus(currency(amount.value?.value))
+			text = stringResource(id = R.string.bill_value).plus(":\t").plus(currency(amount.value?.value))
 		)
 	}
 	Row(
@@ -182,11 +177,19 @@ private fun ActionButtons(amount: State<AmountEntity?>, downloadReceipt: (Amount
 			modifier = Modifier.weight(1f),
 			text = stringResource(androidx.appcompat.R.string.abc_shareactionprovider_share_with),
 			enable = amount.value?.file != null,
-			onClick = { amount.value?.file?.let { shareApp(context, it, amount.value!!.chargeName) } })
+			onClick = {
+				amount.value?.file?.let {
+					shareApp(
+						context,
+						it,
+						amount.value!!.chargeName
+					)
+				}
+			})
 	}
 }
 
-private fun shareApp(context: Context, content: ByteArray, title:String) {
+private fun shareApp(context: Context, content: ByteArray, title: String) {
 	val uri = getImageUriFromByteArray(content, context.contentResolver, title)
 	val shareIntent: Intent = Intent().apply {
 		action = Intent.ACTION_SEND

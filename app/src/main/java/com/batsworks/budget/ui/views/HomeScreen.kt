@@ -73,22 +73,22 @@ import com.batsworks.budget.R
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.animations.SwitchElementsView
 import com.batsworks.budget.components.animations.Visible
-import com.batsworks.budget.components.formatter.currency
+import com.batsworks.budget.components.files.image.visibilityIsOn
 import com.batsworks.budget.components.formatScreenTitle
+import com.batsworks.budget.components.formatter.currency
+import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.functions.notEnableIfEmpty
-import com.batsworks.budget.services.notification.NotificationToast
-import com.batsworks.budget.components.files.image.visibilityIsOn
-import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.objects.HomeCard
-import com.batsworks.budget.ui.theme.Color200
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
+import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.ColorCardCartoes
@@ -395,7 +395,7 @@ private fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
                     modifier = Modifier,
                     text = stringResource(id = R.string.last_transactions),
                     textDecoration = TextDecoration.Underline,
-                    textWeight = FontWeight.Bold,
+                    textWeight = FontWeight.Bold, color = Color.White,
                     textStyle = MaterialTheme.typography.labelLarge
                 )
             }
@@ -403,7 +403,7 @@ private fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color200.copy(0.7f))
+                        .background(Color500.copy(0.7f))
                 ) {
                     val boxwithContraints = this
                     val width = (boxwithContraints.maxWidth.value / 3.05).dp

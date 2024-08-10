@@ -46,7 +46,6 @@ class SyncData(val context: Context, params: WorkerParameters) :
 		dataSync = listOf(
 			SyncUserData(),
 			SyncAmountData(
-				resourceEventChannel,
 				userDaoRepository,
 				amountDaoRepository,
 				amountRepository,
@@ -91,6 +90,7 @@ class SyncData(val context: Context, params: WorkerParameters) :
 			builder.setContentText("Sync process finished. All data is up to date.").setOngoing(false)
 				.setProgress(0, 0, false)
 			notification.showLoadingNotification(builder)
+			time+=1
 			Result.success()
 		} catch (e: Exception) {
 			Log.d(TAG, e.message ?: "an error happer")

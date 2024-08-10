@@ -17,19 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.batsworks.budget.domain.entity.AmountEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> PullToRefreshLazyColumn(
-	itens: List<T>,
-	content: @Composable (T) -> Unit,
+fun PullToRefreshLazyColumn(
+	itens: List<AmountEntity>,
+	content: @Composable (AmountEntity) -> Unit,
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	modifier: Modifier = Modifier,
 	lazyListState: LazyListState = rememberLazyListState(),
 ) {
 	val pullToRefreshState = rememberPullToRefreshState()
-
 	Box(modifier = modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)) {
 		LazyColumn(
 			state = lazyListState,
@@ -37,7 +37,7 @@ fun <T> PullToRefreshLazyColumn(
 			modifier = Modifier.fillMaxSize(),
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {
-			items(itens, key = { it.hashCode() }) { item ->
+			items(itens, key = { it.id }) { item ->
 				content(item)
 			}
 		}

@@ -101,13 +101,13 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 			.build()
 
 		val workerRequest = PeriodicWorkRequestBuilder<SyncData>(
-			repeatInterval = 1,
-			repeatIntervalTimeUnit = TimeUnit.MINUTES,
+			repeatInterval = 6,
+			repeatIntervalTimeUnit = TimeUnit.HOURS,
 			flexTimeInterval = 15,
 			flexTimeIntervalUnit = TimeUnit.MINUTES
 		).setBackoffCriteria(
 			backoffPolicy = BackoffPolicy.LINEAR,
-			duration = Duration.ofSeconds(15)
+			duration = Duration.ofMinutes(1)
 		).setConstraints(contraints).addTag(AJUST_TAG(tag)).build()
 
 		val workManager = WorkManager.getInstance(this)

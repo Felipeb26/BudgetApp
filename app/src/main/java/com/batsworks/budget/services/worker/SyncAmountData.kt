@@ -1,18 +1,15 @@
 package com.batsworks.budget.services.worker
 
 import android.util.Log
-import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.entity.toDTO
 import com.batsworks.budget.domain.repository.CustomRepository
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.tasks.await
 
 class SyncAmountData(
-	private val resourceEventChannel: Channel<Resource<Any>>,
 	private val userDao: UsersDao,
 	private val amountDao: AmountDao,
 	private val amountRepository: CustomRepository<AmountFirebaseEntity>,
@@ -22,11 +19,9 @@ class SyncAmountData(
 		val user = userDao.findUser()
 		val amountsSaved = amountRepository.findByParam("user", user.firebaseId).await()
 		amountsSaved.forEach { documents ->
-			resourceEventChannel.send(Resource.Loading(false))
 			val amount = documents.toObject(AmountFirebaseEntity::class.java).toEntity()
 			amountDao.save(amount)
 		}
-		resourceEventChannel.send(Resource.Sucess(""))
 	}
 
 	override suspend fun update() {
@@ -50,7 +45,6 @@ class SyncAmountData(
 	suspend fun save(amounts: List<DocumentSnapshot>) {
 		val user = userDao.findUser()
 		amounts.forEach { document ->
-//			resourceEventChannel.(Resource.Loading(false))
 			val amount = document.toObject(AmountFirebaseEntity::class.java)
 			amount?.let {
 				val entity = it.toEntity()
@@ -58,7 +52,6 @@ class SyncAmountData(
 				amountDao.save(entity.withUser(user.firebaseId).withFile(file))
 			}
 		}
-//		resourceEventChannel.send(Resource.Sucess(""))
 	}
 
 	override suspend fun needsBringData(): Boolean {
