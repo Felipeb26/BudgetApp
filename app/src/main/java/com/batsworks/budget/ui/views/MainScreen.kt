@@ -40,7 +40,7 @@ import com.batsworks.budget.ui.theme.Color950
 fun Main(navController: NavHostController = rememberNavController()) {
 	Scaffold(
 		bottomBar = { BottomBar(navController) }) { paddingValues ->
-		Navigate(navController, Screen.HomeScreen, paddingValues)
+		Navigate(navController, Screen.HomeScreen.route, paddingValues)
 	}
 }
 

@@ -109,20 +109,20 @@ class MainActivity : AppCompatActivity() {
 				biometricResult?.let { result ->
 					when (result) {
 						is BiometricPromptManager.BiometricResult.AuthenticationSucess -> {
-							Navigate(navController, Screen.MainScreen)
+							Navigate(navController, Screen.MainScreen.route, route = true)
 							return@BudgetTheme
 						}
 
 						is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
 							Log.d("biometria", result.error)
 							toast.show(result.error)
-							Navigate(navController, Screen.LoginScreen)
+							Navigate(navController, Screen.LoginScreen.route, route = true)
 							return@BudgetTheme
 						}
 
 						BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 							Log.d("biometria", context.getString(R.string.biometric_auth_error))
-							Navigate(navController, Screen.LoginScreen)
+							Navigate(navController, Screen.LoginScreen.route, route = true)
 							return@BudgetTheme
 						}
 
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
 				imageUri?.let {
 					val encodedUri = Uri.encode(it.toString())
-					Navigate(navController, Screen.MainScreen)
+					Navigate(navController, Screen.MainScreen.route, route = true)
 					coroutine.launch {
 						delay(Duration.ofMillis(100))
 						navController.navigate(Screen.SharedReceiptScreen.withArgs(encodedUri))
@@ -185,12 +185,12 @@ private fun SelectScreen(user: UserEntity?) {
 	if (user?.loginWhenEnter == true) {
 		Navigate(
 			navController = rememberNavController(),
-			screen = Screen.MainScreen
+			Screen.MainScreen.route, route = true
 		)
 	} else {
 		Navigate(
 			navController = rememberNavController(),
-			screen = Screen.LoginScreen
+			Screen.LoginScreen.route, route = true
 		)
 	}
 }

@@ -41,16 +41,18 @@ import com.batsworks.budget.ui.views.SignUp
 @Composable
 fun Navigate(
 	navController: NavHostController,
-	screen: Screen,
+	screen: String,
 	paddingValues: PaddingValues? = null,
+	route: Boolean = false,
 ) {
 	NavHost(
 		navController = navController,
-		startDestination = screen.route,
+		startDestination = screen,
+		route = if (route) formatNavigation(screen) else null,
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
 
-		navigation(Screen.LoginScreen.route, route = "home") {
+		navigation(Screen.LoginScreen.route, route = "login") {
 			composable(Screen.LoginScreen.route) {
 				val model = viewModel<SignInViewModel>()
 				Login(navController, model.state, model.validationEvents, model::onEvent)
@@ -166,4 +168,10 @@ fun easyNavigate(
 		launchSingleTop = singleTop
 		restoreState = restore
 	}
+}
+
+
+fun formatNavigation(route: String): String {
+	val r = route.split("_")[0]
+	return r
 }
