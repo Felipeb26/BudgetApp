@@ -8,6 +8,7 @@ import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
@@ -18,10 +19,10 @@ import kotlinx.coroutines.time.delay
 import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDate
+import javax.inject.Inject
 
-class HomeViewModel(
-    private var repository: AmountDao = BudgetApplication.database.getAmountDao(),
-) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private var repository: AmountDao) : ViewModel() {
 
     private val _profileCardValues = MutableStateFlow<AmountState?>(null)
 

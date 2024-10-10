@@ -9,15 +9,16 @@ import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import  kotlinx.coroutines.time.delay
 import java.time.Duration
+import javax.inject.Inject
 
-class HistoryViewModel(
-	private val repository: AmountDao = BudgetApplication.database.getAmountDao(),
-) : ViewModel() {
+@HiltViewModel
+class HistoryViewModel @Inject constructor(private val repository: AmountDao) : ViewModel() {
 
 	private val tag = HistoryViewModel::class.java.name
 	val amounts = mutableStateOf(emptyList<AmountEntity>())

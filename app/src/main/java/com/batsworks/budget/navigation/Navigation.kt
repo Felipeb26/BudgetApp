@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -16,9 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.ui.view_model.add.AddViewModel
-import com.batsworks.budget.ui.view_model.factoryProvider
 import com.batsworks.budget.ui.view_model.history.HistoryViewModel
 import com.batsworks.budget.ui.view_model.home.HomeViewModel
 import com.batsworks.budget.ui.view_model.login.LoginViewModel
@@ -59,9 +56,7 @@ fun Navigate(
 			}
 
 			composable(Screen.SignUpScreen.route) {
-				val model = viewModel<LoginViewModel>(
-					factory = factoryProvider { LoginViewModel(repository = BudgetApplication.appModule.userRepository) }
-				)
+				val model = viewModel<LoginViewModel>()
 				SignUp(navController, model)
 			}
 		}
@@ -75,9 +70,7 @@ fun Navigate(
 			}
 
 			composable(Screen.ProfileScreen.route) {
-				val model = viewModel<ProfileViewModel>(
-					factory = factoryProvider { ProfileViewModel(repository = BudgetApplication.appModule.userRepository) }
-				)
+				val model = viewModel<ProfileViewModel>()
 				Profile(
 					navController,
 					model.userEntity,
@@ -90,9 +83,7 @@ fun Navigate(
 			composable(Screen.AccountsScreen.route) { Accounts(navController) }
 
 			composable(Screen.AdicionarScreen.route) {
-				val model = viewModel<AddViewModel>(
-					factory = factoryProvider { AddViewModel(repository = BudgetApplication.appModule.amountRepository) }
-				)
+				val model = viewModel<AddViewModel>()
 				Add(model.resourceEventFlow, model::onEvent, model.state)
 			}
 
@@ -116,11 +107,8 @@ fun Navigate(
 					nullable = false
 				})
 			) { entry ->
-				val context = LocalContext.current
 				val id = entry.arguments?.getString("id") ?: return@composable
-				val model = viewModel<ReceiptViewModel>(
-					factory = factoryProvider { ReceiptViewModel(context, id = id) }
-				)
+				val model = viewModel<ReceiptViewModel>()
 				ReceiptScreen(
 					model.entityAmount,
 					model.resourceEventFlow,
@@ -143,9 +131,7 @@ fun Navigate(
 			Screen.SharedReceiptScreen.route + "/{uri}",
 			arguments = listOf(navArgument("uri") { type = NavType.StringType })
 		) { backStackEntry ->
-			val model = viewModel<AddViewModel>(
-				factory = factoryProvider { AddViewModel(repository = BudgetApplication.appModule.amountRepository) }
-			)
+			val model = viewModel<AddViewModel>()
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
 			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)
 		}

@@ -9,18 +9,22 @@ import com.batsworks.budget.components.files.getFileType
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.services.download.AndroidDownloader
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.net.URL
+import javax.inject.Inject
 
-class ReceiptViewModel(
-	context: Context,
-	private val localRepository: AmountDao = BudgetApplication.database.getAmountDao(),
-	private val download: AndroidDownloader? = AndroidDownloader(context),
+@HiltViewModel
+class ReceiptViewModel @Inject constructor(
+	@ApplicationContext context: Context,
 	id: String,
+	private val localRepository: AmountDao,
+	private val download: AndroidDownloader? = AndroidDownloader(context),
 ) : ViewModel() {
 
 

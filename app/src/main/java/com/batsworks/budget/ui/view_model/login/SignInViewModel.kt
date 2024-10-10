@@ -6,24 +6,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.dao.FirebaseCollection
 import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.domain.entity.UserFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.use_cases.user.ValidateEmail
+import com.batsworks.budget.use_cases.user.ValidatePassword
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignInViewModel(
-	private val repository: CustomRepository<UserEntity> = CustomRepository(
-		FirebaseCollection.USERS,
-		UserEntity::class.java
-	),
-	private val localRepository: UsersDao = BudgetApplication.database.getUsersDao(),
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+	private val repository: CustomRepository<UserEntity>,
+	private val localRepository: UsersDao,
 	private val validateEmail: ValidateEmail = ValidateEmail(),
 	private val validatePassword: ValidatePassword = ValidatePassword(),
 ) : ViewModel() {

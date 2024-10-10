@@ -1,6 +1,6 @@
-package com.batsworks.budget.ui.view_model.login
+package com.batsworks.budget.use_cases.user
 
-import com.batsworks.budget.ui.view_model.ValidationResult
+import com.batsworks.budget.use_cases.ValidationResult
 
 
 class ValidateRepeatedPassword {

@@ -42,23 +42,24 @@ import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.time.delay
 import java.time.Duration
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+	@Inject
+	lateinit var model : MainViewModel
 	private val promptManager by lazy { BiometricPromptManager(this) }
-	private val model by viewModels<MainViewModel>()
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
-		enableEdgeToEdge(
-			statusBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb()),
-			navigationBarStyle = SystemBarStyle.auto(Color800.toArgb(), Color800.toArgb())
-		)
+		val rgbColor = Color800.toArgb()
+		enableEdgeToEdge(SystemBarStyle.auto(rgbColor, rgbColor), SystemBarStyle.auto(rgbColor, rgbColor))
 
 		setContent {
 			val context = applicationContext

@@ -16,7 +16,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 class CustomRepository<T>(
-	private val collection: FirebaseCollection,
+	private val collection: FirebaseCollection<T>,
 	private val type: Class<T>,
 	private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
 	private val storage: StorageReference = FirebaseStorage.getInstance().reference,
