@@ -16,6 +16,7 @@ import com.batsworks.budget.use_cases.user.ValidateEmail
 import com.batsworks.budget.use_cases.user.ValidateName
 import com.batsworks.budget.use_cases.user.ValidatePassword
 import com.batsworks.budget.use_cases.user.ValidatePhone
+import com.batsworks.budget.use_cases.user.ValidateRepeatedPassword
 import com.batsworks.budget.use_cases.user.ValidateTerms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -25,14 +26,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-	private val validateName: ValidateName,
-	private val validatePhone: ValidatePhone,
-	private val validateEmail: ValidateEmail,
-//	private val validateRepeatedPassword: ValidateRepeatedPassword = ValidateRepeatedPassword(),
-	private val validatePassword: ValidatePassword,
-	private val validateTerms: ValidateTerms,
 	private val repository: CustomRepository<UserFirebaseEntity>,
 ) : ViewModel() {
+	private val validateName = ValidateName()
+	private val validatePhone = ValidatePhone()
+	private val validateEmail = ValidateEmail()
+	private val validatePassword = ValidatePassword()
+	private val validateRepeatedPassword = ValidateRepeatedPassword()
+	private val validateTerms = ValidateTerms()
 
 	private val tag = LoginViewModel::class.java.name
 	var state by mutableStateOf(RegistrationFormState())
@@ -78,8 +79,8 @@ class LoginViewModel @Inject constructor(
 		val phoneResult = validatePhone.execute(state.telefone)
 		val emailResult = validateEmail.execute(state.email)
 		val passwordResult = validatePassword.execute(state.password)
-//		val repeatedPasswordResult =
-//			validateRepeatedPassword.execute(state.password, state.repeatedPassword)
+		val repeatedPasswordResult =
+			validateRepeatedPassword.execute(state.password, state.repeatedPassword)
 		val termsResult = validateTerms.execute(state.acceptedTerms)
 
 		val hasError = listOf(
@@ -87,7 +88,7 @@ class LoginViewModel @Inject constructor(
 			emailResult,
 			phoneResult,
 			passwordResult,
-//			repeatedPasswordResult,
+			repeatedPasswordResult,
 			termsResult
 		).any { !it.successful }
 
@@ -97,7 +98,7 @@ class LoginViewModel @Inject constructor(
 				emailError = emailResult.errorMessage,
 				telefoneError = phoneResult.errorMessage,
 				passwordError = passwordResult.errorMessage,
-//				repeatedPasswordErro = repeatedPasswordResult.errorMessage,
+				repeatedPasswordErro = repeatedPasswordResult.errorMessage,
 				acceptedTermsError = termsResult.errorMessage
 			)
 			Log.d(AJUST_TAG(tag), "Foram encontrados erros")

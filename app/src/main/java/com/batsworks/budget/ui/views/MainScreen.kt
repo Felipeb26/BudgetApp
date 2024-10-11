@@ -27,7 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.formatScreenTitle
-import com.batsworks.budget.navigation.Navigate
+import com.batsworks.budget.navigation.MainNavigation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color300
@@ -39,8 +39,8 @@ import com.batsworks.budget.ui.theme.Color950
 @Composable
 fun Main(navController: NavHostController = rememberNavController()) {
 	Scaffold(
-		bottomBar = { BottomBar(navController) }) { paddingValues ->
-		Navigate(navController, Screen.HomeScreen.route, paddingValues)
+		bottomBar = { BottomBar(navController) }) { padding ->
+		MainNavigation(navController, screen = Screen.HomeScreen.route, paddingValues = padding)
 	}
 }
 
@@ -71,7 +71,7 @@ fun BottomBar(navController: NavController) {
 				icon = {
 					Icon(
 						imageVector = screen.icon ?: ImageVector.vectorResource(screen.resource),
-						contentDescription = ""
+						contentDescription = "icon bar"
 					)
 				},
 				label = {
@@ -82,7 +82,7 @@ fun BottomBar(navController: NavController) {
 						color = Color50
 					)
 				},
-				onClick = { easyNavigate(navController, screen.route) })
+				onClick = { easyNavigate(navController, screen.route, include = true) })
 		}
 	}
 }

@@ -25,11 +25,14 @@ android {
 
 	buildTypes {
 		release {
+			isMinifyEnabled = true
+			isShrinkResources = true
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+		}
+
+		debug {
 			isMinifyEnabled = false
-			proguardFiles(
-				getDefaultProguardFile("proguard-android-optimize.txt"),
-				"proguard-rules.pro"
-			)
+			isShrinkResources = false
 		}
 	}
 	compileOptions {
@@ -53,6 +56,8 @@ android {
 }
 
 dependencies {
+	val daggerHiltWorkerVersion = "1.2.0"
+
 	implementation("androidx.appcompat:appcompat:1.6.1")
 	implementation("androidx.core:core-ktx:1.13.1")
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
@@ -82,6 +87,7 @@ dependencies {
 	implementation("io.coil-kt:coil-compose:2.6.0")
 	//Dagger Hilt
 	implementation("com.google.dagger:hilt-android:2.50")
+	implementation("androidx.hilt:hilt-work:$daggerHiltWorkerVersion")
 	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 	ksp("com.google.dagger:hilt-compiler:2.50")
 //	ksp("androidx.hilt:hilt-compiler:1.2.0")

@@ -7,10 +7,10 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.LiveData
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class NetworkConnectivityObserver(
-	context: Context,
-) : LiveData<Boolean>() {
+class NetworkConnectivityObserver @Inject constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
 
 	override fun onActive() {
 		super.onActive()
@@ -22,8 +22,6 @@ class NetworkConnectivityObserver(
 		connectivityManager.unregisterNetworkCallback(networkCallback)
 	}
 
-	private val connectivityManager =
-		context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 	private val networkCallback = object : ConnectivityManager.NetworkCallback() {
 		override fun onAvailable(network: Network) {
@@ -54,7 +52,7 @@ class NetworkConnectivityObserver(
 			addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
 			addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
 
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 				addCapability(NetworkCapabilities.NET_CAPABILITY_PRIORITIZE_BANDWIDTH)
 				addCapability(NetworkCapabilities.NET_CAPABILITY_PRIORITIZE_LATENCY)
 			}

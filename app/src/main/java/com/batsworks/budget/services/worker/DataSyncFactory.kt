@@ -5,5 +5,4 @@ interface DataSyncFactory {
 	suspend fun update()
 	suspend fun needsUpdate(): Boolean
 	suspend fun needsBringData():Boolean
-
 }

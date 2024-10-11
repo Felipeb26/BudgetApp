@@ -4,17 +4,25 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.util.Log
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.batsworks.budget.services.connection.NetworkConnectivityObserver
+import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.services.notification.NotificationChannelId
-import com.batsworks.budget.services.notification.NotificationToast
+import com.batsworks.budget.services.worker.SyncData
 import com.rollbar.android.Rollbar
 import dagger.hilt.android.HiltAndroidApp
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
 class BudgetApplication : Application(), ImageLoaderFactory {
@@ -28,23 +36,10 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 	override fun onCreate() {
 		super.onCreate()
 		rollbar = Rollbar(this)
-//		notification()
-//		networkState()
-//		syncData()
+		syncData()
+		notification()
 	}
 
-//	private fun roomDatabase() {
-//		database = Room.databaseBuilder(
-//			applicationContext,
-//			Database::class.java,
-//			Database.NAME
-//		).setQueryCallback({ query, args ->
-//			Log.d("QUERY", query)
-//			if (args.isNotEmpty()) Log.d("ARGS", "$args")
-//		}, Executors.newSingleThreadExecutor())
-//			.fallbackToDestructiveMigration()
-//			.build()
-//	}
 
 	private fun notification() {
 		val notificationChannel = NotificationChannel(
@@ -52,7 +47,6 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 			"Notification BatsWorks Budget",
 			NotificationManager.IMPORTANCE_HIGH
 		)
-
 		notificationChannel.description = "A notification from you budget app"
 		val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 		notificationManager.createNotificationChannel(notificationChannel)
@@ -78,45 +72,36 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 			.build()
 	}
 
-//	private fun syncData() {
-//		val contraints = Constraints.Builder()
-//			.setRequiredNetworkType(NetworkType.CONNECTED)
-//			.build()
-//
-//		val workerRequest = PeriodicWorkRequestBuilder<SyncData>(
-//			repeatInterval = 6,
-//			repeatIntervalTimeUnit = TimeUnit.HOURS,
-//			flexTimeInterval = 15,
-//			flexTimeIntervalUnit = TimeUnit.MINUTES
-//		).setBackoffCriteria(
-//			backoffPolicy = BackoffPolicy.LINEAR,
-//			duration = Duration.ofMinutes(1)
-//		).setConstraints(contraints).addTag(AJUST_TAG(tag)).build()
-//
-//		val workManager = WorkManager.getInstance(this)
-//		workManager.cancelAllWork()
-//
-//		workManager.enqueueUniquePeriodicWork(
-//			AJUST_TAG(tag),
-//			ExistingPeriodicWorkPolicy.UPDATE,
-//			workerRequest
-//		)
-//		workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
-//			.observeForever {
-//				it.forEach { workInfo ->
-//					Log.d("DATA_SYNC", "${workInfo.state}")
-//				}
-//			}
-//
-//	}
+	private fun syncData() {
+		val contraints = Constraints.Builder()
+			.setRequiredNetworkType(NetworkType.CONNECTED)
+			.build()
 
-	private fun networkState() {
-		val toast = NotificationToast(this)
-		val networkConnectivityObserver = NetworkConnectivityObserver(this)
-		networkConnectivityObserver.observeForever {
-			Log.d("TEST", "MUDOU O ESTADO")
-			if (it) toast.show("ligado")
-			else toast.show("desligado")
-		}
+		val workerRequest = PeriodicWorkRequestBuilder<SyncData>(
+			repeatInterval = 6,
+			repeatIntervalTimeUnit = TimeUnit.HOURS,
+			flexTimeInterval = 15,
+			flexTimeIntervalUnit = TimeUnit.MINUTES
+		).setBackoffCriteria(
+			backoffPolicy = BackoffPolicy.LINEAR,
+			duration = Duration.ofMinutes(1)
+		).setConstraints(contraints).addTag(AJUST_TAG(tag)).build()
+
+		val workManager = WorkManager.getInstance(this)
+		workManager.cancelAllWork()
+
+		workManager.enqueueUniquePeriodicWork(
+			AJUST_TAG(tag),
+			ExistingPeriodicWorkPolicy.UPDATE,
+			workerRequest
+		)
+		workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
+			.observeForever {
+				it.forEach { workInfo ->
+					Log.d("DATA_SYNC", "${workInfo.state}")
+				}
+			}
+
 	}
+
 }

@@ -1,11 +1,12 @@
 package com.batsworks.budget.navigation
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -41,36 +42,37 @@ fun Navigate(
 	navController: NavHostController = rememberNavController(),
 	screen: String,
 	paddingValues: PaddingValues? = null,
-	route: Boolean = false,
+	route: String? = null,
 ) {
 	NavHost(
 		navController = navController,
-		startDestination = if(route) formatNavigation(screen) else screen,
+		route = route,
+		startDestination = screen,
 		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
 	) {
 
-		navigation(Screen.LoginScreen.route, route = "login") {
+		navigation(Screen.LoginScreen.route, route = "login_graph") {
 			composable(Screen.LoginScreen.route) {
-				val model = viewModel<SignInViewModel>()
+				val model = hiltViewModel<SignInViewModel>()
 				Login(navController, model.state, model.validationEvents, model::onEvent)
 			}
 
 			composable(Screen.SignUpScreen.route) {
-				val model = viewModel<LoginViewModel>()
+				val model = hiltViewModel<LoginViewModel>()
 				SignUp(navController, model)
 			}
 		}
 
-		navigation(Screen.MainScreen.route, route = "main") {
-			composable(Screen.MainScreen.route) { Main(navController) }
+		navigation(Screen.MainScreen.route, route = "main_graph") {
+			composable(Screen.MainScreen.route) { Main() }
 
 			composable(Screen.HomeScreen.route) {
-				val model = viewModel<HomeViewModel>()
+				val model = hiltViewModel<HomeViewModel>()
 				Home(navController, model.lastAmounts, model.amountStateFlow, model::showAmount)
 			}
 
 			composable(Screen.ProfileScreen.route) {
-				val model = viewModel<ProfileViewModel>()
+				val model = hiltViewModel<ProfileViewModel>()
 				Profile(
 					navController,
 					model.userEntity,
@@ -83,12 +85,12 @@ fun Navigate(
 			composable(Screen.AccountsScreen.route) { Accounts(navController) }
 
 			composable(Screen.AdicionarScreen.route) {
-				val model = viewModel<AddViewModel>()
+				val model = hiltViewModel<AddViewModel>()
 				Add(model.resourceEventFlow, model::onEvent, model.state)
 			}
 
 			composable(Screen.HistoryScreen.route) {
-				val model = viewModel<HistoryViewModel>()
+				val model = hiltViewModel<HistoryViewModel>()
 				val (amounts, setAmounts) = model.amounts
 				Historico(
 					navController,
@@ -101,14 +103,11 @@ fun Navigate(
 
 			composable(
 				Screen.ReceiptScreen.route + "/{id}",
-				arguments = listOf(navArgument("id") {
-					type = NavType.StringType
-					defaultValue = "0"
-					nullable = false
-				})
+				arguments = listOf(navArgument("id") { type = NavType.StringType })
 			) { entry ->
 				val id = entry.arguments?.getString("id") ?: return@composable
-				val model = viewModel<ReceiptViewModel>()
+				val model = hiltViewModel<ReceiptViewModel>()
+				model.showImage(id)
 				ReceiptScreen(
 					model.entityAmount,
 					model.resourceEventFlow,
@@ -117,23 +116,31 @@ fun Navigate(
 			}
 
 			composable(Screen.PlusScreen.route) {
-				val model = viewModel<ProfileViewModel>()
+				val model = hiltViewModel<ProfileViewModel>()
 				PlusScreen(navController, model::dontLoginWhenStart)
 			}
 
 			composable(Screen.SettingScreen.route) {
-				val model = viewModel<SettingsViewModel>()
+				val model = hiltViewModel<SettingsViewModel>()
 				Setting(navController, model::saveTheme)
 			}
 		}
 
-		composable(
-			Screen.SharedReceiptScreen.route + "/{uri}",
-			arguments = listOf(navArgument("uri") { type = NavType.StringType })
-		) { backStackEntry ->
-			val model = viewModel<AddViewModel>()
-			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
-			SharedReceipt(navController, uri, model.resourceEventFlow, model.state, model::onEvent)
+		navigation(Screen.SharedReceiptScreen.route, "extras_graph") {
+			composable(
+				Screen.SharedReceiptScreen.route + "/{uri}",
+				arguments = listOf(navArgument("uri") { type = NavType.StringType })
+			) { backStackEntry ->
+				val model = hiltViewModel<AddViewModel>()
+				val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
+				SharedReceipt(
+					navController,
+					uri,
+					model.resourceEventFlow,
+					model.state,
+					model::onEvent
+				)
+			}
 		}
 	}
 }
@@ -159,5 +166,5 @@ fun easyNavigate(
 
 fun formatNavigation(route: String): String {
 	val r = route.split("_")[0]
-	return r
+	return r.plus("_graph")
 }

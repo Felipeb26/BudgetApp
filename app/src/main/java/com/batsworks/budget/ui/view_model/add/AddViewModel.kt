@@ -32,15 +32,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-	private val chargeNameValidation: ValidateChargeName,
-	private val chargeValueValidation: ValidateChargeValue,
-	private val fileValidation: ValidateFileVoucher,
-	private val entranceValidation: ValdateEntrance,
-	private val amountDateValidate: ValidateAmountDate,
 	private val userLocalRepository: UsersDao,
 	private val amountLocalRepository: AmountDao,
 	private val repository: CustomRepository<AmountFirebaseEntity>,
 ) : ViewModel() {
+	private var chargeNameValidation: ValidateChargeName = ValidateChargeName()
+	private var chargeValueValidation: ValidateChargeValue = ValidateChargeValue()
+	private var fileValidation: ValidateFileVoucher = ValidateFileVoucher()
+	private var entranceValidation: ValdateEntrance = ValdateEntrance()
+	private var amountDateValidate: ValidateAmountDate = ValidateAmountDate()
 
 	private val tag: String = AddViewModel::class.java.name
 	private val now = LocalDate.now().format(formatter())
