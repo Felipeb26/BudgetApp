@@ -56,7 +56,8 @@ android {
 }
 
 dependencies {
-	val daggerHiltWorkerVersion = "1.2.0"
+	implementation("androidx.hilt:hilt-common:1.2.0")
+    val daggerHiltWorkerVersion = "1.2.0"
 
 	implementation("androidx.appcompat:appcompat:1.6.1")
 	implementation("androidx.core:core-ktx:1.13.1")
@@ -68,11 +69,6 @@ dependencies {
 	implementation("androidx.compose.ui:ui-graphics")
 	implementation("androidx.compose.ui:ui-tooling-preview")
 	implementation("androidx.compose.ui:ui-tooling")
-	implementation("androidx.compose.material3:material3")
-	implementation("androidx.compose.material3:material3-android:1.2.1")
-	implementation("com.google.firebase:firebase-firestore:25.0.0")
-	implementation("com.google.firebase:firebase-storage:21.0.0")
-	implementation("androidx.work:work-runtime-ktx:2.9.0")
 	testImplementation("junit:junit:4.13.2")
 	androidTestImplementation("androidx.test.ext:junit:1.2.1")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -81,20 +77,26 @@ dependencies {
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+	implementation("androidx.compose.material3:material3")
+	implementation("androidx.compose.material3:material3-android:1.2.1")
 	implementation("androidx.compose.material3:material3:1.2.1")
 	implementation("androidx.navigation:navigation-compose:2.7.7")
 	//AsyncImage
 	implementation("io.coil-kt:coil-compose:2.6.0")
+	//Worker
+	implementation("androidx.work:work-runtime-ktx:2.9.0")
 	//Dagger Hilt
-	implementation("com.google.dagger:hilt-android:2.50")
 	implementation("androidx.hilt:hilt-work:$daggerHiltWorkerVersion")
+	implementation("com.google.dagger:hilt-android:2.50")
 	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 	ksp("com.google.dagger:hilt-compiler:2.50")
-//	ksp("androidx.hilt:hilt-compiler:1.2.0")
+	ksp("com.google.dagger:dagger-compiler:2.50")
 	//Lottie
 	implementation("com.airbnb.android:lottie-compose:6.0.0")
 	//Firebase
 	implementation("com.google.firebase:firebase-firestore:25.0.0")
+	implementation("com.google.firebase:firebase-firestore:25.0.0")
+	implementation("com.google.firebase:firebase-storage:21.0.0")
 	//Room
 	implementation("androidx.room:room-runtime:2.6.1")
 	annotationProcessor("androidx.room:room-compiler:2.6.1")
@@ -108,6 +110,4 @@ dependencies {
 	implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
 	//Rollbar
 	implementation("com.rollbar:rollbar-android:1.10.0")
-	//YCharts
-	implementation("co.yml:ycharts:2.1.0")
 }

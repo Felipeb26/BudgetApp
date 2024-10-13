@@ -18,12 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import com.batsworks.budget.R
 import com.batsworks.budget.components.fields.CustomTextField
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.customBackground
-
+import com.batsworks.budget.components.texts.CustomText
+import com.batsworks.budget.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,4 +107,26 @@ fun <T> DropDownMenu(
             }
         }
     }
+}
+
+fun AJUST_TAG(tag: String): String {
+    return tag.substring(tag.lastIndexOf(".") + 1)
+}
+
+@Composable
+fun formatScreenTitle(screen: Screen?): String {
+    return when (screen) {
+        Screen.AccountsScreen -> stringResource(id = R.string.account)
+        Screen.AdicionarScreen -> stringResource(id = R.string.add)
+        Screen.HistoryScreen -> stringResource(id = R.string.history)
+        Screen.HomeScreen -> stringResource(id = R.string.home)
+        Screen.PlusScreen -> stringResource(id = R.string.plus)
+        Screen.ProfileScreen -> stringResource(id = R.string.profile)
+        Screen.SettingScreen -> stringResource(id = R.string.settings)
+        else -> stringResource(id = R.string.exit)
+    }.toUpperCase(Locale.current)
+}
+
+fun formatScreenTitle(title: String): String {
+    return title.replace("_screen", "").toUpperCase(Locale.current)
 }

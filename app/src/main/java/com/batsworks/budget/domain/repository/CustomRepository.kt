@@ -30,7 +30,7 @@ class CustomRepository<T>(
 		return db.collection(collection.path).add(data as Any)
 	}
 
-	private suspend fun findAll(): MutableList<DocumentSnapshot> {
+	suspend fun findAll(): MutableList<DocumentSnapshot> {
 		return db.collection(collection.path).get().await().documents
 	}
 

@@ -16,7 +16,7 @@ class Notifications(private val context: Context) {
 
 	fun showBasicNotification(text: String? = null) {
 		val notificationBuilder =
-			NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
+			NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
 				.setContentTitle(title)
 				.setSmallIcon(R.drawable.profile)
 				.setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -42,7 +42,7 @@ class Notifications(private val context: Context) {
 		)
 
 		val notificationBuilder =
-			NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
+			NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
 				.setContentTitle(title)
 				.setContentText(text ?: "")
 				.setSmallIcon(R.drawable.profile)

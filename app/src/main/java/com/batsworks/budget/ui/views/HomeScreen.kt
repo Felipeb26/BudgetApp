@@ -374,16 +374,24 @@ private fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
                         .clickable {
                             notEnableIfEmpty(context, emptyTransaction, amounts.size) {
                                 setVisible(!isVisible)
-                                if (isVisible) setIcon(Icons.Rounded.KeyboardArrowUp) else setIcon(
-                                    Icons.Rounded.KeyboardArrowDown
+                                composeBool(
+                                    isVisible,
+                                    setIcon(Icons.Rounded.KeyboardArrowUp),
+                                    setIcon(Icons.Rounded.KeyboardArrowDown)
                                 )
                             }
                         }
                 ) {
                     Icon(
                         modifier = Modifier.clickable {
-                            if (amounts.isEmpty()) toast.show(emptyTransaction)
-                            toast.show(emptyTransaction)
+                            if (amounts.isNotEmpty()) {
+                                setVisible(!isVisible)
+                                composeBool(
+                                    isVisible,
+                                    setIcon(Icons.Rounded.KeyboardArrowUp),
+                                    setIcon(Icons.Rounded.KeyboardArrowDown)
+                                )
+                            } else toast.show(emptyTransaction)
                         },
                         imageVector = icon,
                         contentDescription = "",

@@ -90,5 +90,7 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="account">contas</string>
     <string name="exit">sair</string>
     <string name="pdf_pages">paginas carregadas/ - total de paginas</string>
+    <string name="theme">tema</string>
+    <string name="language">idioma</string>
     <!--  telas   -->
 </resources>

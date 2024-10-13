@@ -1,5 +1,6 @@
 package com.batsworks.budget.di
 
+import android.app.NotificationManager
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import com.batsworks.budget.services.notification.NotificationSnackBar
@@ -15,6 +16,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NotificationModule {
+
+	@Provides
+	@Singleton
+	fun providesNotificationManager(@ApplicationContext context: Context): NotificationManager{
+		return context.getSystemService(NotificationManager::class.java)
+	}
 
 	@Provides
 	@Singleton

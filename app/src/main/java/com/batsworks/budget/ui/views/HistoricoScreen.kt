@@ -98,7 +98,7 @@ fun Historico(
 	) {
 		CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
 		SwitchElementsView(start = amounts.isEmpty(), content = {
-			CustomLottieAnimation(R.raw.empty, amounts.isEmpty())
+			CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty())
 			CustomText(
 				modifier = Modifier
 					.padding(vertical = 20.dp)

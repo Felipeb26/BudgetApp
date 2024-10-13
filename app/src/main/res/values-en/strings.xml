@@ -83,4 +83,6 @@ Marketing or selling to other companies or third parties.
     <string name="account">accounts</string>
     <string name="exit">exit</string>
     <string name="pdf_pages">pages loaded/- total pages</string>
+    <string name="theme">theme</string>
+    <string name="language">language</string>
 </resources>

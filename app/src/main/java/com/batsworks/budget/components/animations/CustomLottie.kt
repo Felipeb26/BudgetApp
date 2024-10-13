@@ -18,6 +18,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.batsworks.budget.R
 import com.batsworks.budget.ui.theme.Color300
+import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 
 @Composable
@@ -25,12 +26,12 @@ fun Loading(isLoading: Boolean = true) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
     val dynamicProperties = rememberLottieDynamicProperties(
         rememberLottieDynamicProperty(
-        property = LottieProperty.COLOR_FILTER,
-        keyPath = arrayOf("Glow ball","Ellipse 1","Fill 1"),
-        value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            Color300.toArgb(), BlendModeCompat.SRC_ATOP
-        ),
-    )
+            property = LottieProperty.COLOR_FILTER,
+            keyPath = arrayOf("Glow ball", "Ellipse 1", "Fill 1"),
+            value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                Color300.toArgb(), BlendModeCompat.SRC_ATOP
+            ),
+        )
     )
     if (isLoading) {
         LottieAnimation(
@@ -57,9 +58,9 @@ fun CustomLottieAnimation(
     val dynamicProperties = rememberLottieDynamicProperties(
         rememberLottieDynamicProperty(
             property = LottieProperty.COLOR_FILTER,
-            keyPath = arrayOf("ADBE Vector Graphic - Fill", "Fill 1"),
+            keyPath = arrayOf("Layer 2", "Object"),
             value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                Color300.toArgb(), BlendModeCompat.SRC_ATOP
+                Color50.toArgb(), BlendModeCompat.SRC_ATOP
             ),
         )
     )
