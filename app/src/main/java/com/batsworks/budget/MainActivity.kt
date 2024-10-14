@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
 
         val context = applicationContext
         val notificationToast = NotificationToast(context)
-        syncData()
 
         setContent {
             val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
@@ -111,15 +110,16 @@ class MainActivity : AppCompatActivity() {
                         .background(customBackground)
                 ) {}
 
-                if (userState?.loginWhenEnter == false) {
+                if (userState != null) {
+                    SelectScreen(userState)
+                } else {
+                    syncData()
                     promptManager.showBiometricPrompt(
                         capitalizeStrings(
                             "${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"
                         ),
                         stringResource(id = R.string.biometric_description)
                     )
-                } else {
-                    SelectScreen(userState)
                 }
             }
         }
@@ -151,7 +151,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         biometricResult?.let { result ->
-            Log.d("RESULTADO", result.toString())
             when (result) {
                 is BiometricPromptManager.BiometricResult.AuthenticationSucess -> whereToGo.invoke(
                     formatNavigation(Screen.MainScreen.route)
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         LaunchedEffect(intent) {
             if (intent.action == Intent.ACTION_SEND && intent.type != null) {
                 val type = intent.type
-                if (type?.startsWith("image") == true) {
+                if (type?.startsWith("image") == true || type?.endsWith("pdf") == true) {
                     onImageUriReceived(intent.clipData?.getItemAt(0)?.uri ?: intent.data)
                 }
             }
@@ -233,7 +232,7 @@ class MainActivity : AppCompatActivity() {
 
         workManager.enqueueUniquePeriodicWork(
             AJUST_TAG(tag),
-            ExistingPeriodicWorkPolicy.UPDATE,
+            ExistingPeriodicWorkPolicy.KEEP,
             workerRequest
         )
         workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))

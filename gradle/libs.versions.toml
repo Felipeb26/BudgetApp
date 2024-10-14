@@ -1,0 +1,73 @@
+[versions]
+activityCompose = "1.9.2"
+appcompat = "1.7.0"
+biometric = "1.1.0"
+coilCompose = "2.7.0"
+commomDaggerHiltVersion = "2.48"
+composeBom = "2024.09.03"
+coreKtx = "1.13.1"
+coreSplashscreen = "1.0.1"
+daggerHiltVersion = "1.2.0"
+datetime = "0.9.0"
+espressoCore = "3.6.1"
+firebaseBom = "33.1.1"
+firebaseFirestore = "25.1.0"
+firebaseStorage = "21.0.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+lifecycleRuntimeKtx = "2.8.6"
+lottieCompose = "6.5.2"
+material3 = "1.3.0"
+material3Android = "1.3.0"
+navigationCompose = "2.8.2"
+rollbarAndroid = "1.10.3"
+roomCompiler = "2.6.1"
+roomKtx = "2.6.1"
+roomRuntime = "2.6.1"
+workRuntimeKtx = "2.9.1"
+
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-hilt-common = { module = "androidx.hilt:hilt-common", version.ref = "daggerHiltVersion" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "daggerHiltVersion" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "daggerHiltVersion" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-material3-android = { module = "androidx.compose.material3:material3-android", version.ref = "material3Android" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-ui = { module = "androidx.compose.ui:ui" }
+androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "commomDaggerHiltVersion" }
+datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "commomDaggerHiltVersion" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "commomDaggerHiltVersion" }
+junit = { module = "junit:junit", version.ref = "junit" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+rollbar-android = { module = "com.rollbar:rollbar-android", version.ref = "rollbarAndroid" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+
+
+[plugins]

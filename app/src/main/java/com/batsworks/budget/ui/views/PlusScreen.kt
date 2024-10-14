@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.animations.CustomLottieAnimation
 import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.navigation.Screen
@@ -59,7 +59,7 @@ fun PlusScreen(
 	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
 	val (exit, makeExit) = remember { mutableStateOf(false) }
 
-	if (exit) ExitAnimation(true, navController)
+	if (exit) ExitAnimation(true)
 	else Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -133,7 +133,7 @@ fun CardFunction(
 }
 
 @Composable
-fun ExitAnimation(exit: Boolean, navController: NavHostController) {
+fun ExitAnimation(exit: Boolean) {
 	val activity = (LocalContext.current as? Activity)
 	CustomLottieAnimation(lottieComposition = R.raw.bye, show = exit)
 

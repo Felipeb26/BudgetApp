@@ -1,113 +1,121 @@
 plugins {
-	id("com.android.application")
-	id("org.jetbrains.kotlin.android")
-	id("com.google.devtools.ksp")
-	id("com.google.gms.google-services")
-	id("com.google.dagger.hilt.android")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+    kotlin("kapt")
 }
 
 android {
-	namespace = "com.batsworks.budget"
-	compileSdk = 34
+    namespace = "com.batsworks.budget"
+    compileSdk = 34
 
-	defaultConfig {
-		applicationId = "com.batsworks.budget"
-		minSdk = 29
-		targetSdk = 34
-		versionCode = 1
-		versionName = "1.0"
+    defaultConfig {
+        applicationId = "com.batsworks.budget"
+        minSdk = 29
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
 
-		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-		vectorDrawables {
-			useSupportLibrary = true
-		}
-	}
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
 
-	buildTypes {
-		release {
-			isMinifyEnabled = true
-			isShrinkResources = true
-			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-		}
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
 
-		debug {
-			isMinifyEnabled = false
-			isShrinkResources = false
-		}
-	}
-	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_1_8
-		targetCompatibility = JavaVersion.VERSION_1_8
-	}
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
-	buildFeatures {
-		compose = true
-	}
-	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.0"
-	}
-	packaging {
-		resources {
-			excludes += "/META-INF/{AL2.0,LGPL2.1}"
-		}
-	}
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.11"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 }
 
 dependencies {
-	implementation("androidx.hilt:hilt-common:1.2.0")
-    val daggerHiltWorkerVersion = "1.2.0"
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.activity.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.tooling)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
-	implementation("androidx.appcompat:appcompat:1.6.1")
-	implementation("androidx.core:core-ktx:1.13.1")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
-	implementation("androidx.activity:activity-compose:1.9.0")
-	implementation("androidx.activity:activity-ktx:1.9.0")
-	implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-	implementation("androidx.compose.ui:ui")
-	implementation("androidx.compose.ui:ui-graphics")
-	implementation("androidx.compose.ui:ui-tooling-preview")
-	implementation("androidx.compose.ui:ui-tooling")
-	testImplementation("junit:junit:4.13.2")
-	androidTestImplementation("androidx.test.ext:junit:1.2.1")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-	androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.03"))
-	androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-	debugImplementation("androidx.compose.ui:ui-tooling")
-	debugImplementation("androidx.compose.ui:ui-test-manifest")
+    //Material 3
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.material3)
+    implementation(libs.androidx.navigation.compose)
+    //AsyncImage
+    implementation(libs.coil.compose)
+    //Worker
+    implementation(libs.androidx.work.runtime.ktx)
+    //Dagger Hilt
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.dagger.compiler)
+    //Lottie
+    implementation(libs.lottie.compose)
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    //Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    //Biometric
+    implementation(libs.androidx.biometric)
+    //SplashScreen
+    implementation(libs.androidx.core.splashscreen)
+    //Calendar - Date Pick
+    implementation(libs.datetime)
+    //Rollbar
+    implementation(libs.rollbar.android)
+}
 
-	implementation("androidx.compose.material3:material3")
-	implementation("androidx.compose.material3:material3-android:1.2.1")
-	implementation("androidx.compose.material3:material3:1.2.1")
-	implementation("androidx.navigation:navigation-compose:2.7.7")
-	//AsyncImage
-	implementation("io.coil-kt:coil-compose:2.6.0")
-	//Worker
-	implementation("androidx.work:work-runtime-ktx:2.9.0")
-	//Dagger Hilt
-	implementation("androidx.hilt:hilt-work:$daggerHiltWorkerVersion")
-	implementation("com.google.dagger:hilt-android:2.50")
-	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-	ksp("com.google.dagger:hilt-compiler:2.50")
-	ksp("com.google.dagger:dagger-compiler:2.50")
-	//Lottie
-	implementation("com.airbnb.android:lottie-compose:6.0.0")
-	//Firebase
-	implementation("com.google.firebase:firebase-firestore:25.0.0")
-	implementation("com.google.firebase:firebase-firestore:25.0.0")
-	implementation("com.google.firebase:firebase-storage:21.0.0")
-	//Room
-	implementation("androidx.room:room-runtime:2.6.1")
-	annotationProcessor("androidx.room:room-compiler:2.6.1")
-	implementation("androidx.room:room-ktx:2.6.1")
-	ksp("androidx.room:room-compiler:2.6.1")
-	//Biometric
-	implementation("androidx.biometric:biometric:1.1.0")
-	//SplashScreen
-	implementation("androidx.core:core-splashscreen:1.0.1")
-	//Calendar - Date Pick
-	implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
-	//Rollbar
-	implementation("com.rollbar:rollbar-android:1.10.0")
+kapt {
+    correctErrorTypes = true
 }

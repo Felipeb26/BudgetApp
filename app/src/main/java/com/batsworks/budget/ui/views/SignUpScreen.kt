@@ -1,6 +1,7 @@
 package com.batsworks.budget.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -37,19 +38,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.buttons.CustomButton
-import com.batsworks.budget.components.buttons.CustomCheckBox
-import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.Loading
-import com.batsworks.budget.components.annotedString
+import com.batsworks.budget.components.buttons.CustomButton
+import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.fields.CustomPasswordOutlineTextField
-import com.batsworks.budget.services.notification.CustomDialog
-import com.batsworks.budget.services.notification.NotificationToast
+import com.batsworks.budget.components.texts.CustomText
+import com.batsworks.budget.components.texts.annotedString
 import com.batsworks.budget.components.visual_transformation.PhoneTransformation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.services.notification.CustomDialog
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.paddingScreen
 import com.batsworks.budget.ui.view_model.login.LoginViewModel
@@ -222,7 +223,7 @@ fun TermsAndCondition(
             stringResource(id = R.string.i_agree_with), stringResource(id = R.string.and),
             stringResource(id = R.string.the_privacy), stringResource(id = R.string.the_policiy)
         )
-        ClickableText(text = annoted) { _ -> showDialog = !showDialog }
+        BasicText(modifier = Modifier.clickable { showDialog = !showDialog }, text = annoted)
     }
     if (error) Text(text = errorMessage ?: "", color = MaterialTheme.colorScheme.error)
 }

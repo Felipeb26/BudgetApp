@@ -3,7 +3,12 @@ package com.batsworks.budget.components.functions
 import android.content.Context
 import com.batsworks.budget.services.notification.NotificationToast
 
-fun <T> notEnableIfEmpty(context: Context, message: String, content: T?, func: () -> Unit) {
+fun <T> notEnableIfEmpty(
+    context: Context,
+    message: String = "empty content",
+    content: T?,
+    func: () -> Unit
+) {
     val toast = NotificationToast(context)
     var isNullOrEmpty = false
     if (content == null) isNullOrEmpty = true

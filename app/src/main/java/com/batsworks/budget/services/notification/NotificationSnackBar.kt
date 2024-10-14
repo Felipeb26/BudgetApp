@@ -14,13 +14,14 @@ class NotificationSnackBar(
     fun show(
         message: String,
         actionLabel: String? = null,
-        duration: SnackbarDuration = SnackbarDuration.Short
+        duration: SnackbarDuration = SnackbarDuration.Short,
+        dismissAction: Boolean = true
     ) {
         coroutine.launch {
             snackBarHostState.showSnackbar(
                 message, actionLabel,
-                withDismissAction = true,
-                duration = duration
+                withDismissAction = dismissAction,
+                duration = duration,
             )
         }
     }

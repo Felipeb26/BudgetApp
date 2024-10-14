@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.decodeBitmap
+import androidx.core.graphics.drawable.toBitmapOrNull
 import com.batsworks.budget.R
 import com.batsworks.budget.components.files.getFileType
 import com.batsworks.budget.components.files.zipFile
@@ -23,7 +24,7 @@ fun getImageFromUri(context: Context, uri: Uri): Bitmap {
 }
 
 fun getByteArrayFromUri(context: Context, uri: Uri?, name: String? = null): ByteArray {
-    if(uri == null) return byteArrayOf()
+    if (uri == null) return byteArrayOf()
     val fileType = getFileType(context, uri)
     Log.d("FILE", fileType)
     return when (fileType) {
@@ -32,8 +33,9 @@ fun getByteArrayFromUri(context: Context, uri: Uri?, name: String? = null): Byte
         else -> compressImage(context, uri)
     }
 }
+
 fun getByteArrayFromUri(context: Context, stringUri: String?, name: String? = null): ByteArray {
-    if(stringUri == null) return byteArrayOf()
+    if (stringUri == null) return byteArrayOf()
     val uri = Uri.parse(stringUri)
     val fileType = getFileType(context, uri)
     Log.d("FILE", fileType)
@@ -63,9 +65,9 @@ fun convertByteArrayToBitmap(byteArray: ByteArray): Bitmap {
 @Composable
 fun visibilityIsOn(on: Boolean): ImageVector {
     return if (on) {
-        ImageVector.vectorResource(R.drawable.baseline_visibility_24)
+        ImageVector.vectorResource(R.drawable.ic_visibility)
     } else {
-        ImageVector.vectorResource(R.drawable.baseline_visibility_off_24)
+        ImageVector.vectorResource(R.drawable.ic_visibility_off)
     }
 }
 
@@ -73,8 +75,29 @@ fun visibilityIsOn(on: Boolean, context: Context): Drawable {
     val resources = context.resources
     val theme = context.theme
     return if (on) {
-        ResourcesCompat.getDrawable(resources, R.drawable.baseline_visibility_24, theme)!!
+        ResourcesCompat.getDrawable(resources, R.drawable.ic_visibility, theme)!!
     } else {
-        ResourcesCompat.getDrawable(resources, R.drawable.baseline_visibility_off_24, theme)!!
+        ResourcesCompat.getDrawable(resources, R.drawable.ic_visibility_off, theme)!!
     }
+}
+
+fun locateImage(context: Context, res: Int): Bitmap? {
+    val resources = context.resources
+    val theme = context.theme
+    return ResourcesCompat.getDrawable(resources, res, theme)?.toBitmapOrNull()
+}
+
+fun locateImage(context: Context, res: Int, width: Double): Bitmap {
+    val resources = context.resources
+    val theme = context.theme
+    val originalBitmap = ResourcesCompat.getDrawable(resources, res, theme)?.toBitmapOrNull()!!
+
+    val reducedWidth = (originalBitmap.width / width).toInt()
+    val reducedBitmap = Bitmap.createScaledBitmap(
+        originalBitmap,
+        reducedWidth,
+        originalBitmap.height,
+        true
+    )
+    return reducedBitmap
 }

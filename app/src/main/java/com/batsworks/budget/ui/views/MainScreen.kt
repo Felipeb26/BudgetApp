@@ -25,7 +25,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.navigation.MainNavigation
 import com.batsworks.budget.navigation.Screen

@@ -17,7 +17,6 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.batsworks.budget.R
-import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 
@@ -29,7 +28,7 @@ fun Loading(isLoading: Boolean = true) {
             property = LottieProperty.COLOR_FILTER,
             keyPath = arrayOf("Glow ball", "Ellipse 1", "Fill 1"),
             value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                Color300.toArgb(), BlendModeCompat.SRC_ATOP
+                Color50.toArgb(), BlendModeCompat.SRC_ATOP
             ),
         )
     )
@@ -37,7 +36,7 @@ fun Loading(isLoading: Boolean = true) {
         LottieAnimation(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color300.copy(0.6f)),
+                .background(Color50),
             enableMergePaths = true, reverseOnRepeat = true,
             iterations = LottieConstants.IterateForever,
             composition = composition, speed = 0.5f,
@@ -69,7 +68,7 @@ fun CustomLottieAnimation(
         LottieAnimation(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor.copy(0.4f)),
+                .background(backgroundColor.copy(0.7f)),
             enableMergePaths = true, reverseOnRepeat = true,
             iterations = LottieConstants.IterateForever,
             composition = composition, speed = speed,

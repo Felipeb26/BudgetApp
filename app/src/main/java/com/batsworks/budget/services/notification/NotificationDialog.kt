@@ -24,7 +24,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import com.batsworks.budget.R
 import com.batsworks.budget.components.buttons.CustomButton
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.ui.theme.Color100
 import com.batsworks.budget.ui.theme.customBackground
 

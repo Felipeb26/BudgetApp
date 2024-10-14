@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.buttons.CustomButton

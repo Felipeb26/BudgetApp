@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import java.io.ByteArrayInputStream
 
 @OptIn(ExperimentalFoundationApi::class)

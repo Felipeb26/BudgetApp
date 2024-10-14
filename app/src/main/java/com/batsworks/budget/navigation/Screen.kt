@@ -20,9 +20,9 @@ sealed class Screen(val route: String, val icon: ImageVector?, val resource: Int
 	data object HistoryScreen : Screen("history_screen", Icons.AutoMirrored.Filled.List)
 	data object AdicionarScreen : Screen("add_screen", Icons.Filled.Add)
 	data object ProfileScreen : Screen("profile_screen", Icons.Filled.AccountCircle)
-	data object PlusScreen : Screen("plus_screen", null, R.drawable.baseline_more_horiz_24)
+	data object PlusScreen : Screen("plus_screen", null, R.drawable.ic_more_horiz)
 	data object AccountsScreen :
-		Screen("accounts_screen", null, R.drawable.baseline_account_balance_24)
+		Screen("accounts_screen", null, R.drawable.ic_account_balance)
 
 	data object ReceiptScreen : Screen("receiveit_screen", Icons.Filled.ShoppingCart)
 	data object SharedReceiptScreen : Screen("shared_receipt_screen", Icons.Filled.ShoppingCart)

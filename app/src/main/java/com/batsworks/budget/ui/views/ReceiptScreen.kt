@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.buttons.CustomButton
@@ -49,11 +48,12 @@ import com.batsworks.budget.components.files.pdf.ComposePDFViewer
 import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.components.functions.composeBool
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.services.notification.NotificationSnackBar
 import com.batsworks.budget.ui.theme.Color300
+import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
-import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.Color700
 import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.channels.Channel
@@ -97,8 +97,9 @@ fun ReceiptScreen(
 		SnackbarHost(hostState = snackBarHostState, snackbar = {
 			Snackbar(
 				snackbarData = it,
-				containerColor = composeBool(isSystemInDarkTheme(), Color500, Color700),
-				contentColor = Color50, actionColor = Color50, dismissActionContentColor = Color50
+				containerColor = composeBool(isSystemInDarkTheme(), Color400, Color700),
+				dismissActionContentColor = composeBool(isSystemInDarkTheme(), Color700, Color50),
+				contentColor = Color50, actionColor = Color50,
 			)
 		})
 	}) { padding ->
@@ -191,8 +192,7 @@ private fun ActionButtons(amount: State<AmountEntity?>, downloadReceipt: (Amount
 
 private fun shareApp(context: Context, content: ByteArray, title: String) {
 	val uri = getImageUriFromByteArray(content, context.contentResolver, title)
-	val shareIntent: Intent = Intent().apply {
-		action = Intent.ACTION_SEND
+	val shareIntent: Intent = Intent(Intent.ACTION_SEND).apply {
 		putExtra(Intent.EXTRA_STREAM, uri)
 		type = "application/octet-stream"
 		addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

@@ -2,7 +2,6 @@ package com.batsworks.budget.ui.views
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -33,21 +33,23 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.buttons.CustomButton
 import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.components.files.decompressData
 import com.batsworks.budget.components.files.image.getByteArrayFromUri
-import com.batsworks.budget.components.files.image.CustomImageShow
+import com.batsworks.budget.components.files.pdf.ComposePDFViewer
 import com.batsworks.budget.components.formatter.localDate
-import com.batsworks.budget.services.notification.NotificationToast
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
-import com.batsworks.budget.ui.theme.Color300
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.Color400
+import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.view_model.add.AmountFormEvent
 import com.batsworks.budget.ui.view_model.add.AmountFormState
@@ -61,7 +63,6 @@ import kotlinx.coroutines.time.delay
 import java.time.Duration
 import java.time.LocalDate
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SharedReceipt(
 	navController: NavController,
@@ -167,16 +168,17 @@ fun SharedReceipt(
 			)
 			Spacer(modifier = Modifier.height(15.dp))
 		}
-		item {
-			CustomImageShow(
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(500.dp)
-					.border(1.dp, color = Color300),
-				image = uri
-			)
-			Spacer(modifier = Modifier.height(30.dp))
-		}
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                PreviewContentFile(false, file)
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+        }
 	}
 }
 
@@ -259,6 +261,24 @@ private fun EntranceButton(
 	}
 }
 
+
+@Composable
+private fun PreviewContentFile(image: Boolean, file: Uri?) {
+	val context = LocalContext.current
+	if (image) {
+		AsyncImage(
+			modifier = Modifier
+				.fillMaxWidth(0.9f)
+				.border(2.dp, color = Color500, RoundedCornerShape(5)),
+			model = file, contentDescription = "",
+		)
+	} else {
+		if (file == null) return
+		var bytes = getByteArrayFromUri(context, file)
+		bytes = decompressData(bytes)
+		ComposePDFViewer(byteArray = bytes)
+	}
+}
 
 @PreviewLightDark
 @Composable

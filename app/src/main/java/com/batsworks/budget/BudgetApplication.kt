@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
+import androidx.core.content.getSystemService
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkManager
@@ -56,7 +57,7 @@ class BudgetApplication : Application(), ImageLoaderFactory {
             NotificationManager.IMPORTANCE_HIGH
         )
         notificationChannel.description = NotificationDataCreation.DESCRIPTION.content
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService<NotificationManager>()!!
         notificationManager.createNotificationChannel(notificationChannel)
     }
 

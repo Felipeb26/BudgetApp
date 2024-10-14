@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.batsworks.budget.R
-import com.batsworks.budget.components.capitalizeStrings
+import com.batsworks.budget.components.texts.capitalizeStrings
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
@@ -175,6 +175,6 @@ fun CustomPasswordOutlineTextField(
 
 @Composable
 private fun visible(show: Boolean): ImageVector {
-	return if (show) ImageVector.vectorResource(R.drawable.baseline_visibility_off_24)
-	else ImageVector.vectorResource(R.drawable.baseline_visibility_24)
+	return if (show) ImageVector.vectorResource(R.drawable.ic_visibility_off)
+	else ImageVector.vectorResource(R.drawable.ic_visibility)
 }

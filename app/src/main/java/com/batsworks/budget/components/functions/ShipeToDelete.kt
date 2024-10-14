@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.ui.theme.Color50
 import kotlinx.coroutines.delay
 

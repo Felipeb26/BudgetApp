@@ -1,5 +1,6 @@
 package com.batsworks.budget.ui.view_model.add
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import com.batsworks.budget.use_cases.amount.ValidateChargeName
 import com.batsworks.budget.use_cases.amount.ValidateChargeValue
 import com.batsworks.budget.use_cases.amount.ValidateFileVoucher
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -32,125 +34,126 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-	private val userLocalRepository: UsersDao,
-	private val amountLocalRepository: AmountDao,
-	private val repository: CustomRepository<AmountFirebaseEntity>,
+    private val userLocalRepository: UsersDao,
+    private val amountLocalRepository: AmountDao,
+    private val repository: CustomRepository<AmountFirebaseEntity>,
+    @ApplicationContext context: Context
 ) : ViewModel() {
-	private var chargeNameValidation: ValidateChargeName = ValidateChargeName()
-	private var chargeValueValidation: ValidateChargeValue = ValidateChargeValue()
-	private var fileValidation: ValidateFileVoucher = ValidateFileVoucher()
-	private var entranceValidation: ValdateEntrance = ValdateEntrance()
-	private var amountDateValidate: ValidateAmountDate = ValidateAmountDate()
+    private var chargeNameValidation: ValidateChargeName = ValidateChargeName()
+    private var chargeValueValidation: ValidateChargeValue = ValidateChargeValue()
+    private var fileValidation: ValidateFileVoucher = ValidateFileVoucher()
+    private var entranceValidation: ValdateEntrance = ValdateEntrance()
+    private var amountDateValidate: ValidateAmountDate = ValidateAmountDate()
 
-	private val tag: String = AddViewModel::class.java.name
-	private val now = LocalDate.now().format(formatter())
-	var state by mutableStateOf(AmountFormState())
+    private val tag: String = AddViewModel::class.java.name
+    private val now = LocalDate.now().format(formatter())
+    var state by mutableStateOf(AmountFormState())
 
-	private val resourceEventChannel = Channel<Resource<Any>>()
-	val resourceEventFlow = resourceEventChannel.receiveAsFlow()
+    private val resourceEventChannel = Channel<Resource<Any>>()
+    val resourceEventFlow = resourceEventChannel.receiveAsFlow()
 
-	fun onEvent(event: AmountFormEvent) {
-		when (event) {
-			is AmountFormEvent.EntranceEventChange -> {
-				state = state.copy(entrance = event.entrance)
-			}
+    fun onEvent(event: AmountFormEvent) {
+        when (event) {
+            is AmountFormEvent.EntranceEventChange -> {
+                state = state.copy(entrance = event.entrance)
+            }
 
-			is AmountFormEvent.ValueEventChange -> {
-				state = state.copy(value = formatEventCharge(event.value))
-			}
+            is AmountFormEvent.ValueEventChange -> {
+                state = state.copy(value = formatEventCharge(event.value))
+            }
 
-			is AmountFormEvent.ChargeNameEventChange -> {
-				state = state.copy(chargeName = event.chargeName)
-			}
+            is AmountFormEvent.ChargeNameEventChange -> {
+                state = state.copy(chargeName = event.chargeName)
+            }
 
-			is AmountFormEvent.FileVoucher -> {
-				state = state.copy(file = event.file)
-			}
+            is AmountFormEvent.FileVoucher -> {
+                state = state.copy(file = event.file)
+            }
 
-			is AmountFormEvent.AmountDate -> {
-				state = state.copy(amountDate = event.amountDate)
-			}
+            is AmountFormEvent.AmountDate -> {
+                state = state.copy(amountDate = event.amountDate)
+            }
 
-			is AmountFormEvent.Submit -> {
-				submitData()
-			}
-		}
-	}
+            is AmountFormEvent.Submit -> {
+                submitData()
+            }
+        }
+    }
 
-	private fun submitData() = viewModelScope.launch {
-		val fileIntance = state.file
-		val chargeNameResult = chargeNameValidation.execute(state.chargeName)
-		val chargeValueResult = chargeValueValidation.execute(state.value)
-		val entranceResult = entranceValidation.execute(state.entrance)
-		val amountDateResult = amountDateValidate.execute(state.amountDate.ifEmpty { now })
-		val fileResult = if (fileIntance != null) {
-			fileValidation.execute(state.file!!)
-		} else ValidationResult(true)
+    private fun submitData() = viewModelScope.launch {
+        val fileIntance = state.file
+        val chargeNameResult = chargeNameValidation.execute(state.chargeName)
+        val chargeValueResult = chargeValueValidation.execute(state.value)
+        val entranceResult = entranceValidation.execute(state.entrance)
+        val amountDateResult = amountDateValidate.execute(state.amountDate.ifEmpty { now })
+        val fileResult = if (fileIntance != null) {
+            fileValidation.execute(state.file!!)
+        } else ValidationResult(true)
 
-		val hasError = listOf(
-			chargeNameResult,
-			fileResult,
-			entranceResult,
-			amountDateResult
-		).any { !it.successful }
+        val hasError = listOf(
+            chargeNameResult,
+            fileResult,
+            entranceResult,
+            amountDateResult
+        ).any { !it.successful }
 
-		if (hasError) {
-			state = state.copy(
-				chargeNameError = chargeNameResult.errorMessage,
-				valueError = chargeValueResult.errorMessage,
-				entranceError = entranceResult.errorMessage,
-				fileError = fileResult.errorMessage,
-				amountDateError = amountDateResult.errorMessage
-			)
-			Log.d(AJUST_TAG(tag), "Foram encontrados erros")
-			return@launch
-		}
-		resourceEventChannel.send(Resource.Loading(true))
-		saveAmout(state)
-	}
+        if (hasError) {
+            state = state.copy(
+                chargeNameError = chargeNameResult.errorMessage,
+                valueError = chargeValueResult.errorMessage,
+                entranceError = entranceResult.errorMessage,
+                fileError = fileResult.errorMessage,
+                amountDateError = amountDateResult.errorMessage
+            )
+            Log.d(AJUST_TAG(tag), "Foram encontrados erros")
+            return@launch
+        }
+        resourceEventChannel.send(Resource.Loading(true))
+        saveAmout(state)
+    }
 
-	private fun saveAmout(state: AmountFormState) = viewModelScope.launch {
-		try {
-			val userEntity = userLocalRepository.findUser()
-			val amout = AmountEntity(
-				chargeName = state.chargeName,
-				value = state.value,
-				entrance = state.entrance,
-				file = state.file,
-				user = userEntity.firebaseId,
-				amountDate = localDate(state.amountDate),
-				extension = getFileType(state.file),
-				size = state.file?.size ?: 0
-			)
-			state.file?.let { saveOnStorage(amout, it) }
-			amountLocalRepository.save(amout)
-			resourceEventChannel.send(Resource.Sucess(amout))
-			resourceEventChannel.send(Resource.Loading(false))
-		} catch (e: Exception) {
-			resourceEventChannel.send(Resource.Failure(e.message ?: "A error has happen"))
-			resourceEventChannel.send(Resource.Loading(false))
-			return@launch
-		}
-	}
+    private fun saveAmout(state: AmountFormState) = viewModelScope.launch {
+        try {
+            val userEntity = userLocalRepository.findUser()
+            val amout = AmountEntity(
+                chargeName = state.chargeName,
+                value = state.value,
+                entrance = state.entrance,
+                file = state.file,
+                user = userEntity.firebaseId,
+                amountDate = localDate(state.amountDate),
+                extension = getFileType(state.file),
+                size = state.file?.size ?: 0
+            )
+            state.file?.let { saveOnStorage(amout, it) }
+            amountLocalRepository.save(amout)
+            resourceEventChannel.send(Resource.Sucess(amout))
+            resourceEventChannel.send(Resource.Loading(false))
+        } catch (e: Exception) {
+            resourceEventChannel.send(Resource.Failure(e.message ?: "A error has happen"))
+            resourceEventChannel.send(Resource.Loading(false))
+            return@launch
+        }
+    }
 
-	private fun saveOnStorage(amout: AmountEntity, file: ByteArray) {
-		repository.saveFile(file, "${amout.chargeName}.${amout.extension}")
-			.addOnSuccessListener { snapshot ->
-				Log.d(AJUST_TAG(tag), "ARQUIVO salvo com sucesso")
-				amout.withRef(snapshot.uploadSessionUri)
-			}.addOnFailureListener {
-				Log.e(AJUST_TAG(tag), it.message ?: "an error has happen")
-				throw Exception(it.message ?: it.cause?.message)
-			}
-	}
+    private fun saveOnStorage(amout: AmountEntity, file: ByteArray) {
+        repository.saveFile(file, "${amout.chargeName}.${amout.extension}")
+            .addOnSuccessListener { snapshot ->
+                Log.d(AJUST_TAG(tag), "ARQUIVO salvo com sucesso")
+                amout.withRef(snapshot.uploadSessionUri)
+            }.addOnFailureListener {
+                Log.e(AJUST_TAG(tag), it.message ?: "an error has happen")
+                throw Exception(it.message ?: it.cause?.message)
+            }
+    }
 
 
-	private fun formatEventCharge(value: String): BigDecimal {
-		if (value.length <= 1 && value.contains("."))
-			return BigDecimal.ZERO
-		var valueToUse = value.replace(Regex("[a-zA-Z]"), "")
-		valueToUse = valueToUse.replace("R$", "").trim()
-		return BigDecimal(valueToUse)
-	}
+    private fun formatEventCharge(value: String): BigDecimal {
+        if (value.length <= 1 && value.contains("."))
+            return BigDecimal.ZERO
+        var valueToUse = value.replace(Regex("[a-zA-Z]"), "")
+        valueToUse = valueToUse.replace("R$", "").trim()
+        return BigDecimal(valueToUse)
+    }
 
 }

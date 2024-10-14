@@ -51,6 +51,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -70,15 +71,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.CustomText
 import com.batsworks.budget.components.animations.SwitchElementsView
 import com.batsworks.budget.components.animations.Visible
+import com.batsworks.budget.components.files.image.locateImage
 import com.batsworks.budget.components.files.image.visibilityIsOn
 import com.batsworks.budget.components.formatScreenTitle
 import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.components.functions.notEnableIfEmpty
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.domain.dto.AmountState
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
@@ -110,6 +112,13 @@ fun Home(
     showAmount: (BigDecimal?, Boolean, MutableState<String>) -> String,
 ) {
     val configuration = LocalConfiguration.current
+    val height = configuration.screenHeightDp.toFloat()
+    val width = configuration.screenWidthDp.toFloat()
+
+    val imageBitMap = locateImage(
+        LocalContext.current,
+        R.drawable.logo, 1.2
+    ).asImageBitmap()
 
     Column(
         modifier = Modifier
@@ -117,11 +126,20 @@ fun Home(
             .background(customBackground)
             .drawBehind {
                 drawRect(
-                    brush = brushCard(cardEnd = (configuration.screenHeightDp / 2).toFloat()),
+                    brush = brushCard(cardEnd = height / 2),
                     size = Size(
-                        width = configuration.screenWidthDp.toFloat() * 5,
-                        height = (configuration.screenHeightDp / 2).toFloat()
+                        width = width * 5,
+                        height = height / 2
                     )
+                )
+                drawImage(
+                    imageBitMap,
+                    alpha = 0.3f,
+                    topLeft = Offset(
+                        x = (width - imageBitMap.width) / 18,
+                        y = height / 2
+                    ),
+                    colorFilter = ColorFilter.tint(Color400)
                 )
             }
     ) {

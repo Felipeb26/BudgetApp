@@ -11,79 +11,84 @@ import kotlin.random.Random
 
 class Notifications(private val context: Context) {
 
-	private val notificationManager = context.getSystemService(NotificationManager::class.java)
-	private val title = context.getString(R.string.enterprise_name)
+    private val notificationManager = context.getSystemService(NotificationManager::class.java)
+    private val defaultTitle = context.getString(R.string.enterprise_name)
 
-	fun showBasicNotification(text: String? = null) {
-		val notificationBuilder =
-			NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
-				.setContentTitle(title)
-				.setSmallIcon(R.drawable.profile)
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
-				.setAutoCancel(true)
+    fun showBasicNotification(
+        title: String = defaultTitle,
+        text: String? = null,
+        autoCancelAndOngoing: Pair<Boolean, Boolean> = Pair(true, false)
+    ) {
+        val notificationBuilder =
+            NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.profile)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(autoCancelAndOngoing.first).setOngoing(autoCancelAndOngoing.second)
 
-		val notification = if (text.isNullOrEmpty()) {
-			notificationBuilder.build()
-		} else {
-			notificationBuilder.setContentText(text).build()
-		}
+        val notification = if (text.isNullOrEmpty()) {
+            notificationBuilder.build()
+        } else {
+            notificationBuilder.setContentText(text).build()
+        }
 
-		notificationManager.notify(Random.nextInt(), notification)
-	}
+        notificationManager.notify(Random.nextInt(), notification)
+    }
 
-	fun showPendingNotification(text: String? = null, filePath: String) {
-		val intent = Intent(context, MainActivity::class.java).apply {
-			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-			putExtra("file_path", filePath)
-		}
-		val pendingIntent: PendingIntent = PendingIntent.getActivity(
-			context, 0, intent,
-			PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-		)
+    fun showBasicNotification(
+        title: String = defaultTitle,
+        text: String? = null,
+        icon: Int,
+        actionLabel: String,
+        intent: PendingIntent,
+        autoCancelAndOngoing: Pair<Boolean, Boolean> = Pair(true, false)
+    ) {
+        val notificationBuilder =
+            NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.profile)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(autoCancelAndOngoing.first).setOngoing(autoCancelAndOngoing.second)
+                .addAction(icon, actionLabel, intent)
 
-		val notificationBuilder =
-			NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
-				.setContentTitle(title)
-				.setContentText(text ?: "")
-				.setSmallIcon(R.drawable.profile)
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
-				.setContentIntent(pendingIntent)
-				.setAutoCancel(true)
+        val notification = if (text.isNullOrEmpty()) {
+            notificationBuilder.build()
+        } else {
+            notificationBuilder.setContentText(text).build()
+        }
 
-		val notification = if (text.isNullOrEmpty()) {
-			notificationBuilder.build()
-		} else {
-			notificationBuilder.setContentText(text).build()
-		}
+        notificationManager.notify(Random.nextInt(), notification)
+    }
 
-		notificationManager.notify(Random.nextInt(), notification)
-	}
+    fun showPendingNotification(text: String? = null, filePath: String) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("file_path", filePath)
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-//	fun showLoadingNotification(context: Context, title: String? = null) {
-//		val intent = Intent(context, MainActivity::class.java).apply {
-//			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//		}
-//		val pendingIntent: PendingIntent =
-//			PendingIntent.getActivity(
-//				context,
-//				0,
-//				intent,
-//				PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-//			)
-//
-//		val builder = NotificationCompat.Builder(context, NotificationChannelId.CHANNEL.id)
-//			.setSmallIcon(R.drawable.logo)
-//			.setContentTitle(title ?: "Download Progress")
-//			.setContentText("Your data is syncroning now")
-//			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//			.setContentIntent(pendingIntent)
-//			.setAutoCancel(true)
-//			.setProgress(100, 100, true).build()
-//
-//		notificationManager.notify(1, builder)
-//	}
+        val notificationBuilder =
+            NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
+                .setContentTitle(defaultTitle)
+                .setContentText(text ?: "")
+                .setSmallIcon(R.drawable.profile)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
-	fun showLoadingNotification(builder: NotificationCompat.Builder) {
-		notificationManager.notify(1, builder.build())
-	}
+        val notification = if (text.isNullOrEmpty()) {
+            notificationBuilder.build()
+        } else {
+            notificationBuilder.setContentText(text).build()
+        }
+
+        notificationManager.notify(Random.nextInt(), notification)
+    }
+
+    fun showNotification(builder: NotificationCompat.Builder, id: Int = 1) {
+        notificationManager.notify(id, builder.build())
+    }
 }
