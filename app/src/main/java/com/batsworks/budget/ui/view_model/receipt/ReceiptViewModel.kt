@@ -30,7 +30,7 @@ class ReceiptViewModel @Inject constructor(
 
 	fun showImage(id: String) {
 		viewModelScope.launch {
-			val amount = localRepository.findById(id)
+			val amount = localRepository.findById(id.toInt())
 			_mutableEntityAmount.emit(amount)
 		}
 	}

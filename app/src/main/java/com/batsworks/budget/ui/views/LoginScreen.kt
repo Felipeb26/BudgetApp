@@ -217,14 +217,10 @@ fun LoginExecution(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CustomCheckBox(checked = enterWhenLogin, onCheckedChange = {
-            onEvent(RegistrationFormEvent.TermsChanged(it))
             setEnterWhenLogin(!enterWhenLogin)
+            onEvent(RegistrationFormEvent.TermsChanged(it))
         })
         CustomText(
-            modifier = Modifier.clickable {
-                onEvent(RegistrationFormEvent.TermsChanged(!enterWhenLogin))
-                setEnterWhenLogin(!enterWhenLogin)
-            },
             text = stringResource(id = R.string.login_on_enter),
             textStyle = MaterialTheme.typography.labelLarge,
             isUpperCase = true, textWeight = FontWeight.SemiBold

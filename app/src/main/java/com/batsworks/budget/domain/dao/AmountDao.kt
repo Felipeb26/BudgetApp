@@ -15,7 +15,7 @@ interface AmountDao {
     suspend fun findLastAmounts(): List<AmountEntity>
 
     @Query("SELECT * FROM AMOUNTENTITY at WHERE at.id=:id")
-    suspend fun findById(id: String): AmountEntity
+    suspend fun findById(id: Int): AmountEntity
 
     @Upsert
     suspend fun save(amout: AmountEntity)

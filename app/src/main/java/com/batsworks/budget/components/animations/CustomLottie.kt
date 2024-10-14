@@ -17,6 +17,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.batsworks.budget.R
+import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
 
@@ -28,7 +29,7 @@ fun Loading(isLoading: Boolean = true) {
             property = LottieProperty.COLOR_FILTER,
             keyPath = arrayOf("Glow ball", "Ellipse 1", "Fill 1"),
             value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                Color50.toArgb(), BlendModeCompat.SRC_ATOP
+                Color400.toArgb(), BlendModeCompat.SRC_ATOP
             ),
         )
     )

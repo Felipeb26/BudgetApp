@@ -14,6 +14,7 @@ class CurrencyTransformation : VisualTransformation {
 
         val currencyMask = text.text.mapIndexed { index, c ->
             when (index) {
+                -1 -> c
                 0 -> "R$ $c"
                 else -> c
             }

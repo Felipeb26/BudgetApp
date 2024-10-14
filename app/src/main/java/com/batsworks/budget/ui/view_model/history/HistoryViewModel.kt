@@ -4,21 +4,25 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.domain.dao.AmountDao
+import com.batsworks.budget.domain.dao.DeletedAmountDao
 import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.domain.entity.DeletedAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import  kotlinx.coroutines.time.delay
+import kotlinx.coroutines.time.delay
 import java.time.Duration
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(private val repository: AmountDao) : ViewModel() {
+class HistoryViewModel @Inject constructor(
+	private val repository: AmountDao,
+	private val deletedAmountDao: DeletedAmountDao,
+) : ViewModel() {
 
 	private val tag = HistoryViewModel::class.java.name
 	val amounts = mutableStateOf(emptyList<AmountEntity>())
@@ -40,6 +44,8 @@ class HistoryViewModel @Inject constructor(private val repository: AmountDao) : 
 	fun deleteAmount(id: Int) = viewModelScope.launch {
 		resourceEventChannel.send(Resource.Loading(true))
 		try {
+			val amount = repository.findById(id)
+			deletedAmountDao.save(DeletedAmount(localId = id, firebaseId = amount.firebaseId))
 			repository.delete(id)
 			resourceEventChannel.send(Resource.Loading(false))
 			resourceEventChannel.send(Resource.Sucess(""))

@@ -26,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -39,7 +38,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.texts.capitalizeStrings
-import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.formatNavigation
@@ -84,16 +82,16 @@ class MainActivity : AppCompatActivity() {
             HandlePermissionsRequest()
             HandleBiometricPrompt(context, notificationToast, setWhereToGo)
 
-            var imageUri by remember { mutableStateOf<Uri?>(null) }
-            val userState by model.userEntity.collectAsState()
+            val (sharedFile, setSharedFileInfo) = remember { mutableStateOf<Pair<Uri?, String>?>(null) }
+            val user by model.userEntity.collectAsState()
 
             BudgetTheme {
                 HandleExtrasRequests(permissionsToRequest)
-                CustomTheme(LocalView.current, findTheme(userState?.theme))
+                CustomTheme(LocalView.current, findTheme(user?.theme))
 
-                imageUri?.let {
-                    val encodedUri = Uri.encode(it.toString())
-                    Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri))
+                sharedFile?.let {
+                    val encodedUri = Uri.encode(it.first.toString())
+                    Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri, it.second))
                     return@BudgetTheme
                 }
 
@@ -102,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                     return@BudgetTheme
                 }
 
-                HandleIntent(intent) { imageUri = it }
+                HandleIntent(intent, setSharedFileInfo)
 
                 Column(
                     modifier = Modifier
@@ -110,9 +108,12 @@ class MainActivity : AppCompatActivity() {
                         .background(customBackground)
                 ) {}
 
-                if (userState != null) {
-                    SelectScreen(userState)
-                } else {
+                if(user == null) {
+                    Navigate(screen = formatNavigation(Screen.LoginScreen.route))
+	                return@BudgetTheme
+                }else if (user?.loginWhenEnter == true) {
+	                Navigate(screen = formatNavigation(Screen.MainScreen.route))
+                } else if(user?.loginWhenEnter == false){
                     syncData()
                     promptManager.showBiometricPrompt(
                         capitalizeStrings(
@@ -185,12 +186,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun HandleIntent(intent: Intent, onImageUriReceived: (Uri?) -> Unit) {
+    private fun HandleIntent(intent: Intent, onImageUriReceived: (Pair<Uri?, String>) -> Unit) {
         LaunchedEffect(intent) {
             if (intent.action == Intent.ACTION_SEND && intent.type != null) {
                 val type = intent.type
-                if (type?.startsWith("image") == true || type?.endsWith("pdf") == true) {
-                    onImageUriReceived(intent.clipData?.getItemAt(0)?.uri ?: intent.data)
+                if (type?.startsWith("image") == true ) {
+                    onImageUriReceived(Pair(intent.clipData?.getItemAt(0)?.uri ?: intent.data, "IMG"))
+                }else if (type?.endsWith("pdf") == true){
+                    onImageUriReceived(Pair(intent.clipData?.getItemAt(0)?.uri ?: intent.data, "PDF"))
                 }
             }
         }
@@ -207,14 +210,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Composable
-    private fun SelectScreen(user: UserEntity?) {
-        if (user?.loginWhenEnter == true) {
-            Navigate(screen = formatNavigation(Screen.MainScreen.route))
-        } else {
-            Navigate(screen = formatNavigation(Screen.LoginScreen.route))
-        }
-    }
 
     private fun syncData() {
         val contraints = Constraints.Builder()
