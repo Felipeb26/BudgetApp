@@ -19,7 +19,7 @@ import com.batsworks.budget.ui.view_model.receipt.ReceiptViewModel
 import com.batsworks.budget.ui.view_model.settings.SettingsViewModel
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
-import com.batsworks.budget.ui.views.Historico
+import com.batsworks.budget.ui.views.HistoryScreen
 import com.batsworks.budget.ui.views.Home
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.PlusScreen
@@ -69,7 +69,7 @@ fun MainNavigation(
 		composable(Screen.HistoryScreen.route) {
 			val model = hiltViewModel<HistoryViewModel>()
 			val (amounts, setAmounts) = model.amounts
-			Historico(
+			HistoryScreen(
 				navController,
 				model.resourceEventFlow,
 				amounts, setAmounts,

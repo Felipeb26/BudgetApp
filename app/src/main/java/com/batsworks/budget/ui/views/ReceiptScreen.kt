@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -112,9 +113,7 @@ fun ReceiptScreen(
 			verticalArrangement = Arrangement.spacedBy(15.dp)
 		) {
 			item { AmountInfo(amount) }
-			item {
-				AjustFilePreview(amount)
-			}
+			item { AjustFilePreview(amount) }
 			item { ActionButtons(amount, downloadReceipt) }
 		}
 	}
@@ -153,7 +152,7 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
 		CustomText(
 			textAlign = TextAlign.Start, capitalize = true,
 			textStyle = MaterialTheme.typography.titleMedium,
-			text = stringResource(id = R.string.entrance_exit).plus(amount.value?.entrance)
+			text = ajustTextIfEntrance(stringResource(id = R.string.entrance_exit), amount.value?.entrance?:true)
 		)
 	}
 	Spacer(modifier = Modifier.height(20.dp))
@@ -222,7 +221,7 @@ private fun AjustFilePreview(amount: State<AmountEntity?>) {
 			CustomImageShow(
 				modifier = Modifier
 					.fillMaxWidth()
-					.border(1.dp, Color300)
+					.border(1.dp, Color300, RoundedCornerShape(25f))
 					.height((configuration.screenHeightDp / 1.8).dp),
 				image = file
 			)
@@ -231,6 +230,11 @@ private fun AjustFilePreview(amount: State<AmountEntity?>) {
 		}
 	}
 
+}
+
+private fun ajustTextIfEntrance(value:String, isTrue:Boolean): String{
+	val values = value.split("/")
+	return if(isTrue) values[0] else values[1]
 }
 
 @Composable

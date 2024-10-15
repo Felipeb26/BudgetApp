@@ -46,7 +46,7 @@ Comercialização ou venda a outras empresas ou terceiros.
     <!--   sign up - log in  screen -->
     <!--   home in  screen -->
     <string name="empty_value">. . . . .</string>
-    <string name="entrance_exit">entrada / saida</string>
+    <string name="entrance_exit">"entrada / saida: "</string>
     <string name="values">valores</string>
     <string name="receive_pay">receber / pagar</string>
     <string name="last_transactions">Transações Recentes</string>

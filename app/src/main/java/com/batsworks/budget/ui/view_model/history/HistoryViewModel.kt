@@ -34,6 +34,9 @@ class HistoryViewModel @Inject constructor(
 		viewModelScope.launch {
 			delay(Duration.ofSeconds(2))
 			amounts.value = repository.findAll()
+			amounts.value.forEach {
+				Log.d(tag, "${it.id} ${it.chargeName} ${it.amountDate}")
+			}
 		}
 	}
 

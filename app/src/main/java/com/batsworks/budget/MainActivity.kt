@@ -57,186 +57,195 @@ import java.time.Duration
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val model by viewModels<MainViewModel>()
-    private val promptManager by lazy { BiometricPromptManager(this) }
-    private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
-    private val defaultRgbColor = Color800.toArgb()
-    private val tag = MainActivity::class.java.name
+	private val model by viewModels<MainViewModel>()
+	private val promptManager by lazy { BiometricPromptManager(this) }
+	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
+	private val defaultRgbColor = Color800.toArgb()
+	private val tag = MainActivity::class.java.name
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 
-        installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
+		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
 
-        enableEdgeToEdge(
-            SystemBarStyle.auto(defaultRgbColor, defaultRgbColor),
-            SystemBarStyle.auto(defaultRgbColor, defaultRgbColor)
-        )
+		enableEdgeToEdge(
+			SystemBarStyle.auto(defaultRgbColor, defaultRgbColor),
+			SystemBarStyle.auto(defaultRgbColor, defaultRgbColor)
+		)
 
-        val context = applicationContext
-        val notificationToast = NotificationToast(context)
+		val context = applicationContext
+		val notificationToast = NotificationToast(context)
 
-        setContent {
-            val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
-            CustomTheme(LocalView.current)
-            HandlePermissionsRequest()
-            HandleBiometricPrompt(context, notificationToast, setWhereToGo)
+		setContent {
+			val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
+			CustomTheme(LocalView.current)
+			HandlePermissionsRequest()
+			HandleBiometricPrompt(context, notificationToast, setWhereToGo)
 
-            val (sharedFile, setSharedFileInfo) = remember { mutableStateOf<Pair<Uri?, String>?>(null) }
-            val user by model.userEntity.collectAsState()
+			val (sharedFile, setSharedFileInfo) = remember { mutableStateOf<Pair<Uri?, String>?>(null) }
+			val user by model.userEntity.collectAsState()
 
-            BudgetTheme {
-                HandleExtrasRequests(permissionsToRequest)
-                CustomTheme(LocalView.current, findTheme(user?.theme))
+			BudgetTheme {
+				HandleExtrasRequests(permissionsToRequest)
+				CustomTheme(LocalView.current, findTheme(user?.theme))
 
-                sharedFile?.let {
-                    val encodedUri = Uri.encode(it.first.toString())
-                    Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri, it.second))
-                    return@BudgetTheme
-                }
+				sharedFile?.let {
+					val encodedUri = Uri.encode(it.first.toString())
+					Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri, it.second))
+					return@BudgetTheme
+				}
 
-                whereToGo?.let { to ->
-                    Navigate(screen = to)
-                    return@BudgetTheme
-                }
+				whereToGo?.let { to ->
+					Navigate(screen = to)
+					return@BudgetTheme
+				}
 
-                HandleIntent(intent, setSharedFileInfo)
+				HandleIntent(intent, setSharedFileInfo)
 
-                Column(
-                    modifier = Modifier
+				Column(
+					modifier = Modifier
                         .fillMaxSize()
                         .background(customBackground)
-                ) {}
+				) {}
 
-                if(user == null) {
-                    Navigate(screen = formatNavigation(Screen.LoginScreen.route))
-	                return@BudgetTheme
-                }else if (user?.loginWhenEnter == true) {
-	                Navigate(screen = formatNavigation(Screen.MainScreen.route))
-                } else if(user?.loginWhenEnter == false){
+				if (user == null) {
+					Navigate(screen = formatNavigation(Screen.LoginScreen.route))
+					return@BudgetTheme
+				} else if (user?.loginWhenEnter == true) {
                     syncData()
-                    promptManager.showBiometricPrompt(
-                        capitalizeStrings(
-                            "${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"
-                        ),
-                        stringResource(id = R.string.biometric_description)
-                    )
-                }
-            }
-        }
-    }
+					Navigate(screen = formatNavigation(Screen.MainScreen.route))
+                    return@BudgetTheme
+				} else if (user?.loginWhenEnter == false) {
+					promptManager.showBiometricPrompt(
+						capitalizeStrings("${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"),
+						stringResource(id = R.string.biometric_description)
+					)
+				}
+			}
+		}
+	}
 
-    @Composable
-    private fun HandleBiometricPrompt(
+	@Composable
+	private fun HandleBiometricPrompt(
         context: Context,
         notificationToast: NotificationToast,
-        whereToGo: (String) -> Unit
+        whereToGo: (String) -> Unit,
     ) {
-        val biometricResult by promptManager.promptResults.collectAsState(initial = null)
-        val enrollLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult(),
-            onResult = { Log.d("LAUNCHER", "Activity $it") })
+		val biometricResult by promptManager.promptResults.collectAsState(initial = null)
+		val enrollLauncher = rememberLauncherForActivityResult(
+			contract = ActivityResultContracts.StartActivityForResult(),
+			onResult = { Log.d("LAUNCHER", "Activity $it") })
 
-        LaunchedEffect(biometricResult) {
-            if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
-                if (Build.VERSION.SDK_INT >= 30) {
-                    val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                        putExtra(
-                            Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                            BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                        )
-                    }
-                    enrollLauncher.launch(enrollIntent)
-                } else whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
-            }
-        }
+		LaunchedEffect(biometricResult) {
+			if (biometricResult is BiometricPromptManager.BiometricResult.AuthenticationNotSet) {
+				if (Build.VERSION.SDK_INT >= 30) {
+					val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+						putExtra(
+							Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+							BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+						)
+					}
+					enrollLauncher.launch(enrollIntent)
+				} else whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+			}
+		}
 
-        biometricResult?.let { result ->
-            when (result) {
-                is BiometricPromptManager.BiometricResult.AuthenticationSucess -> whereToGo.invoke(
-                    formatNavigation(Screen.MainScreen.route)
-                )
+		biometricResult?.let { result ->
+			when (result) {
+				is BiometricPromptManager.BiometricResult.AuthenticationSucess -> whereToGo.invoke(
+					formatNavigation(Screen.MainScreen.route)
+				)
 
-                is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
-                    notificationToast.show((biometricResult as BiometricPromptManager.BiometricResult.AuthenticationErro).error)
-                    whereToGo.invoke(formatNavigation(Screen.MainScreen.route))
-                }
+				is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
+					notificationToast.show((biometricResult as BiometricPromptManager.BiometricResult.AuthenticationErro).error)
+					whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+				}
 
-                is BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
-                    Log.d("biometria", context.getString(R.string.biometric_auth_error))
-                    notificationToast.show(context.getString(R.string.biometric_auth_error))
-                    whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
-                }
+				is BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
+					Log.d("biometria", context.getString(R.string.biometric_auth_error))
+					notificationToast.show(context.getString(R.string.biometric_auth_error))
+					whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+				}
 
-                else -> whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
-            }
-        }
-    }
+				else -> whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+			}
+		}
+	}
 
-    @Composable
-    private fun HandlePermissionsRequest() {
-        val permissionsResultLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestMultiplePermissions(),
-            onResult = { })
+	@Composable
+	private fun HandlePermissionsRequest() {
+		val permissionsResultLauncher = rememberLauncherForActivityResult(
+			contract = ActivityResultContracts.RequestMultiplePermissions(),
+			onResult = { })
 
-        LaunchedEffect(Unit) {
-            delay(Duration.ofSeconds(2))
-            permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
-        }
-    }
+		LaunchedEffect(Unit) {
+			delay(Duration.ofSeconds(2))
+			permissionsResultLauncher.launch(permissionsToRequest.toTypedArray())
+		}
+	}
 
-    @Composable
-    private fun HandleIntent(intent: Intent, onImageUriReceived: (Pair<Uri?, String>) -> Unit) {
-        LaunchedEffect(intent) {
-            if (intent.action == Intent.ACTION_SEND && intent.type != null) {
-                val type = intent.type
-                if (type?.startsWith("image") == true ) {
-                    onImageUriReceived(Pair(intent.clipData?.getItemAt(0)?.uri ?: intent.data, "IMG"))
-                }else if (type?.endsWith("pdf") == true){
-                    onImageUriReceived(Pair(intent.clipData?.getItemAt(0)?.uri ?: intent.data, "PDF"))
-                }
-            }
-        }
-    }
+	@Composable
+	private fun HandleIntent(intent: Intent, onImageUriReceived: (Pair<Uri?, String>) -> Unit) {
+		LaunchedEffect(intent) {
+			if (intent.action == Intent.ACTION_SEND && intent.type != null) {
+				val type = intent.type
+				if (type?.startsWith("image") == true) {
+					onImageUriReceived(
+						Pair(
+							intent.clipData?.getItemAt(0)?.uri ?: intent.data,
+							"IMG"
+						)
+					)
+				} else if (type?.endsWith("pdf") == true) {
+					onImageUriReceived(
+						Pair(
+							intent.clipData?.getItemAt(0)?.uri ?: intent.data,
+							"PDF"
+						)
+					)
+				}
+			}
+		}
+	}
 
-    @Composable
-    private fun HandleExtrasRequests(permissionsToRequest: MutableList<String>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
-            permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
-            permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            permissionsToRequest.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-            permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-    }
+	@Composable
+	private fun HandleExtrasRequests(permissionsToRequest: MutableList<String>) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
+			permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+			permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+			permissionsToRequest.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+			permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+		}
+	}
 
 
-    private fun syncData() {
-        val contraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+	private fun syncData() {
+		val contraints = Constraints.Builder()
+			.setRequiredNetworkType(NetworkType.CONNECTED)
+			.build()
 
-        val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
-            .setConstraints(contraints)
-            .setInitialDelay(Duration.ofSeconds(15))
-            .addTag(tag)
-            .build()
+		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
+			.setConstraints(contraints)
+			.setInitialDelay(Duration.ofSeconds(15))
+			.addTag(tag)
+			.build()
 
-        val workManager = WorkManager.getInstance(this)
-        workManager.cancelAllWork()
+		val workManager = WorkManager.getInstance(this)
+		workManager.cancelAllWork()
 
-        workManager.enqueueUniquePeriodicWork(
-            AJUST_TAG(tag),
-            ExistingPeriodicWorkPolicy.KEEP,
-            workerRequest
-        )
-        workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
-            .observeForever {
-                it.forEach { workInfo ->
-                    Log.d("DATA_SYNC_STATE", "${workInfo.state}")
-                }
-            }
+		workManager.enqueueUniquePeriodicWork(
+			AJUST_TAG(tag),
+			ExistingPeriodicWorkPolicy.KEEP,
+			workerRequest
+		)
+		workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
+			.observeForever {
+				it.forEach { workInfo ->
+					Log.d("DATA_SYNC_STATE", "${workInfo.state}")
+				}
+			}
 
-    }
+	}
 
 }

@@ -13,31 +13,50 @@ import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.LottieDynamicProperty
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.batsworks.budget.R
-import com.batsworks.budget.ui.theme.Color400
+import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
+import com.batsworks.budget.ui.theme.Color500
+import com.batsworks.budget.ui.theme.Color600
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.Color950
+import com.batsworks.budget.ui.theme.customBackground
 
 @Composable
 fun Loading(isLoading: Boolean = true) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
+    val staticBallList = mutableListOf<LottieDynamicProperty<*>>()
+
+    for(i in 1..8) {
+        staticBallList.add(rememberLottieDynamicProperty(
+            property = LottieProperty.COLOR_FILTER,
+            keyPath = arrayOf("Shape Layer $i", "Ellipse 1", "Fill 1"),
+            value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                Color300.toArgb(), BlendModeCompat.SRC_ATOP
+            )))
+    }
+
+
     val dynamicProperties = rememberLottieDynamicProperties(
         rememberLottieDynamicProperty(
             property = LottieProperty.COLOR_FILTER,
             keyPath = arrayOf("Glow ball", "Ellipse 1", "Fill 1"),
             value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                Color400.toArgb(), BlendModeCompat.SRC_ATOP
+                Color600.copy(0.6f).toArgb(), BlendModeCompat.SRC_ATOP
             ),
-        )
+        ),
+        *staticBallList.toTypedArray()
     )
+
     if (isLoading) {
         LottieAnimation(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color50),
+                .background(customBackground),
             enableMergePaths = true, reverseOnRepeat = true,
             iterations = LottieConstants.IterateForever,
             composition = composition, speed = 0.5f,
@@ -58,7 +77,21 @@ fun CustomLottieAnimation(
     val dynamicProperties = rememberLottieDynamicProperties(
         rememberLottieDynamicProperty(
             property = LottieProperty.COLOR_FILTER,
-            keyPath = arrayOf("Layer 2", "Object"),
+            keyPath = arrayOf("Layer 3", "Object", ""),
+            value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                Color950.toArgb(), BlendModeCompat.SRC_ATOP
+            ),
+        ),
+        rememberLottieDynamicProperty(
+            property = LottieProperty.COLOR_FILTER,
+            keyPath = arrayOf("Layer 2", "Object", ""),
+            value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                Color500.toArgb(), BlendModeCompat.SRC_ATOP
+            ),
+        ),
+        rememberLottieDynamicProperty(
+            property = LottieProperty.COLOR_FILTER,
+            keyPath = arrayOf("Layer 1", "Object", ""),
             value = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 Color50.toArgb(), BlendModeCompat.SRC_ATOP
             ),

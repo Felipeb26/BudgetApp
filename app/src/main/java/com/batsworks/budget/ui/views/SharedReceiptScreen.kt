@@ -31,8 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
 import com.batsworks.budget.components.Resource
@@ -45,8 +43,9 @@ import com.batsworks.budget.components.files.pdf.ComposePDFViewer
 import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
+import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
-import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.navigation.formatNavigation
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color500
@@ -65,8 +64,8 @@ import java.time.LocalDate
 
 @Composable
 fun SharedReceipt(
-	navController: NavController,
 	file: Uri,
+	type: String,
 	resourceEventFlow: Flow<Resource<Any>>,
 	state: AmountFormState,
 	onEvent: (AmountFormEvent) -> Unit,
@@ -74,6 +73,7 @@ fun SharedReceipt(
 	Log.d("VALUE", file.toString())
 	val context = LocalContext.current
 	var loading by remember { mutableStateOf(false) }
+	var sucess by remember { mutableStateOf(false) }
 	val toast = NotificationToast(context)
 
 	val exchanges = arrayOf("entrance", "output")
@@ -82,8 +82,8 @@ fun SharedReceipt(
 	var billName by remember { mutableStateOf("") }
 	var billCost by remember { mutableStateOf("") }
 
-	LaunchedEffect(uri) {
-		delay(Duration.ofMillis(250))
+	LaunchedEffect(Unit) {
+		delay(Duration.ofMillis(1500))
 		onEvent(AmountFormEvent.FileVoucher(getByteArrayFromUri(context, uri)))
 	}
 
@@ -96,18 +96,17 @@ fun SharedReceipt(
 				}
 
 				is Resource.Failure -> {
-					loading = false
 					toast.show(event.error ?: context.getString(R.string.adding_bill_error))
 				}
 
 				is Resource.Sucess -> {
-					loading = false
 					toast.show(context.getString(R.string.adding_bill_sucess))
-					easyNavigate(navController, Screen.LoginScreen.route)
+					sucess = !sucess
 				}
 			}
 		}
 	}
+	sucess.apply { Navigate(screen = formatNavigation(Screen.LoginScreen.route)) }
 
 	LazyColumn(
 		modifier = Modifier
@@ -171,11 +170,11 @@ fun SharedReceipt(
         item {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp),
+	                .fillMaxWidth()
+	                .height(400.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                PreviewContentFile(false, file)
+                PreviewContentFile(type.equals("img", true), file)
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
@@ -284,8 +283,5 @@ private fun PreviewContentFile(image: Boolean, file: Uri?) {
 @Composable
 private fun Preview() {
 	val resource = Channel<Resource<Any>>()
-	SharedReceipt(
-		rememberNavController(), Uri.EMPTY,
-		resource.receiveAsFlow(),AmountFormState()
-	) {}
+	SharedReceipt(Uri.EMPTY, "img", resource.receiveAsFlow(),AmountFormState()) {}
 }

@@ -1,6 +1,6 @@
 package com.batsworks.budget.services.worker
 
-class SyncUserData:DataSyncFactory {
+class SyncUserData: DataSyncFactory {
 	override suspend fun save() {
 		TODO("Not yet implemented")
 	}

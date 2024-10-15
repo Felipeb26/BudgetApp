@@ -8,10 +8,10 @@ import com.batsworks.budget.domain.entity.AmountEntity
 @Dao
 interface AmountDao {
 
-    @Query("SELECT * FROM AMOUNTENTITY ORDER BY amountDate ASC")
+    @Query("SELECT * FROM AMOUNTENTITY ORDER BY amountDate DESC")
     suspend fun findAll(): List<AmountEntity>
 
-    @Query("SELECT * FROM AMOUNTENTITY ORDER BY amountDate, entrance ASC LIMIT 6 ")
+    @Query("SELECT * FROM AMOUNTENTITY ORDER BY amountDate, entrance DESC LIMIT 6 ")
     suspend fun findLastAmounts(): List<AmountEntity>
 
     @Query("SELECT * FROM AMOUNTENTITY at WHERE at.id=:id")

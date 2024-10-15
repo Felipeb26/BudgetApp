@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.DropDownMenu
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.CustomLottieAnimation
@@ -44,6 +43,7 @@ import com.batsworks.budget.components.buttons.CustomIconButton
 import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.components.functions.PullToRefreshLazyColumn
 import com.batsworks.budget.components.functions.SwipeToDeleteContainer
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.Screen
@@ -60,7 +60,7 @@ import kotlinx.coroutines.time.delay
 import java.time.Duration
 
 @Composable
-fun Historico(
+fun HistoryScreen(
 	navController: NavController,
 	resourceEventFlow: Flow<Resource<Any>>,
 	amounts: List<AmountEntity>,
@@ -71,6 +71,7 @@ fun Historico(
 	val coroutine = rememberCoroutineScope()
 	val context = LocalContext.current
 	val toast = NotificationToast(context)
+
 
 	LaunchedEffect(key1 = context) {
 		resourceEventFlow.collect { event ->
@@ -98,7 +99,7 @@ fun Historico(
 	) {
 		CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
 		SwitchElementsView(start = amounts.isEmpty(), content = {
-			CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty())
+			CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty(), speed = 0.4f)
 			CustomText(
 				modifier = Modifier
 					.padding(vertical = 20.dp)
@@ -223,5 +224,5 @@ fun PreviewHistorico() {
 			file = "teste.".encodeToByteArray()
 		)
 	)
-	Historico(navController = rememberNavController(), resource.receiveAsFlow(), amounts, {}, {}) {}
+	HistoryScreen(navController = rememberNavController(), resource.receiveAsFlow(), amounts, {}, {}) {}
 }
