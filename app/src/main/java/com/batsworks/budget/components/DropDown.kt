@@ -25,109 +25,111 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.batsworks.budget.R
 import com.batsworks.budget.components.fields.CustomTextField
-import com.batsworks.budget.ui.theme.Color400
-import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.navigation.Screen
+import com.batsworks.budget.ui.theme.Color400
+import com.batsworks.budget.ui.theme.customBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DropDownMenu(
-    modifier: Modifier = Modifier,
-    itens: List<T> = emptyList(),
-    onExpandChage: (Boolean) -> Unit,
-    onDismiss: () -> Unit,
-    expanded: Boolean = false,
-    onValueChange: (String) -> Unit,
-    selectText: String = "",
-    isUpper: Boolean = true,
-    weight: FontWeight = FontWeight.Bold
+	modifier: Modifier = Modifier,
+	itens: List<T> = emptyList(),
+	onExpandChage: (Boolean) -> Unit,
+	onDismiss: () -> Unit,
+	expanded: Boolean = false,
+	onValueChange: (String) -> Unit,
+	selectText: String = "",
+	isUpper: Boolean = true,
+	weight: FontWeight = FontWeight.Bold,
 ) {
-    var text by remember { mutableStateOf(selectText) }
+	var text by remember { mutableStateOf(selectText) }
 
-    Box(modifier = modifier) {
-        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandChage) {
-            CustomTextField(
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true), isUpper = isUpper,
-                value = text, onValueChange = onValueChange,
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier.rotate(if (expanded) 180f else 0f),
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = null, tint = customBackground
-                    )
-                }
-            )
+	Box(modifier = modifier) {
+		ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandChage) {
+			CustomTextField(
+				modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
+				isUpper = isUpper,
+				value = text,
+				onValueChange = onValueChange,
+				trailingIcon = {
+					Icon(
+						modifier = Modifier.rotate(if (expanded) 180f else 0f),
+						imageVector = Icons.Filled.ArrowDropDown,
+						contentDescription = null, tint = customBackground
+					)
+				}
+			)
 
-            ExposedDropdownMenu(
-                modifier = Modifier.background(Color400.copy(0.8f)),
-                expanded = expanded,
-                onDismissRequest = onDismiss
-            ) {
-                itens.forEachIndexed { index, s ->
-                    if (s is Int) {
-                        val string = stringResource(id = s)
-                        DropdownMenuItem(
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            text = {
-                                CustomText(
-                                    text = string,
-                                    isUpperCase = isUpper,
-                                    capitalize = !isUpper,
-                                    textWeight = weight,
-                                    space = TextUnit(2f, TextUnitType.Sp)
-                                )
-                            },
-                            onClick = {
-                                onValueChange.invoke(itens[index].toString())
-                                text = itens[index].toString()
-                                onExpandChage.invoke(false)
-                            }
-                        )
-                    }
-                    if (s is String) {
-                        DropdownMenuItem(
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            text = {
-                                CustomText(
-                                    text = s,
-                                    isUpperCase = isUpper,
-                                    capitalize = !isUpper,
-                                    textWeight = weight,
-                                    space = TextUnit(2f, TextUnitType.Sp)
-                                )
-                            },
-                            onClick = {
-                                onValueChange.invoke(itens[index].toString())
-                                text = itens[index].toString()
-                                onExpandChage.invoke(false)
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
+			ExposedDropdownMenu(
+				modifier = Modifier.background(Color400.copy(0.8f)),
+				expanded = expanded,
+				onDismissRequest = onDismiss
+			) {
+				itens.forEachIndexed { index, s ->
+					if (s is Int) {
+						val string = stringResource(id = s)
+						DropdownMenuItem(
+							contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+							text = {
+								CustomText(
+									text = string,
+									upperCase = isUpper,
+									capitalize = !isUpper,
+									textWeight = weight,
+									space = TextUnit(2f, TextUnitType.Sp)
+								)
+							},
+							onClick = {
+								onValueChange.invoke(itens[index].toString())
+								onExpandChage.invoke(false)
+								text = string
+							}
+						)
+					}
+					if (s is String) {
+						DropdownMenuItem(
+							contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+							text = {
+								CustomText(
+									text = s,
+									upperCase = isUpper,
+									capitalize = !isUpper,
+									textWeight = weight,
+									space = TextUnit(2f, TextUnitType.Sp)
+								)
+							},
+							onClick = {
+								onValueChange.invoke(itens[index].toString())
+								text = itens[index].toString()
+								onExpandChage.invoke(false)
+							}
+						)
+					}
+				}
+			}
+		}
+	}
 }
 
 fun AJUST_TAG(tag: String): String {
-    return tag.substring(tag.lastIndexOf(".") + 1)
+	return tag.substring(tag.lastIndexOf(".") + 1)
 }
 
 @Composable
 fun formatScreenTitle(screen: Screen?): String {
-    return when (screen) {
-        Screen.AccountsScreen -> stringResource(id = R.string.account)
-        Screen.AdicionarScreen -> stringResource(id = R.string.add)
-        Screen.HistoryScreen -> stringResource(id = R.string.history)
-        Screen.HomeScreen -> stringResource(id = R.string.home)
-        Screen.PlusScreen -> stringResource(id = R.string.plus)
-        Screen.ProfileScreen -> stringResource(id = R.string.profile)
-        Screen.SettingScreen -> stringResource(id = R.string.settings)
-        else -> stringResource(id = R.string.exit)
-    }.toUpperCase(Locale.current)
+	return when (screen) {
+		Screen.AccountsScreen -> stringResource(id = R.string.account)
+		Screen.AdicionarScreen -> stringResource(id = R.string.add)
+		Screen.HistoryScreen -> stringResource(id = R.string.history)
+		Screen.HomeScreen -> stringResource(id = R.string.home)
+		Screen.PlusScreen -> stringResource(id = R.string.plus)
+		Screen.ProfileScreen -> stringResource(id = R.string.profile)
+		Screen.SettingScreen -> stringResource(id = R.string.settings)
+		else -> stringResource(id = R.string.exit)
+	}.toUpperCase(Locale.current)
 }
 
 fun formatScreenTitle(title: String): String {
-    return title.replace("_screen", "").toUpperCase(Locale.current)
+	return title.replace("_screen", "").toUpperCase(Locale.current)
 }

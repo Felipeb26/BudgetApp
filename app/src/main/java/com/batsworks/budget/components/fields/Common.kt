@@ -7,12 +7,12 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.text.TextStyle
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color700
+import java.util.Locale
 
 
 @Composable
@@ -30,13 +30,14 @@ fun CustomTextField(
 		errorTextColor = MaterialTheme.colorScheme.error,
 		errorContainerColor = MaterialTheme.colorScheme.error
 	),
+	textStyle: TextStyle = MaterialTheme.typography.titleMedium
 ) {
 	TextField(
 		modifier = modifier,
-		value = if (isUpper) value.toUpperCase(Locale.current) else value,
+		value = if (isUpper) value.uppercase(Locale.ROOT) else value,
 		onValueChange = onValueChange,
 		trailingIcon = trailingIcon,
 		readOnly = true, maxLines = 1,
-		colors = colores
+		colors = colores, textStyle = textStyle
 	)
 }

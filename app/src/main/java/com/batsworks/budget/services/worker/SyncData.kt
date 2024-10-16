@@ -14,10 +14,10 @@ import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.services.notification.CancelWorkerNotification
+import com.batsworks.budget.services.brodcasts.CancelWorkerNotification
 import com.batsworks.budget.services.notification.NotificationDataCreation
 import com.batsworks.budget.services.notification.Notifications
-import com.batsworks.budget.services.notification.RetryWorkerNotification
+import com.batsworks.budget.services.brodcasts.RetryWorkerNotification
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

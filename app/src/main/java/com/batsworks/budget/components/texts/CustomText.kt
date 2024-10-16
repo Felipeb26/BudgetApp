@@ -89,13 +89,13 @@ fun CustomText(
     capitalize: Boolean = false,
     color: Color = textColor,
     textWeight: FontWeight = FontWeight.Normal,
-    isUpperCase: Boolean = false,
+    upperCase: Boolean = false,
     wrap: Boolean = false,
     space: TextUnit = TextUnit.Unspecified,
 ) {
     var textTyped = text
     if (capitalize) textTyped = capitalizeStrings(textTyped)
-    if (isUpperCase) textTyped = textTyped.toUpperCase(Locale.current)
+    if (upperCase) textTyped = textTyped.toUpperCase(Locale.current)
 
     Text(
         modifier = modifier,

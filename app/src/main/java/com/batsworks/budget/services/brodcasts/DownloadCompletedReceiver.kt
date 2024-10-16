@@ -1,4 +1,4 @@
-package com.batsworks.budget.services.download
+package com.batsworks.budget.services.brodcasts
 
 import android.app.DownloadManager
 import android.content.BroadcastReceiver

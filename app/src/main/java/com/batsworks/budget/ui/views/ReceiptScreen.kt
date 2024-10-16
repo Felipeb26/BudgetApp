@@ -31,9 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -150,8 +152,9 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
 			text = stringResource(id = R.string.bill_date).plus(localDate(amount.value?.amountDate))
 		)
 		CustomText(
-			textAlign = TextAlign.Start, capitalize = true,
+			textAlign = TextAlign.Start, upperCase = true,
 			textStyle = MaterialTheme.typography.titleMedium,
+			textWeight = FontWeight.Bold, color = composeBool(amount.value?.entrance?:false, Color.Green, Color.Red),
 			text = ajustTextIfEntrance(stringResource(id = R.string.entrance_exit), amount.value?.entrance?:true)
 		)
 	}
@@ -179,11 +182,7 @@ private fun ActionButtons(amount: State<AmountEntity?>, downloadReceipt: (Amount
 			enable = amount.value?.file != null,
 			onClick = {
 				amount.value?.file?.let {
-					shareApp(
-						context,
-						it,
-						amount.value!!.chargeName
-					)
+					shareApp(context, it, amount.value!!.chargeName)
 				}
 			})
 	}

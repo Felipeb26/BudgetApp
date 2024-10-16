@@ -1,4 +1,4 @@
-package com.batsworks.budget.services.notification
+package com.batsworks.budget.services.brodcasts
 
 import android.content.BroadcastReceiver
 import android.content.Context

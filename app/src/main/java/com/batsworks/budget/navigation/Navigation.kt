@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -122,7 +123,8 @@ fun Navigate(
 
 			composable(Screen.SettingScreen.route) {
 				val model = hiltViewModel<SettingsViewModel>()
-				Setting(navController, model::saveTheme)
+				val coroutine = rememberCoroutineScope()
+				Setting(model.user, coroutine, model::saveTheme)
 			}
 		}
 

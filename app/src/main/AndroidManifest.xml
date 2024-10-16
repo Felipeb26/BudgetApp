@@ -61,10 +61,10 @@
         <meta-data
             android:name="com.rollbar.android.ACCESS_TOKEN"
             android:value="d93a2a04ae4642f1844d51a73c44b791" />
-        <receiver android:name=".services.notification.CancelWorkerNotification"/>
-        <receiver android:name=".services.notification.RetryWorkerNotification"/>
+        <receiver android:name=".services.brodcasts.CancelWorkerNotification"/>
+        <receiver android:name=".services.brodcasts.RetryWorkerNotification"/>
         <receiver
-            android:name=".services.download.DownloadCompletedReceiver"
+            android:name=".services.brodcasts.DownloadCompletedReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />

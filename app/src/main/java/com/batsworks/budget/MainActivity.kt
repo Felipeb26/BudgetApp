@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -35,6 +36,7 @@ import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.texts.capitalizeStrings
@@ -53,10 +55,13 @@ import com.batsworks.budget.ui.view_model.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.time.delay
 import java.time.Duration
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+//	@Inject
+//	lateinit var customTheme: CustomTheme
 	private val model by viewModels<MainViewModel>()
 	private val promptManager by lazy { BiometricPromptManager(this) }
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
@@ -65,7 +70,6 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
 		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
 
 		enableEdgeToEdge(
@@ -78,16 +82,19 @@ class MainActivity : AppCompatActivity() {
 
 		setContent {
 			val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
-			CustomTheme(LocalView.current)
 			HandlePermissionsRequest()
 			HandleBiometricPrompt(context, notificationToast, setWhereToGo)
 
-			val (sharedFile, setSharedFileInfo) = remember { mutableStateOf<Pair<Uri?, String>?>(null) }
+			val (sharedFile, setSharedFileInfo) = remember {
+				mutableStateOf<Pair<Uri?, String>?>(
+					null
+				)
+			}
 			val user by model.userEntity.collectAsState()
 
 			BudgetTheme {
 				HandleExtrasRequests(permissionsToRequest)
-				CustomTheme(LocalView.current, findTheme(user?.theme))
+//				customTheme.setTheme(user?.theme)
 
 				sharedFile?.let {
 					val encodedUri = Uri.encode(it.first.toString())
@@ -104,20 +111,26 @@ class MainActivity : AppCompatActivity() {
 
 				Column(
 					modifier = Modifier
-                        .fillMaxSize()
-                        .background(customBackground)
+						.fillMaxSize()
+						.background(customBackground)
 				) {}
 
 				if (user == null) {
 					Navigate(screen = formatNavigation(Screen.LoginScreen.route))
 					return@BudgetTheme
 				} else if (user?.loginWhenEnter == true) {
-                    syncData()
+					syncData()
 					Navigate(screen = formatNavigation(Screen.MainScreen.route))
-                    return@BudgetTheme
+					return@BudgetTheme
 				} else if (user?.loginWhenEnter == false) {
 					promptManager.showBiometricPrompt(
-						capitalizeStrings("${stringResource(id = R.string.enterprise_name)} ${stringResource(id = R.string.app_name)}"),
+						capitalizeStrings(
+							"${stringResource(id = R.string.enterprise_name)} ${
+								stringResource(
+									id = R.string.app_name
+								)
+							}"
+						),
 						stringResource(id = R.string.biometric_description)
 					)
 				}
@@ -127,10 +140,10 @@ class MainActivity : AppCompatActivity() {
 
 	@Composable
 	private fun HandleBiometricPrompt(
-        context: Context,
-        notificationToast: NotificationToast,
-        whereToGo: (String) -> Unit,
-    ) {
+		context: Context,
+		notificationToast: NotificationToast,
+		whereToGo: (String) -> Unit,
+	) {
 		val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 		val enrollLauncher = rememberLauncherForActivityResult(
 			contract = ActivityResultContracts.StartActivityForResult(),
@@ -223,6 +236,7 @@ class MainActivity : AppCompatActivity() {
 	private fun syncData() {
 		val contraints = Constraints.Builder()
 			.setRequiredNetworkType(NetworkType.CONNECTED)
+			.setRequiresStorageNotLow(true)
 			.build()
 
 		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
@@ -234,18 +248,24 @@ class MainActivity : AppCompatActivity() {
 		val workManager = WorkManager.getInstance(this)
 		workManager.cancelAllWork()
 
-		workManager.enqueueUniquePeriodicWork(
-			AJUST_TAG(tag),
-			ExistingPeriodicWorkPolicy.KEEP,
-			workerRequest
-		)
 		workManager.getWorkInfosForUniqueWorkLiveData(AJUST_TAG(tag))
-			.observeForever {
-				it.forEach { workInfo ->
-					Log.d("DATA_SYNC_STATE", "${workInfo.state}")
+			.observeForever { workInfos ->
+				workInfos.forEach { Log.d("DATA_SYNC_STATE", "${it.state}") }
+
+				val isWorkEnqueued = workInfos.any { workInfo ->
+					workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.BLOCKED
+				}
+				if(!isWorkEnqueued){
+					workManager.enqueueUniquePeriodicWork(
+						AJUST_TAG(tag),
+						ExistingPeriodicWorkPolicy.KEEP,
+						workerRequest
+					)
+					Log.d("DATA_SYNC_STATE", "Novo Worker agendado.")
+				} else {
+					Log.d("WORK_SCHEDULE", "Worker já está agendado ou em execução.")
 				}
 			}
-
 	}
 
 }

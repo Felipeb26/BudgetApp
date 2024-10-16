@@ -3,6 +3,7 @@ package com.batsworks.budget.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -99,7 +100,8 @@ fun MainNavigation(
 
 		composable(Screen.SettingScreen.route) {
 			val model = hiltViewModel<SettingsViewModel>()
-			Setting(navController, model::saveTheme)
+			val coroutine = rememberCoroutineScope()
+			Setting(model.user, coroutine, model::saveTheme)
 		}
 	}
 }

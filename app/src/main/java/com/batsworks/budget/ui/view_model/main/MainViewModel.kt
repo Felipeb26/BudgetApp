@@ -1,6 +1,7 @@
 package com.batsworks.budget.ui.view_model.main
 
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.services.notification.NotificationToast
+import com.batsworks.budget.ui.theme.CustomTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
 	private val repository: UsersDao,
-	private val isConnected: NetworkConnectivityObserver,
-	private val notificationToast: NotificationToast
+	private val customTheme: CustomTheme,
+	isConnected: NetworkConnectivityObserver,
+	private val notificationToast: NotificationToast,
 ) : ViewModel() {
 
 	private val _isReady = MutableStateFlow(false)
@@ -42,6 +45,7 @@ class MainViewModel @Inject constructor(
 			Log.d("WIFI-CONECT", it.toString())
 			notificationToast.show(if (it) "ligado" else "desligado", Toast.LENGTH_LONG)
 		}
+		customTheme.setTheme(userEntity.value?.theme)
 	}
 
 }

@@ -241,7 +241,7 @@ private fun EntranceButton(
 	) {
 		CustomText(
 			text = state.entranceError ?: "",
-			isUpperCase = true, color = Color400, textWeight = FontWeight.Bold,
+			upperCase = true, color = Color400, textWeight = FontWeight.Bold,
 			textDecoration = TextDecoration.Underline
 		)
 		Spacer(modifier = Modifier.height(15.dp))
@@ -254,7 +254,7 @@ private fun EntranceButton(
 				mutableEntrance.value = !mutableEntrance.value
 				onEvent(AmountFormEvent.EntranceEventChange(mutableEntrance.value))
 			})
-			CustomText(text = exchange, isUpperCase = true, textWeight = FontWeight.Bold)
+			CustomText(text = exchange, upperCase = true, textWeight = FontWeight.Bold)
 		}
 		Spacer(modifier = Modifier.height(30.dp))
 	}

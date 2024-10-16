@@ -86,7 +86,7 @@ import com.batsworks.budget.domain.entity.AmountEntity
 import com.batsworks.budget.domain.entity.isEntrance
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.services.notification.NotificationToast
-import com.batsworks.budget.ui.objects.HomeCard
+import com.batsworks.budget.ui.custom_components.HomeCard
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
@@ -445,7 +445,7 @@ private fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
                             CustomText(
                                 modifier = Modifier.width(width),
                                 textWeight = FontWeight.Bold,
-                                isUpperCase = true,
+                                upperCase = true,
                                 text = stringResource(id = R.string.entrance_exit)
                             )
                             CustomText(
@@ -453,14 +453,14 @@ private fun LimitedHistory(lastAmounts: StateFlow<List<AmountEntity>>) {
                                     .width(width)
                                     .padding(horizontal = 15.dp),
                                 textWeight = FontWeight.Bold,
-                                isUpperCase = true,
+                                upperCase = true,
                                 text = stringResource(id = R.string.values)
                             )
                             CustomText(
                                 modifier = Modifier.width(width),
                                 textWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Start,
-                                isUpperCase = true,
+                                upperCase = true,
                                 text = stringResource(id = R.string.receive_pay)
                             )
                         }

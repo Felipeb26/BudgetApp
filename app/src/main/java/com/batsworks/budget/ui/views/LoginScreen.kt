@@ -105,7 +105,7 @@ fun Login(
                 modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
                 text = stringResource(id = R.string.register),
                 textDecoration = TextDecoration.Underline,
-                isUpperCase = true, textWeight = FontWeight.SemiBold
+                upperCase = true, textWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.width(10.dp))
             VerticalDivider(color = textColor)
@@ -113,7 +113,7 @@ fun Login(
             CustomText(
                 text = stringResource(id = R.string.forgot_pass),
                 textDecoration = TextDecoration.Underline,
-                isUpperCase = true, textWeight = FontWeight.SemiBold
+                upperCase = true, textWeight = FontWeight.SemiBold
             )
         }
     }
@@ -223,7 +223,7 @@ fun LoginExecution(
         CustomText(
             text = stringResource(id = R.string.login_on_enter),
             textStyle = MaterialTheme.typography.labelLarge,
-            isUpperCase = true, textWeight = FontWeight.SemiBold
+            upperCase = true, textWeight = FontWeight.SemiBold
         )
     }
 

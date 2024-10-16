@@ -107,7 +107,7 @@ fun HistoryScreen(
 				textStyle = MaterialTheme.typography.titleMedium,
 				text = stringResource(id = R.string.empty_transaction),
 				textAlign = TextAlign.Center, textWeight = FontWeight.Bold,
-				isUpperCase = true
+				upperCase = true
 			)
 		}) {
 			PullToRefreshLazyColumn(itens = amounts,

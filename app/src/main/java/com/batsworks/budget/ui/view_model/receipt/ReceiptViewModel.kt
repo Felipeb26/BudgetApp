@@ -37,7 +37,7 @@ class ReceiptViewModel @Inject constructor(
 
 	fun downloadImage(amountEntity: AmountEntity) {
 		viewModelScope.launch {
-			resourceEventChannel.send(Resource.Loading())
+			resourceEventChannel.send(Resource.Loading(true))
 			try {
 				val file = amountEntity.file ?: return@launch
 				val type = getFileType(file)
@@ -45,6 +45,7 @@ class ReceiptViewModel @Inject constructor(
 				resourceEventChannel.send(Resource.Loading(false))
 				resourceEventChannel.send(Resource.Sucess(imagePath.plus("|${amountEntity.chargeName}.$type")))
 			} catch (e: Exception) {
+				resourceEventChannel.send(Resource.Loading(false))
 				resourceEventChannel.send(Resource.Failure(e.message))
 			}
 		}

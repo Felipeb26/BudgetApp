@@ -77,7 +77,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
                     TextUnitType.Sp
                 )
             ),
-            isUpperCase = true, textDecoration = TextDecoration.Underline,
+            upperCase = true, textDecoration = TextDecoration.Underline,
             textWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(20.dp))

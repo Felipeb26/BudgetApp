@@ -1,4 +1,4 @@
-package com.batsworks.budget.services.notification
+package com.batsworks.budget.services.brodcasts
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
+import com.batsworks.budget.services.notification.NotificationToast
 import java.util.UUID
 
 class CancelWorkerNotification : BroadcastReceiver() {
