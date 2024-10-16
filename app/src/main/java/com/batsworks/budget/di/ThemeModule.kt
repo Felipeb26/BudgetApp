@@ -1,23 +1,25 @@
 package com.batsworks.budget.di
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import com.batsworks.budget.ui.theme.CustomTheme
+import com.batsworks.budget.ui.theme.THEME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.qualifiers.ActivityContext
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityComponent::class)
 object ThemeModule {
 
 	@Provides
-	@Singleton
-	fun providesTheme(@ApplicationContext context: Context): CustomTheme {
+	fun providesTheme(): THEME {
+		return THEME.CHERRY
+	}
+
+	@Provides
+	fun providesCustomTheme(@ActivityContext context: Context): CustomTheme {
 		return CustomTheme(context)
 	}
 

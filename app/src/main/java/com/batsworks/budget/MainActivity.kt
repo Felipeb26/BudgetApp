@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -29,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.Constraints
@@ -49,7 +47,6 @@ import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
 import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
-import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,8 +57,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-//	@Inject
-//	lateinit var customTheme: CustomTheme
+	@Inject
+	lateinit var customTheme: CustomTheme
 	private val model by viewModels<MainViewModel>()
 	private val promptManager by lazy { BiometricPromptManager(this) }
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)

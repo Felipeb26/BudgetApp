@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
 	private val repository: UsersDao,
-	private val customTheme: CustomTheme,
+//	private val customTheme: CustomTheme,
 	isConnected: NetworkConnectivityObserver,
 	private val notificationToast: NotificationToast,
 ) : ViewModel() {
@@ -45,7 +45,7 @@ class MainViewModel @Inject constructor(
 			Log.d("WIFI-CONECT", it.toString())
 			notificationToast.show(if (it) "ligado" else "desligado", Toast.LENGTH_LONG)
 		}
-		customTheme.setTheme(userEntity.value?.theme)
+//		customTheme.setTheme(userEntity.value?.theme)
 	}
 
 }

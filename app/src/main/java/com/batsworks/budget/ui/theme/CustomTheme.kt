@@ -4,24 +4,25 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import javax.inject.Inject
 
-class CustomTheme @Inject constructor(context: Context, val theme: Theme = Theme.CHERRY) {
+class CustomTheme @Inject constructor(context: Context, val theme: THEME = THEME.CHERRY) {
 
 	init {
 		when (theme) {
-			is Theme.COLD -> coldTheme()
-			is Theme.NATURE -> natureTheme()
-			is Theme.THANOS -> thanosTheme()
-			is Theme.CHERRY -> cherryTheme()
+			is THEME.COLD -> coldTheme()
+			is THEME.NATURE -> natureTheme()
+			is THEME.THANOS -> thanosTheme()
+			is THEME.CHERRY -> cherryTheme()
 		}
 
-		val view =  context.findActivity().findViewById<View>(android.R.id.content)
-//		val view = (context as Activity).findViewById<View>(android.R.id.content)
+
+//		val view =  context.findActivity().findViewById<View>(android.R.id.content)
+		val view = (context as Activity).findViewById<View>(android.R.id.content)
 		if (!view.isInEditMode) {
 			val window = (view.context as Activity).window
 			window.statusBarColor = Color800.toArgb()
@@ -33,10 +34,10 @@ class CustomTheme @Inject constructor(context: Context, val theme: Theme = Theme
 	fun setTheme(themeSelected: String?) {
 		val theme = findTheme(themeSelected)
 		when (theme) {
-			is Theme.COLD -> coldTheme()
-			is Theme.NATURE -> natureTheme()
-			is Theme.THANOS -> thanosTheme()
-			is Theme.CHERRY -> cherryTheme()
+			is THEME.COLD -> coldTheme()
+			is THEME.NATURE -> natureTheme()
+			is THEME.THANOS -> thanosTheme()
+			is THEME.CHERRY -> cherryTheme()
 		}
 	}
 
@@ -112,32 +113,32 @@ class CustomTheme @Inject constructor(context: Context, val theme: Theme = Theme
 		ColorCardInvestimentos = Color(0xFF228B22)
 	}
 
-	internal fun Context.findActivity(): Activity {
+	private fun Context.findActivity(): AppCompatActivity {
 		var context = this
 		while (context is ContextWrapper) {
-			if (context is Activity) return context
+			if (context is AppCompatActivity) return context
 			context = context.baseContext
 		}
 		throw IllegalStateException("Permissions should be called in the context of an Activity")
 	}
 }
 
-sealed class Theme(val theme: String) {
-	data object THANOS : Theme("THANOS")
-	data object NATURE : Theme("NATURE")
-	data object CHERRY : Theme("CHERRY")
-	data object COLD : Theme("COLD")
+sealed class THEME(val theme: String) {
+	data object THANOS : THEME("THANOS")
+	data object NATURE : THEME("NATURE")
+	data object CHERRY : THEME("CHERRY")
+	data object COLD : THEME("COLD")
 }
 
 val themes =
-	listOf(Theme.COLD.theme, Theme.NATURE.theme, Theme.CHERRY.theme, Theme.THANOS.theme)
+	listOf(THEME.COLD.theme, THEME.NATURE.theme, THEME.CHERRY.theme, THEME.THANOS.theme)
 
-fun findTheme(theme: String?): Theme {
+fun findTheme(theme: String?): THEME {
 	return when (theme) {
-		"THANOS" -> Theme.THANOS
-		"NATURE" -> Theme.NATURE
-		"CHERRY" -> Theme.CHERRY
-		"COLD" -> Theme.COLD
-		else -> Theme.CHERRY
+		"THANOS" -> THEME.THANOS
+		"NATURE" -> THEME.NATURE
+		"CHERRY" -> THEME.CHERRY
+		"COLD" -> THEME.COLD
+		else -> THEME.CHERRY
 	}
 }

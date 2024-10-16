@@ -3,7 +3,7 @@ package com.batsworks.budget.domain.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.batsworks.budget.components.functions.assertValues
-import com.batsworks.budget.ui.theme.Theme
+import com.batsworks.budget.ui.theme.THEME
 import java.time.LocalDateTime
 
 @Entity
@@ -18,7 +18,7 @@ data class UserEntity(
 	val creatAt: LocalDateTime = LocalDateTime.now(),
 	val firebaseId: String = "",
 	val loginWhenEnter: Boolean = false,
-	val theme: String = Theme.CHERRY.theme,
+	val theme: String = THEME.CHERRY.theme,
 	val isSync: Boolean = false,
 ) {
 

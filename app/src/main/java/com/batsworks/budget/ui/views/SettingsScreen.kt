@@ -33,9 +33,8 @@ import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.language.LanguageSettings
-import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.SpaceWithDivider
-import com.batsworks.budget.ui.theme.Theme
+import com.batsworks.budget.ui.theme.THEME
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.findTheme
 import com.batsworks.budget.ui.theme.themes
@@ -46,7 +45,7 @@ import java.time.Duration
 
 
 @Composable
-fun Setting(user: UserEntity?,  coroutine: CoroutineScope, saveTheme: (Theme) -> Unit,) {
+fun Setting(user: UserEntity?, coroutine: CoroutineScope, saveTheme: (THEME) -> Unit,) {
 	val (loading, setLoading) = remember { mutableStateOf(false) }
 
 	val configurationItens: List<@Composable () -> Unit> = listOf(
@@ -119,7 +118,7 @@ private fun LanguageContent(
 @Composable
 private fun ThemeContent(
 	user: UserEntity?,
-	saveTheme: (Theme) -> Unit,
+	saveTheme: (THEME) -> Unit,
 	reloadScreen: (Boolean) -> Unit,
 	coroutineScope: CoroutineScope,
 ) {
@@ -199,5 +198,5 @@ private fun resetScreen(reloadScreen: (Boolean) -> Unit, coroutineScope: Corouti
 @PreviewLightDark
 fun SettingWhite() {
 	val coroutine = rememberCoroutineScope()
-	Setting(UserEntity(theme = Theme.CHERRY.theme), coroutine) {}
+	Setting(UserEntity(theme = THEME.CHERRY.theme), coroutine) {}
 }

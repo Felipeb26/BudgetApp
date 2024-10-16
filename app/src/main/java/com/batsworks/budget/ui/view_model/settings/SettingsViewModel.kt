@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.ui.theme.Theme
+import com.batsworks.budget.ui.theme.THEME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -23,7 +23,7 @@ class SettingsViewModel @Inject constructor(private val localRepository: UsersDa
         }
     }
 
-    fun saveTheme(theme: Theme) {
+    fun saveTheme(theme: THEME) {
         viewModelScope.launch {
             localRepository.updateTheme(theme.theme)
         }
