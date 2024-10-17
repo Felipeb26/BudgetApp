@@ -26,86 +26,91 @@ import com.batsworks.budget.ui.theme.textColor
 
 @Composable
 fun CustomText(
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
-    textDecoration: TextDecoration = TextDecoration.None,
-    textWeight: FontWeight = FontWeight.Normal,
-    textAlign: TextAlign = TextAlign.Start,
-    color: Color = textColor,
-    isUpperCase: Boolean,
-    text: String,
-    iconBitMap: ImageVector,
-    clickEvent: (() -> Unit),
+	modifier: Modifier = Modifier,
+	textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+	textDecoration: TextDecoration = TextDecoration.None,
+	textWeight: FontWeight = FontWeight.Normal,
+	textAlign: TextAlign = TextAlign.Start,
+	color: Color = textColor,
+	isUpperCase: Boolean,
+	text: String,
+	iconBitMap: ImageVector,
+	clickEvent: (() -> Unit),
 ) {
-    Row(
-        modifier = Modifier.clickable { clickEvent.invoke() },
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = modifier,
-            text = if (isUpperCase) text.toUpperCase(Locale.current) else text,
-            color = color,
-            textAlign = textAlign,
-            textDecoration = textDecoration,
-            style = textStyle,
-            fontWeight = textWeight,
-            softWrap = false
-        )
-        Spacer(modifier = modifier.width(5.dp))
-        Icon(imageVector = iconBitMap, contentDescription = "", tint = color)
-    }
+	Row(
+		modifier = Modifier.clickable { clickEvent.invoke() },
+		horizontalArrangement = Arrangement.Center,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(
+			modifier = modifier,
+			text = if (isUpperCase) text.toUpperCase(Locale.current) else text,
+			color = color,
+			textAlign = textAlign,
+			textDecoration = textDecoration,
+			style = textStyle,
+			fontWeight = textWeight,
+			softWrap = false
+		)
+		Spacer(modifier = modifier.width(5.dp))
+		Icon(imageVector = iconBitMap, contentDescription = "", tint = color)
+	}
 }
 
 @Composable
 fun CustomText(
-    modifier: Modifier = Modifier,
-    text: String,
-    textAlign: TextAlign = TextAlign.Start,
-    textDecoration: TextDecoration = TextDecoration.None,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
-    color: Color = textColor,
-    textWeight: FontWeight = FontWeight.Normal,
+	modifier: Modifier = Modifier,
+	text: String,
+	textAlign: TextAlign = TextAlign.Start,
+	textDecoration: TextDecoration = TextDecoration.None,
+	textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+	color: Color = textColor,
+	textWeight: FontWeight = FontWeight.Normal,
+	upperCase: Boolean = false,
+	capitalize: Boolean = false,
 ) {
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        textAlign = textAlign,
-        textDecoration = textDecoration,
-        style = textStyle,
-        fontWeight = textWeight,
-        softWrap = text.length >= 35
-    )
+	var textTyped = text
+	if (capitalize) textTyped = capitalizeStrings(textTyped)
+	if (upperCase) textTyped = textTyped.toUpperCase(Locale.current)
+	Text(
+		modifier = modifier,
+		text = textTyped,
+		color = color,
+		textAlign = textAlign,
+		textDecoration = textDecoration,
+		style = textStyle,
+		fontWeight = textWeight,
+		softWrap = text.length >= 35
+	)
 }
 
 @Composable
 fun CustomText(
-    modifier: Modifier = Modifier,
-    text: String,
-    textAlign: TextAlign = TextAlign.Start,
-    textDecoration: TextDecoration = TextDecoration.None,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
-    capitalize: Boolean = false,
-    color: Color = textColor,
-    textWeight: FontWeight = FontWeight.Normal,
-    upperCase: Boolean = false,
-    wrap: Boolean = false,
-    space: TextUnit = TextUnit.Unspecified,
+	modifier: Modifier = Modifier,
+	text: String,
+	textAlign: TextAlign = TextAlign.Start,
+	textDecoration: TextDecoration = TextDecoration.None,
+	textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+	capitalize: Boolean = false,
+	color: Color = textColor,
+	textWeight: FontWeight = FontWeight.Normal,
+	upperCase: Boolean = false,
+	wrap: Boolean = false,
+	space: TextUnit = TextUnit.Unspecified,
 ) {
-    var textTyped = text
-    if (capitalize) textTyped = capitalizeStrings(textTyped)
-    if (upperCase) textTyped = textTyped.toUpperCase(Locale.current)
+	var textTyped = text
+	if (capitalize) textTyped = capitalizeStrings(textTyped)
+	if (upperCase) textTyped = textTyped.toUpperCase(Locale.current)
 
-    Text(
-        modifier = modifier,
-        text = textTyped,
-        color = color,
-        textAlign = textAlign,
-        textDecoration = textDecoration,
-        style = textStyle,
-        fontWeight = textWeight,
-        softWrap = wrap,
-        letterSpacing = space
-    )
+	Text(
+		modifier = modifier,
+		text = textTyped,
+		color = color,
+		textAlign = textAlign,
+		textDecoration = textDecoration,
+		style = textStyle,
+		fontWeight = textWeight,
+		softWrap = wrap,
+		letterSpacing = space
+	)
 }

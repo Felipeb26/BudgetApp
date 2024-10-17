@@ -13,3 +13,7 @@ fun SpaceWithDivider(size: Int = 40, dividerThickness: Int = 2) {
     HorizontalDivider(color = textColor, thickness = dividerThickness.dp)
     Spacer(modifier = Modifier.height((size / 2).dp))
 }
+@Composable
+fun DeafultSpacer(size: Int = 40) {
+    Spacer(modifier = Modifier.height(size.dp))
+}

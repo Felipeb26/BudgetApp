@@ -82,7 +82,7 @@ fun BottomBar(navController: NavController) {
 						color = Color50
 					)
 				},
-				onClick = { easyNavigate(navController, screen.route, include = true) })
+				onClick = { easyNavigate(navController, screen.route) })
 		}
 	}
 }

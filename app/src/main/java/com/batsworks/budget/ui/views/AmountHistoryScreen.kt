@@ -2,6 +2,7 @@ package com.batsworks.budget.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -50,6 +52,7 @@ import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.Color800
+import com.batsworks.budget.ui.theme.DeafultSpacer
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
 import kotlinx.coroutines.channels.Channel
@@ -57,10 +60,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
+import java.math.BigDecimal
 import java.time.Duration
 
 @Composable
-fun HistoryScreen(
+fun AmountHistoryScreen(
 	navController: NavController,
 	resourceEventFlow: Flow<Resource<Any>>,
 	amounts: List<AmountEntity>,
@@ -72,15 +76,12 @@ fun HistoryScreen(
 	val context = LocalContext.current
 	val toast = NotificationToast(context)
 
-
 	LaunchedEffect(key1 = context) {
 		resourceEventFlow.collect { event ->
 			when (event) {
 				is Resource.Loading -> {}
 
-				is Resource.Sucess -> {
-					toast.show("item deletado com sucesso")
-				}
+				is Resource.Sucess -> toast.show("item deletado com sucesso")
 
 				is Resource.Failure -> {
 					toast.show(event.error ?: "Não foi possivel deletar o item")
@@ -95,9 +96,14 @@ fun HistoryScreen(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
+			.padding(0.dp)
 			.background(if (amounts.isEmpty()) Color800.copy(0.6f) else customBackground)
+			.padding(horizontal = 5.dp),
+		verticalArrangement = Arrangement.spacedBy(10.dp)
 	) {
+		DeafultSpacer(10)
 		CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
+		DataVisualization(amounts)
 		SwitchElementsView(start = amounts.isEmpty(), content = {
 			CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty(), speed = 0.4f)
 			CustomText(
@@ -131,6 +137,66 @@ fun HistoryScreen(
 	}
 }
 
+@Composable
+private fun DataVisualization(amounts: List<AmountEntity>) {
+	val scrollState = rememberScrollState()
+	var scrollingForward by remember { mutableStateOf(true) }
+
+	val style = MaterialTheme.typography.titleMedium
+	val totalEntrace = amounts.filter { it.entrance }
+		.map { it.value }.sumOf { it }
+	val totalExit = amounts.filter { !it.entrance }
+		.map { it.value }.sumOf { it }
+
+	LaunchedEffect(Unit) {
+		while (true) {
+			if (scrollingForward) {
+				scrollState.scrollTo(scrollState.value + 3)
+				if (scrollState.value >= scrollState.maxValue) {
+					scrollingForward = false
+				}
+			} else {
+				scrollState.scrollTo(scrollState.value - 3)
+				if (scrollState.value <= 0) {
+					scrollingForward = true
+				}
+			}
+			delay(Duration.ofMillis(30))
+		}
+	}
+
+	Row(
+		modifier = Modifier
+			.height(20.dp)
+			.padding(horizontal = 20.dp)
+			.horizontalScroll(scrollState),
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(20.dp)
+	) {
+		CustomText(
+			text = "Valor entrada: $totalEntrace",
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+		CustomText(
+			text = "Valor saida: $totalExit",
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+
+		CustomText(
+			text = "Total: " + amounts.size.toString(),
+			textStyle = style,
+			textWeight = FontWeight.Bold
+		)
+		CustomText(
+			text = "Entradas: " + amounts.filter { it.entrance }.size,
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+		CustomText(
+			text = "Saidas: " + amounts.filter { !it.entrance }.size,
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+	}
+}
 
 @Composable
 private fun CustomFilter(
@@ -140,7 +206,7 @@ private fun CustomFilter(
 	var expandedEntrance by remember { mutableStateOf(false) }
 	var expanded by remember { mutableStateOf(false) }
 
-	Row(Modifier.padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 20.dp)) {
+	Row(Modifier.padding(horizontal = 10.dp)) {
 		DropDownMenu(
 			modifier = Modifier.weight(1f),
 			itens = listOf("entrada", "saida"),
@@ -176,14 +242,13 @@ private fun Content(amount: AmountEntity, navController: NavController) {
 	val style = MaterialTheme.typography.labelLarge
 	val backgroundColor = isEntrance(amount)
 
-	Column(modifier = Modifier.padding(10.dp, 0.dp)) {
-		Spacer(modifier = Modifier.height(10.dp))
+	Column {
 		Row(
 			Modifier
 				.fillMaxWidth()
 				.border(2.dp, color = backgroundColor.copy(0.6f), RoundedCornerShape(10))
 				.background(backgroundColor.copy(0.6f))
-				.padding(10.dp, 15.dp, 15.dp, 10.dp),
+				.padding(horizontal = 10.dp, vertical = 15.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -221,8 +286,14 @@ fun PreviewHistorico() {
 		AmountEntity(
 			chargeName = "conta de luz",
 			entrance = true,
-			file = "teste.".encodeToByteArray()
+			file = "teste.".encodeToByteArray(),
+			value = BigDecimal.TEN
 		)
 	)
-	HistoryScreen(navController = rememberNavController(), resource.receiveAsFlow(), amounts, {}, {}) {}
+	AmountHistoryScreen(
+		navController = rememberNavController(),
+		resource.receiveAsFlow(),
+		amounts,
+		{},
+		{}) {}
 }

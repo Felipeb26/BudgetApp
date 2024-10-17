@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -33,6 +34,7 @@ import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.domain.entity.UserEntity
 import com.batsworks.budget.language.LanguageSettings
+import com.batsworks.budget.ui.theme.CustomTheme
 import com.batsworks.budget.ui.theme.SpaceWithDivider
 import com.batsworks.budget.ui.theme.THEME
 import com.batsworks.budget.ui.theme.customBackground
@@ -45,7 +47,7 @@ import java.time.Duration
 
 
 @Composable
-fun Setting(user: UserEntity?, coroutine: CoroutineScope, saveTheme: (THEME) -> Unit,) {
+fun Setting(user: UserEntity?, coroutine: CoroutineScope, saveTheme: (THEME) -> Unit) {
 	val (loading, setLoading) = remember { mutableStateOf(false) }
 
 	val configurationItens: List<@Composable () -> Unit> = listOf(
@@ -123,7 +125,7 @@ private fun ThemeContent(
 	coroutineScope: CoroutineScope,
 ) {
 	var expandedTheme by remember { mutableStateOf(false) }
-	val context = LocalContext.current
+	val view = LocalView.current
 
 	Column(
 		modifier = Modifier
@@ -144,7 +146,7 @@ private fun ThemeContent(
 			itens = themes, weight = FontWeight.Bold,
 			selectText = user?.theme ?: "",
 			onValueChange = { tema ->
-//				CustomTheme(context, findTheme(tema))
+				CustomTheme(view, findTheme(tema))
 				saveTheme(findTheme(tema))
 				resetScreen(reloadScreen, coroutineScope)
 			}

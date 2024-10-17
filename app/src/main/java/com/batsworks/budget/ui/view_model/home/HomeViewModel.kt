@@ -3,7 +3,6 @@ package com.batsworks.budget.ui.view_model.home
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.BudgetApplication
 import com.batsworks.budget.components.formatter.currency
 import com.batsworks.budget.domain.dao.AmountDao
 import com.batsworks.budget.domain.dto.AmountState
@@ -29,7 +28,7 @@ class HomeViewModel @Inject constructor(private var repository: AmountDao) : Vie
     val lastAmounts = flow {
         emit(repository.findLastAmounts())
         while (true) {
-            delay(Duration.ofSeconds(5))
+            delay(Duration.ofSeconds(10))
             emit(repository.findLastAmounts())
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3500), emptyList())

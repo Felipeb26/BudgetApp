@@ -1,7 +1,6 @@
 package com.batsworks.budget.ui.view_model.main
 
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +20,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
 	private val repository: UsersDao,
-//	private val customTheme: CustomTheme,
 	isConnected: NetworkConnectivityObserver,
 	private val notificationToast: NotificationToast,
 ) : ViewModel() {
@@ -30,7 +28,7 @@ class MainViewModel @Inject constructor(
 	val isReady = _isReady.asStateFlow()
 
 	private val userEntityStateFlow = MutableStateFlow<UserEntity?>(null)
-	val userEntity = userEntityStateFlow.asStateFlow()
+	val userStateFlow = userEntityStateFlow.asStateFlow()
 
 	init {
 		runBlocking {
@@ -45,7 +43,10 @@ class MainViewModel @Inject constructor(
 			Log.d("WIFI-CONECT", it.toString())
 			notificationToast.show(if (it) "ligado" else "desligado", Toast.LENGTH_LONG)
 		}
-//		customTheme.setTheme(userEntity.value?.theme)
+	}
+
+	fun changeTheme(customTheme: CustomTheme) {
+		customTheme.findTheme(userStateFlow.value?.theme)
 	}
 
 }

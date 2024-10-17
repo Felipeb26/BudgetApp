@@ -5,10 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -17,29 +13,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-
-
-//TODO verificar se vale a pena usar essa função ou se tem uma melhor forma
-@Composable
-fun InfiniteBlink(
-	initialColor: Color,
-	finalColor: Color = initialColor.copy(0.5f),
-	transitionTime: Int = 2000,
-): Color {
-	val transition = rememberInfiniteTransition(label = "infinite blink")
-	val animatedColor by transition.animateColor(
-		initialValue = initialColor,
-		targetValue = finalColor,
-		animationSpec = infiniteRepeatable(
-			animation = tween(transitionTime),
-			repeatMode = RepeatMode.Reverse,
-		), label = ""
-	)
-	return animatedColor
-}
 
 @Composable
 fun SwitchElementsView(

@@ -81,8 +81,9 @@ fun <T> DropDownMenu(
 								)
 							},
 							onClick = {
-								onValueChange.invoke(itens[index].toString())
 								onExpandChage.invoke(false)
+								if(string.equals(text, true)) return@DropdownMenuItem
+								onValueChange.invoke(itens[index].toString())
 								text = string
 							}
 						)
@@ -100,9 +101,10 @@ fun <T> DropDownMenu(
 								)
 							},
 							onClick = {
+								onExpandChage.invoke(false)
+								if(itens[index].toString().equals(text, true)) return@DropdownMenuItem
 								onValueChange.invoke(itens[index].toString())
 								text = itens[index].toString()
-								onExpandChage.invoke(false)
 							}
 						)
 					}

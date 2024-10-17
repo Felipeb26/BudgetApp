@@ -1,16 +1,12 @@
 package com.batsworks.budget.ui.theme
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
-import javax.inject.Inject
 
-class CustomTheme @Inject constructor(context: Context, val theme: THEME = THEME.CHERRY) {
+class CustomTheme (view: View, val theme: THEME = THEME.CHERRY) {
 
 	init {
 		when (theme) {
@@ -20,9 +16,6 @@ class CustomTheme @Inject constructor(context: Context, val theme: THEME = THEME
 			is THEME.CHERRY -> cherryTheme()
 		}
 
-
-//		val view =  context.findActivity().findViewById<View>(android.R.id.content)
-		val view = (context as Activity).findViewById<View>(android.R.id.content)
 		if (!view.isInEditMode) {
 			val window = (view.context as Activity).window
 			window.statusBarColor = Color800.toArgb()
@@ -31,8 +24,8 @@ class CustomTheme @Inject constructor(context: Context, val theme: THEME = THEME
 		}
 	}
 
-	fun setTheme(themeSelected: String?) {
-		val theme = findTheme(themeSelected)
+	fun findTheme(themeSelected: String?) {
+		val theme = com.batsworks.budget.ui.theme.findTheme(themeSelected)
 		when (theme) {
 			is THEME.COLD -> coldTheme()
 			is THEME.NATURE -> natureTheme()
@@ -113,14 +106,6 @@ class CustomTheme @Inject constructor(context: Context, val theme: THEME = THEME
 		ColorCardInvestimentos = Color(0xFF228B22)
 	}
 
-	private fun Context.findActivity(): AppCompatActivity {
-		var context = this
-		while (context is ContextWrapper) {
-			if (context is AppCompatActivity) return context
-			context = context.baseContext
-		}
-		throw IllegalStateException("Permissions should be called in the context of an Activity")
-	}
 }
 
 sealed class THEME(val theme: String) {

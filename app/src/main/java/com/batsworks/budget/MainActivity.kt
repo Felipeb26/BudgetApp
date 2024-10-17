@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.Constraints
@@ -52,14 +53,11 @@ import com.batsworks.budget.ui.view_model.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.time.delay
 import java.time.Duration
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-	@Inject
-	lateinit var customTheme: CustomTheme
-	private val model by viewModels<MainViewModel>()
+	private val mainViewModel by viewModels<MainViewModel>()
 	private val promptManager by lazy { BiometricPromptManager(this) }
 	private val permissionsToRequest = mutableListOf(Manifest.permission.CAMERA)
 	private val defaultRgbColor = Color800.toArgb()
@@ -67,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		installSplashScreen().apply { setKeepOnScreenCondition { !model.isReady.value } }
+		installSplashScreen().apply { setKeepOnScreenCondition { !mainViewModel.isReady.value } }
 
 		enableEdgeToEdge(
 			SystemBarStyle.auto(defaultRgbColor, defaultRgbColor),
@@ -78,6 +76,8 @@ class MainActivity : AppCompatActivity() {
 		val notificationToast = NotificationToast(context)
 
 		setContent {
+			val	customTheme = CustomTheme(LocalView.current)
+
 			val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
 			HandlePermissionsRequest()
 			HandleBiometricPrompt(context, notificationToast, setWhereToGo)
@@ -87,11 +87,10 @@ class MainActivity : AppCompatActivity() {
 					null
 				)
 			}
-			val user by model.userEntity.collectAsState()
-
+			val user by mainViewModel.userStateFlow.collectAsState()
 			BudgetTheme {
 				HandleExtrasRequests(permissionsToRequest)
-//				customTheme.setTheme(user?.theme)
+				mainViewModel.changeTheme(customTheme)
 
 				sharedFile?.let {
 					val encodedUri = Uri.encode(it.first.toString())
