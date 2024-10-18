@@ -110,8 +110,9 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     //Calendar - Date Pick
     implementation(libs.datetime)
-    //Rollbar
+    //Analytics
     implementation(libs.rollbar.android)
+    implementation(libs.leakcanary.android)
 }
 
 kapt {

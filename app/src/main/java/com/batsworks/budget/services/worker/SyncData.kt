@@ -11,6 +11,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.batsworks.budget.R
 import com.batsworks.budget.domain.dao.AmountDao
+import com.batsworks.budget.domain.dao.DeletedAmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -27,6 +28,7 @@ class SyncData @AssistedInject constructor(
 	@Assisted val params: WorkerParameters,
 	usersDao: UsersDao,
 	amountDao: AmountDao,
+	deletedAmountData: DeletedAmountDao,
 	amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : CoroutineWorker(context, params) {
 
@@ -40,6 +42,7 @@ class SyncData @AssistedInject constructor(
 	init {
 		dataSync = listOf(
 			SyncUserData(),
+			SyncDeletedAmountData(deletedAmountData, amountRepository),
 			SyncAmountData(
 				usersDao,
 				amountDao,
@@ -63,9 +66,10 @@ class SyncData @AssistedInject constructor(
 
 			Log.d(TAG, "RODOU $time")
 
-			val updateAndSave = Pair(false, false)
+			var updateAndSave: Pair<Boolean, Boolean>
 			for (syncItem in dataSync) {
-				updateAndSave.copy(syncItem.needsUpdate(), syncItem.needsBringData())
+				Log.d("RESULT", "${syncItem.needsUpdate()}, ${syncItem.needsBringData()}")
+				updateAndSave = Pair(syncItem.needsUpdate(), syncItem.needsBringData())
 
 				if (updateAndSave.first || updateAndSave.second) {
 					notification.showNotification(builder)
@@ -78,7 +82,7 @@ class SyncData @AssistedInject constructor(
 
 				currentProgress += (100 / steps)
 				builder.setProgress(100, currentProgress, false)
-				if(time > 0) notification.showNotification(builder)
+				if (time > 0) notification.showNotification(builder)
 			}
 
 			builder.setContentTitle("Data Synchronization finished")

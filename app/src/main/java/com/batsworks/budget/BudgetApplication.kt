@@ -18,6 +18,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.batsworks.budget.domain.dao.AmountDao
+import com.batsworks.budget.domain.dao.DeletedAmountDao
 import com.batsworks.budget.domain.dao.UsersDao
 import com.batsworks.budget.domain.entity.AmountFirebaseEntity
 import com.batsworks.budget.domain.repository.CustomRepository
@@ -87,12 +88,13 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 class CustomWorkerFactory @Inject constructor(
     private val usersDao: UsersDao,
     private val amountDao: AmountDao,
+    private val deletedAmountDao: DeletedAmountDao,
     private val amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker = SyncData(appContext,workerParameters, usersDao, amountDao, amountRepository)
+    ): ListenableWorker = SyncData(appContext,workerParameters, usersDao, amountDao, deletedAmountDao, amountRepository)
 
 }

@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.components.buttons.CustomButton
@@ -45,10 +44,11 @@ import com.batsworks.budget.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.files.decompressData
 import com.batsworks.budget.components.files.image.getByteArrayFromUri
-import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.components.files.pdf.ComposePDFViewer
 import com.batsworks.budget.components.formatter.localDate
+import com.batsworks.budget.components.texts.CustomText
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
+import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color500
 import com.batsworks.budget.ui.theme.customBackground

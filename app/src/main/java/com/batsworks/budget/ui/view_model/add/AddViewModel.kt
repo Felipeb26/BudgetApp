@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.view_model.add
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.AJUST_TAG
 import com.batsworks.budget.components.Resource
 import com.batsworks.budget.components.files.getFileType
+import com.batsworks.budget.components.files.writeToZip
 import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.domain.dao.AmountDao
@@ -24,10 +24,10 @@ import com.batsworks.budget.use_cases.amount.ValidateChargeName
 import com.batsworks.budget.use_cases.amount.ValidateChargeValue
 import com.batsworks.budget.use_cases.amount.ValidateFileVoucher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.io.ByteArrayInputStream
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
@@ -37,7 +37,6 @@ class AddViewModel @Inject constructor(
     private val userLocalRepository: UsersDao,
     private val amountLocalRepository: AmountDao,
     private val repository: CustomRepository<AmountFirebaseEntity>,
-    @ApplicationContext context: Context
 ) : ViewModel() {
     private var chargeNameValidation: ValidateChargeName = ValidateChargeName()
     private var chargeValueValidation: ValidateChargeValue = ValidateChargeValue()
@@ -137,7 +136,11 @@ class AddViewModel @Inject constructor(
     }
 
     private fun saveOnStorage(amout: AmountEntity, file: ByteArray) {
-        repository.saveFile(file, "${amout.chargeName}.${amout.extension}")
+        var zippedFile = file
+        val type = getFileType(file)
+        if(type.contains("zip")) zippedFile = writeToZip(ByteArrayInputStream(zippedFile), state.chargeName)
+
+        repository.saveFile(zippedFile, "${amout.chargeName}.${amout.extension}")
             .addOnSuccessListener { snapshot ->
                 Log.d(AJUST_TAG(tag), "ARQUIVO salvo com sucesso")
                 amout.withRef(snapshot.uploadSessionUri)

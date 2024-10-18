@@ -8,6 +8,11 @@ import com.batsworks.budget.domain.entity.DeletedAmount
 @Dao
 interface DeletedAmountDao {
 
+    @Query("SELECT * FROM DELETEDAMOUNT")
+    suspend fun findAll(): List<DeletedAmount>
+    @Query("SELECT COUNT(*) FROM DELETEDAMOUNT")
+    suspend fun countAll(): Int
+
     @Query("SELECT * FROM DELETEDAMOUNT WHERE id=:id")
     suspend fun findById(id:Int):DeletedAmount
 

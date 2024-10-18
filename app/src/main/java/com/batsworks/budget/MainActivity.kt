@@ -34,6 +34,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -232,14 +233,20 @@ class MainActivity : AppCompatActivity() {
 	private fun syncData() {
 		val contraints = Constraints.Builder()
 			.setRequiredNetworkType(NetworkType.CONNECTED)
-			.setRequiresStorageNotLow(true)
+//			.setRequiresStorageNotLow(true)
 			.build()
 
-		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
+		val now = OneTimeWorkRequestBuilder<SyncData>()
 			.setConstraints(contraints)
 			.setInitialDelay(Duration.ofSeconds(15))
 			.addTag(tag)
 			.build()
+
+//		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
+//			.setConstraints(contraints)
+//			.setInitialDelay(Duration.ofSeconds(15))
+//			.addTag(tag)
+//			.build()
 
 		val workManager = WorkManager.getInstance(this)
 		workManager.cancelAllWork()
@@ -251,16 +258,17 @@ class MainActivity : AppCompatActivity() {
 				val isWorkEnqueued = workInfos.any { workInfo ->
 					workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.BLOCKED
 				}
-				if(!isWorkEnqueued){
-					workManager.enqueueUniquePeriodicWork(
-						AJUST_TAG(tag),
-						ExistingPeriodicWorkPolicy.KEEP,
-						workerRequest
-					)
+//				if(!isWorkEnqueued){
+					workManager.enqueue(now)
+//					workManager.enqueueUniquePeriodicWork(
+//						AJUST_TAG(tag),
+//						ExistingPeriodicWorkPolicy.KEEP,
+//						workerRequest
+//					)
 					Log.d("DATA_SYNC_STATE", "Novo Worker agendado.")
-				} else {
-					Log.d("WORK_SCHEDULE", "Worker já está agendado ou em execução.")
-				}
+//				} else {
+//					Log.d("WORK_SCHEDULE", "Worker já está agendado ou em execução.")
+//				}
 			}
 	}
 

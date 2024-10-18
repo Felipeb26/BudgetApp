@@ -3,8 +3,10 @@ package com.batsworks.budget.domain.repository
 import com.batsworks.budget.domain.dao.FirebaseCollection
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
@@ -38,8 +40,8 @@ class CustomRepository<T>(
 		return db.collection(collection.path).document(document).get().await().toObject(type)
 	}
 
-	suspend fun delete(document: String): Void {
-		return db.collection(collection.path).document(document).delete().await()
+	suspend fun delete(document: String): Task<Void> {
+		return db.collection(collection.path).document(document).delete()
 	}
 
 	suspend fun update(data: MutableMap<String, Any>): Void {
@@ -58,12 +60,12 @@ class CustomRepository<T>(
 
 	fun idNotIn(ids: List<String>): Task<List<DocumentSnapshot>> {
 		if (ids.size <= 10) {
-			return db.collection(collection.path).whereNotIn("chargeName", ids).get()
+			return db.collection(collection.path).whereNotIn(FieldPath.documentId(), ids).get()
 				.continueWith { task -> task.result?.documents ?: emptyList() }
 		} else {
 			val tasks = mutableListOf<Task<QuerySnapshot>>()
 			ids.chunked(10).forEach { chunk ->
-				tasks.add(db.collection(collection.path).whereNotIn("id", chunk).get())
+				tasks.add(db.collection(collection.path).whereNotIn(FieldPath.documentId(), chunk).get())
 			}
 
 			return Tasks.whenAllSuccess<QuerySnapshot>(tasks)
