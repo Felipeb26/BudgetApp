@@ -136,6 +136,7 @@ fun Navigate(
 			val model = hiltViewModel<AddViewModel>()
 			val uri = Uri.parse(backStackEntry.arguments?.getString("uri"))
 			val type = backStackEntry.arguments?.getString("type") ?: "img"
+
 			SharedReceipt(
 				uri, type.lowercase(Locale.ROOT),
 				model.resourceEventFlow,

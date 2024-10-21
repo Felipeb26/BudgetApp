@@ -1,12 +1,12 @@
 package com.batsworks.budget.services.worker
 
-import com.batsworks.budget.domain.dao.DeletedAmountDao
-import com.batsworks.budget.domain.entity.AmountFirebaseEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.entity.AmountFirebaseEntity
+import com.batsworks.budget.data.repository.CustomRepository
 
 class SyncDeletedAmountData(
-	private val deletedAmountDao: DeletedAmountDao,
-	private val amountRepository: CustomRepository<AmountFirebaseEntity>,
+    private val deletedAmountDao: DeletedAmountDao,
+    private val amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : DataSyncFactory {
 	override suspend fun save() {
 		TODO("Not yet implemented")
@@ -14,9 +14,12 @@ class SyncDeletedAmountData(
 
 	override suspend fun update() {
 		val deletedAmounts = deletedAmountDao.findAll()
-		deletedAmounts.forEach {
-			it.firebaseId?.let { id -> amountRepository.delete(id).result }
-			deletedAmountDao.deleteById(it.id)
+		deletedAmounts.forEach {deleted ->
+			deleted.firebaseId?.let { id ->
+				amountRepository.delete(id).isSuccessful
+				deletedAmountDao.deleteByFirebaseId(deleted.firebaseId)
+			}
+			deletedAmountDao.deleteById(deleted.id)
 		}
 	}
 

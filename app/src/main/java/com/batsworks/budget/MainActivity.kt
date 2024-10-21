@@ -34,22 +34,21 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.batsworks.budget.components.AJUST_TAG
-import com.batsworks.budget.components.texts.capitalizeStrings
 import com.batsworks.budget.navigation.Navigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.formatNavigation
+import com.batsworks.budget.services.biometric.BiometricPromptManager
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.services.worker.SyncData
+import com.batsworks.budget.ui.components.menu.AJUST_TAG
+import com.batsworks.budget.ui.components.texts.capitalizeStrings
 import com.batsworks.budget.ui.theme.BudgetTheme
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.CustomTheme
+import com.batsworks.budget.ui.theme.custom.CustomTheme
 import com.batsworks.budget.ui.theme.customBackground
-import com.batsworks.budget.ui.view_model.login.BiometricPromptManager
 import com.batsworks.budget.ui.view_model.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.time.delay
@@ -233,20 +232,13 @@ class MainActivity : AppCompatActivity() {
 	private fun syncData() {
 		val contraints = Constraints.Builder()
 			.setRequiredNetworkType(NetworkType.CONNECTED)
-//			.setRequiresStorageNotLow(true)
 			.build()
 
-		val now = OneTimeWorkRequestBuilder<SyncData>()
+		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
 			.setConstraints(contraints)
 			.setInitialDelay(Duration.ofSeconds(15))
 			.addTag(tag)
 			.build()
-
-//		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
-//			.setConstraints(contraints)
-//			.setInitialDelay(Duration.ofSeconds(15))
-//			.addTag(tag)
-//			.build()
 
 		val workManager = WorkManager.getInstance(this)
 		workManager.cancelAllWork()
@@ -258,17 +250,12 @@ class MainActivity : AppCompatActivity() {
 				val isWorkEnqueued = workInfos.any { workInfo ->
 					workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.BLOCKED
 				}
-//				if(!isWorkEnqueued){
-					workManager.enqueue(now)
-//					workManager.enqueueUniquePeriodicWork(
-//						AJUST_TAG(tag),
-//						ExistingPeriodicWorkPolicy.KEEP,
-//						workerRequest
-//					)
+				if(!isWorkEnqueued){
+					workManager.enqueueUniquePeriodicWork(AJUST_TAG(tag), ExistingPeriodicWorkPolicy.KEEP, workerRequest)
 					Log.d("DATA_SYNC_STATE", "Novo Worker agendado.")
-//				} else {
-//					Log.d("WORK_SCHEDULE", "Worker já está agendado ou em execução.")
-//				}
+				} else {
+					Log.d("WORK_SCHEDULE", "Worker já está agendado ou em execução.")
+				}
 			}
 	}
 

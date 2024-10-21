@@ -4,11 +4,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.services.notification.NotificationToast
-import com.batsworks.budget.ui.theme.CustomTheme
+import com.batsworks.budget.ui.theme.custom.CustomTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,9 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-	private val repository: UsersDao,
-	isConnected: NetworkConnectivityObserver,
-	private val notificationToast: NotificationToast,
+    private val repository: UsersDao,
+    isConnected: NetworkConnectivityObserver,
+    private val notificationToast: NotificationToast,
 ) : ViewModel() {
 
 	private val _isReady = MutableStateFlow(false)

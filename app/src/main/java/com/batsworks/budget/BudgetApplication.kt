@@ -17,11 +17,11 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dao.DeletedAmountDao
-import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.AmountFirebaseEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.entity.AmountFirebaseEntity
+import com.batsworks.budget.data.repository.CustomRepository
 import com.batsworks.budget.services.notification.NotificationDataCreation
 import com.batsworks.budget.services.worker.SyncData
 import com.rollbar.android.Rollbar

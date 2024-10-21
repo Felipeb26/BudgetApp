@@ -6,18 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.components.AJUST_TAG
-import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.entity.UserEntity
-import com.batsworks.budget.domain.entity.UserFirebaseEntity
-import com.batsworks.budget.domain.entity.toDTO
-import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.use_cases.user.ValidateEmail
-import com.batsworks.budget.use_cases.user.ValidateName
-import com.batsworks.budget.use_cases.user.ValidatePassword
-import com.batsworks.budget.use_cases.user.ValidatePhone
-import com.batsworks.budget.use_cases.user.ValidateRepeatedPassword
-import com.batsworks.budget.use_cases.user.ValidateTerms
+import com.batsworks.budget.data.entity.UserEntity
+import com.batsworks.budget.data.entity.UserFirebaseEntity
+import com.batsworks.budget.data.entity.toDTO
+import com.batsworks.budget.data.repository.CustomRepository
+import com.batsworks.budget.domain.Resource
+import com.batsworks.budget.domain.use_cases.user.ValidateEmail
+import com.batsworks.budget.domain.use_cases.user.ValidateName
+import com.batsworks.budget.domain.use_cases.user.ValidatePassword
+import com.batsworks.budget.domain.use_cases.user.ValidatePhone
+import com.batsworks.budget.domain.use_cases.user.ValidateRepeatedPassword
+import com.batsworks.budget.domain.use_cases.user.ValidateTerms
+import com.batsworks.budget.ui.components.menu.AJUST_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-	private val repository: CustomRepository<UserFirebaseEntity>,
+    private val repository: CustomRepository<UserFirebaseEntity>,
 ) : ViewModel() {
 	private val validateName = ValidateName()
 	private val validatePhone = ValidatePhone()
@@ -71,6 +71,7 @@ class LoginViewModel @Inject constructor(
 			is RegistrationFormEvent.Submit -> {
 				registerUser()
 			}
+			else -> TODO("NOT IMPLEMENTED")
 		}
 	}
 

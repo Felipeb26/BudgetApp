@@ -1,13 +1,9 @@
 package com.batsworks.budget.di
 
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dao.FirebaseCollection
-import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.AmountFirebaseEntity
-import com.batsworks.budget.domain.entity.UserFirebaseEntity
-import com.batsworks.budget.domain.repository.CustomRepository
-import com.batsworks.budget.services.worker.DataSyncFactory
-import com.batsworks.budget.services.worker.SyncAmountData
+import com.batsworks.budget.data.repository.FirebaseCollection
+import com.batsworks.budget.data.entity.AmountFirebaseEntity
+import com.batsworks.budget.data.entity.UserFirebaseEntity
+import com.batsworks.budget.data.repository.CustomRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

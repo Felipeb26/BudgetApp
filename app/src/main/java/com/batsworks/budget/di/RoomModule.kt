@@ -3,10 +3,10 @@ package com.batsworks.budget.di
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dao.Database
-import com.batsworks.budget.domain.dao.DeletedAmountDao
-import com.batsworks.budget.domain.dao.UsersDao
+import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.Database
+import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.UsersDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +22,7 @@ object RoomModule {
 	@Provides
 	@Singleton
 	fun provideDatabase(@ApplicationContext context: Context): Database {
-		return Room.databaseBuilder(
+		val database = Room.databaseBuilder(
 			context, Database::class.java,
 			Database.NAME
 		).setQueryCallback({ query, args ->
@@ -31,6 +31,8 @@ object RoomModule {
 		}, Executors.newSingleThreadExecutor())
 			.fallbackToDestructiveMigration()
 			.build()
+		context.deleteDatabase(Database.NAME)
+		return database
 	}
 
 	@Provides

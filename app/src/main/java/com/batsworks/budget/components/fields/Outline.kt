@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.batsworks.budget.R
-import com.batsworks.budget.components.texts.capitalizeStrings
+import com.batsworks.budget.ui.components.texts.capitalizeStrings
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor

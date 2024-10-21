@@ -4,8 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
 import androidx.core.net.toUri
-import com.batsworks.budget.components.files.FilePaths
-import com.batsworks.budget.components.files.downloadFile
+import com.batsworks.budget.utils.files.Folder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -43,7 +42,7 @@ class AndroidDownloader(context: Context) : Download {
         suspendCancellableCoroutine { continuation ->
             val `is`: InputStream = ByteArrayInputStream(bytes)
             val mimeType = URLConnection.guessContentTypeFromStream(`is`)
-            val caminho = FilePaths.DOWNLOADS.path.plus("$name.${fileType(mimeType)}")
+            val caminho = Folder.DOWNLOADS.path.plus("$name.${fileType(mimeType)}")
             downloadFile(caminho, bytes, continuation)
         }
 

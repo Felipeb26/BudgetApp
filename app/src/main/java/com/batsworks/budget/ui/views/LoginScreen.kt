@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.texts.CustomText
-import com.batsworks.budget.components.Resource
+import com.batsworks.budget.ui.components.texts.CustomText
+import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.components.animations.Loading
-import com.batsworks.budget.components.buttons.CustomButton
-import com.batsworks.budget.components.buttons.CustomCheckBox
+import com.batsworks.budget.ui.components.buttons.CustomButton
+import com.batsworks.budget.ui.components.buttons.CustomCheckBox
 import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.services.notification.NotificationToast

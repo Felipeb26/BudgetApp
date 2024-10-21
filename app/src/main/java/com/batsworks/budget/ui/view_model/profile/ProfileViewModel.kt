@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.components.AJUST_TAG
-import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.UserEntity
+import com.batsworks.budget.ui.components.menu.AJUST_TAG
+import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.entity.UserEntity
+import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 import com.batsworks.budget.ui.view_model.login.RegistrationFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,6 +64,10 @@ class ProfileViewModel @Inject constructor(private val localRepository: UsersDao
 				state = state.copy(password = event.password)
 			}
 
+			is RegistrationFormEvent.LoginOnEnterChanged ->{
+				state = state.copy(loginOnEnter = event.login)
+			}
+
 			is RegistrationFormEvent.Submit -> submit()
 			else -> Unit
 		}
@@ -79,6 +83,7 @@ class ProfileViewModel @Inject constructor(private val localRepository: UsersDao
 					.withEmail(state.email)
 					.withPhone(state.telefone)
 					.withPassword(state.password)
+					.withLoginWhenEnter(state.loginOnEnter)
 				localRepository.save(user)
 				resourceEventChannel.send(Resource.Loading(false))
 				resourceEventChannel.send(Resource.Sucess(true))
@@ -89,5 +94,7 @@ class ProfileViewModel @Inject constructor(private val localRepository: UsersDao
 			}
 		}
 	}
+
+
 
 }

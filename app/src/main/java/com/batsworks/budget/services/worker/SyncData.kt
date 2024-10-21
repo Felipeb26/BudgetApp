@@ -10,11 +10,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.batsworks.budget.R
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dao.DeletedAmountDao
-import com.batsworks.budget.domain.dao.UsersDao
-import com.batsworks.budget.domain.entity.AmountFirebaseEntity
-import com.batsworks.budget.domain.repository.CustomRepository
+import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.entity.AmountFirebaseEntity
+import com.batsworks.budget.data.repository.CustomRepository
 import com.batsworks.budget.services.brodcasts.CancelWorkerNotification
 import com.batsworks.budget.services.notification.NotificationDataCreation
 import com.batsworks.budget.services.notification.Notifications
@@ -24,120 +24,120 @@ import dagger.assisted.AssistedInject
 
 @HiltWorker
 class SyncData @AssistedInject constructor(
-	@Assisted val context: Context,
-	@Assisted val params: WorkerParameters,
-	usersDao: UsersDao,
-	amountDao: AmountDao,
-	deletedAmountData: DeletedAmountDao,
-	amountRepository: CustomRepository<AmountFirebaseEntity>,
+    @Assisted val context: Context,
+    @Assisted val params: WorkerParameters,
+    usersDao: UsersDao,
+    amountDao: AmountDao,
+    deletedAmountData: DeletedAmountDao,
+    amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : CoroutineWorker(context, params) {
 
 
-	companion object {
-		lateinit var dataSync: List<DataSyncFactory>
-		const val TAG: String = "SYNC_DATA"
-		var time = 0
-	}
+    companion object {
+        lateinit var dataSync: List<DataSyncFactory>
+        const val TAG: String = "SYNC_DATA"
+        var time = 0
+    }
 
-	init {
-		dataSync = listOf(
-			SyncUserData(),
-			SyncDeletedAmountData(deletedAmountData, amountRepository),
-			SyncAmountData(
-				usersDao,
-				amountDao,
-				amountRepository,
-			)
-		)
-	}
+    init {
+        dataSync = listOf(
+            SyncUserData(),
+            SyncDeletedAmountData(deletedAmountData, amountRepository),
+            SyncAmountData(
+                usersDao,
+                amountDao,
+                amountRepository,
+            )
+        )
+    }
 
-	override suspend fun doWork(): Result {
-		val notification = Notifications(context)
-		val pendingIntentAction = pedingIntent()
-		return try {
-			var currentProgress = 0
-			val steps = dataSync.size
+    override suspend fun doWork(): Result {
+        val notification = Notifications(context)
+        val pendingIntentAction = pedingIntent()
+        return try {
+            var currentProgress = 0
+            val steps = dataSync.size
 
-			val builder = notificationBuilder(
-				title = "Data Synchronization Started",
-				text = "Your data synchronization has started."
-			).setProgress(100, 0, false)
-				.addAction(R.drawable.ic_cancel, "cancel", pendingIntentAction.first)
+            val builder = notificationBuilder(
+                title = "Data Synchronization Started",
+                text = "Your data synchronization has started."
+            ).setProgress(100, 0, false)
+                .addAction(R.drawable.ic_cancel, "cancel", pendingIntentAction.first)
 
-			Log.d(TAG, "RODOU $time")
+            var updateAndSave: Pair<Boolean, Boolean>
+            for (syncItem in dataSync) {
+                Log.d(
+                    "RESULT",
+                    "\n${syncItem.javaClass.canonicalName}  ${syncItem.needsUpdate()}, ${syncItem.needsBringData()}\n"
+                )
+                updateAndSave = Pair(syncItem.needsUpdate(), syncItem.needsBringData())
 
-			var updateAndSave: Pair<Boolean, Boolean>
-			for (syncItem in dataSync) {
-				Log.d("RESULT", "${syncItem.needsUpdate()}, ${syncItem.needsBringData()}")
-				updateAndSave = Pair(syncItem.needsUpdate(), syncItem.needsBringData())
+                if (updateAndSave.first || updateAndSave.second) {
+                    notification.showNotification(builder)
+                    time += 1
+                }
+                if (updateAndSave.first) syncItem.update()
 
-				if (updateAndSave.first || updateAndSave.second) {
-					notification.showNotification(builder)
-					time += 1
-				}
+                if (updateAndSave.second) syncItem.save()
 
-				if (updateAndSave.first) syncItem.update()
+                currentProgress += (100 / steps)
+                builder.setProgress(100, currentProgress, false)
+                if (time > 0) notification.showNotification(builder)
+            }
 
-				if (updateAndSave.second) syncItem.save()
+            builder.setContentTitle("Data Synchronization finished")
+                .setContentText("Sync process finished. All data is up to date.")
+                .setOngoing(false)
+                .setProgress(0, 0, false)
+            if (time > 0) notification.showNotification(builder)
+            time = 0
+            Result.success(Data.Builder().putBoolean("it worked", true).build())
+        } catch (e: Exception) {
+            Log.d(TAG, e.message ?: "an error happer")
+            notification.showBasicNotification(
+                title = "Data Synchronization error",
+                text = e.message ?: "an error has happen while sycronization",
+                R.drawable.ic_refresh, "retry", pendingIntentAction.second
+            )
+            Result.failure(Data.Builder().putString("error", e.toString()).build())
+        }
+    }
 
-				currentProgress += (100 / steps)
-				builder.setProgress(100, currentProgress, false)
-				if (time > 0) notification.showNotification(builder)
-			}
+    private fun pedingIntent(): Pair<PendingIntent, PendingIntent> {
+        val intent = Intent(context, CancelWorkerNotification::class.java).apply {
+            putExtra("worker_tag", params.id)
+        }
+        val cancelPendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val retryIntent = Intent(context, RetryWorkerNotification::class.java).apply {
+            putExtra("worker_tag", params.id)
+        }
+        val retryPendingIntent = PendingIntent.getBroadcast(
+            context,
+            1,
+            retryIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        return Pair(cancelPendingIntent, retryPendingIntent)
+    }
 
-			builder.setContentTitle("Data Synchronization finished")
-				.setContentText("Sync process finished. All data is up to date.")
-				.setOngoing(false)
-				.setProgress(0, 0, false)
-			if (time > 0) notification.showNotification(builder)
-			time = 0
-			Result.success()
-		} catch (e: Exception) {
-			Log.d(TAG, e.message ?: "an error happer")
-			notification.showBasicNotification(
-				title = "Data Synchronization error",
-				text = e.message ?: "an error has happen while sycronization",
-				R.drawable.ic_refresh, "retry", pendingIntentAction.second
-			)
-			Result.failure(Data.Builder().putString("error", e.toString()).build())
-		}
-	}
-
-	private fun pedingIntent(): Pair<PendingIntent, PendingIntent> {
-		val intent = Intent(context, CancelWorkerNotification::class.java).apply {
-			putExtra("worker_tag", params.id)
-		}
-		val cancelPendingIntent = PendingIntent.getBroadcast(
-			context,
-			0,
-			intent,
-			PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-		)
-		val retryIntent = Intent(context, RetryWorkerNotification::class.java).apply {
-			putExtra("worker_tag", params.id)
-		}
-		val retryPendingIntent = PendingIntent.getBroadcast(
-			context,
-			1,
-			retryIntent,
-			PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-		)
-		return Pair(cancelPendingIntent, retryPendingIntent)
-	}
-
-	private fun notificationBuilder(
-		title: String,
-		text: String,
-		ongoing: Boolean = false,
-		autoCancel: Boolean = true,
-	): NotificationCompat.Builder {
-		return NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
-			.setSmallIcon(R.drawable.logo)
-			.setContentTitle(title)
-			.setContentText(text)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setOngoing(ongoing)
-			.setAutoCancel(autoCancel)
-	}
+    private fun notificationBuilder(
+        title: String,
+        text: String,
+        ongoing: Boolean = false,
+        autoCancel: Boolean = true,
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, NotificationDataCreation.CHANNEL.content)
+            .setSmallIcon(R.drawable.logo)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOngoing(ongoing)
+            .setAutoCancel(autoCancel)
+    }
 
 }

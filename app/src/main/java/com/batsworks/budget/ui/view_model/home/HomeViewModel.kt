@@ -4,9 +4,9 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.formatter.currency
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dto.AmountState
-import com.batsworks.budget.domain.entity.AmountEntity
+import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dto.AmountState
+import com.batsworks.budget.data.entity.AmountEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

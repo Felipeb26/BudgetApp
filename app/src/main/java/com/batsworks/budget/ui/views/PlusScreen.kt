@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.texts.CustomText
+import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.components.animations.CustomLottieAnimation
-import com.batsworks.budget.components.formatScreenTitle
+import com.batsworks.budget.ui.components.menu.formatScreenTitle
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
 import com.batsworks.budget.ui.theme.Color400

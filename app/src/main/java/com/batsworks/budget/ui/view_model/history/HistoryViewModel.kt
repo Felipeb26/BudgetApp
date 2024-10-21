@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batsworks.budget.components.AJUST_TAG
-import com.batsworks.budget.components.Resource
-import com.batsworks.budget.domain.dao.AmountDao
-import com.batsworks.budget.domain.dao.DeletedAmountDao
-import com.batsworks.budget.domain.entity.AmountEntity
-import com.batsworks.budget.domain.entity.DeletedAmount
+import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.entity.AmountEntity
+import com.batsworks.budget.data.entity.DeletedAmount
+import com.batsworks.budget.domain.Resource
+import com.batsworks.budget.ui.components.menu.AJUST_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-	private val repository: AmountDao,
-	private val deletedAmountDao: DeletedAmountDao,
+    private val repository: AmountDao,
+    private val deletedAmountDao: DeletedAmountDao,
 ) : ViewModel() {
 
 	private val tag = HistoryViewModel::class.java.name
