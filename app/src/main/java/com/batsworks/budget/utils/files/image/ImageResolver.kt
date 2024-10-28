@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.graphics.decodeBitmap
@@ -49,7 +50,13 @@ fun compressImage(context: Context, uri: Uri): ByteArray {
 
 fun converterBitmapToByteArray(bitmap: Bitmap): ByteArray {
     val baos = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+
+    val quality = if (bitmap.width > 1000 || bitmap.height > 1000) 50 else 70
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+        bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, quality, baos)
+    }else{
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos)
+    }
     return baos.toByteArray()
 }
 

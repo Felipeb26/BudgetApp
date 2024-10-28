@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.batsworks.budget.data.entity.UserEntity
 
 @Dao
-interface UsersDao {
+interface UsersDAO {
 
     @Query("SELECT * FROM USERENTITY")
     suspend fun findAll(): List<UserEntity>

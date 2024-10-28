@@ -3,10 +3,11 @@ package com.batsworks.budget.di
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.batsworks.budget.data.dao.AmountDao
+import androidx.room.RoomDatabase
+import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.dao.Database
 import com.batsworks.budget.data.dao.DeletedAmountDao
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,21 +30,21 @@ object RoomModule {
 			Log.d("QUERY", query)
 			if (args.isNotEmpty()) Log.d("ARGS", "$args")
 		}, Executors.newSingleThreadExecutor())
+			.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
 			.fallbackToDestructiveMigration()
 			.build()
-		context.deleteDatabase(Database.NAME)
 		return database
 	}
 
 	@Provides
 	@Singleton
-	fun provideUserDao(database: Database): UsersDao {
+	fun provideUserDao(database: Database): UsersDAO {
 		return database.getUsersDao()
 	}
 
 	@Provides
 	@Singleton
-	fun provideAmountDao(database: Database): AmountDao {
+	fun provideAmountDao(database: Database): AmountDAO {
 		return database.getAmountDao()
 	}
 
@@ -52,6 +53,5 @@ object RoomModule {
 	fun provideDeletedAmountDao(database: Database): DeletedAmountDao {
 		return database.getDeletedAmountDao()
 	}
-
 
 }

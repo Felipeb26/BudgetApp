@@ -16,6 +16,8 @@ var Color800 = Color(0xFFF16868)
 var Color900 = Color(0xFF9E5B5B)
 var Color950 = Color(0xFF500000)
 
+var ColorLink = Color(0xFF0000EE)
+
 var ColorCardEmprestimo = Color(0xFF800000)
 var ColorCardCartoes = Color(0xFFFFD700)
 var ColorCardInvestimentos = Color(0xFF228B22)

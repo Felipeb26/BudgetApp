@@ -34,14 +34,19 @@ import com.batsworks.budget.ui.theme.Color950
 @Composable
 fun CustomButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit, text: String = "not implemented", enable: Boolean = false,
+    onClick: () -> Unit,
+    text: String = "not implemented",
+    enable: Boolean = false,
     shape: Shape = RoundedCornerShape(30),
     textStyle: TextStyle = MaterialTheme.typography.labelLarge,
     containerColor: Color = Color800,
     borderColor: Color = Color50,
+    border: BorderStroke? = BorderStroke(2.dp, borderColor.copy(0.6f)),
+    textColor: Color = if (!enable) Color600 else Color.White
 ) {
     Button(
-        modifier = modifier, border = BorderStroke(2.dp, borderColor.copy(0.6f)),
+        modifier = modifier,
+        border = border,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
@@ -53,7 +58,7 @@ fun CustomButton(
         CustomText(
             textStyle = textStyle,
             text = text.toUpperCase(Locale.current),
-            color = if (!enable) Color600 else Color.White,
+            color = textColor,
             textWeight = FontWeight.Bold
         )
     }

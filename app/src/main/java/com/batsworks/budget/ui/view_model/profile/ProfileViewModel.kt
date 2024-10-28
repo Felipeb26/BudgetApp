@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.ui.components.menu.AJUST_TAG
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val localRepository: UsersDao) : ViewModel() {
+class ProfileViewModel @Inject constructor(private val localRepository: UsersDAO) : ViewModel() {
 
 	private val tag = ProfileViewModel::class.java.name
 	var state by mutableStateOf(RegistrationFormState())

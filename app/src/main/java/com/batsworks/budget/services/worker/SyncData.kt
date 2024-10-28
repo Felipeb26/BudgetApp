@@ -10,9 +10,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.batsworks.budget.R
-import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.dao.DeletedAmountDao
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
 import com.batsworks.budget.services.brodcasts.CancelWorkerNotification
@@ -26,8 +26,8 @@ import dagger.assisted.AssistedInject
 class SyncData @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val params: WorkerParameters,
-    usersDao: UsersDao,
-    amountDao: AmountDao,
+    usersDAO: UsersDAO,
+    amountDAO: AmountDAO,
     deletedAmountData: DeletedAmountDao,
     amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : CoroutineWorker(context, params) {
@@ -42,12 +42,8 @@ class SyncData @AssistedInject constructor(
     init {
         dataSync = listOf(
             SyncUserData(),
-            SyncDeletedAmountData(deletedAmountData, amountRepository),
-            SyncAmountData(
-                usersDao,
-                amountDao,
-                amountRepository,
-            )
+            SyncDeletedAmountData(amountDAO,deletedAmountData, amountRepository),
+            SyncAmountData(usersDAO, amountDAO, amountRepository)
         )
     }
 

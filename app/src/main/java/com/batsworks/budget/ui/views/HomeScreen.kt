@@ -39,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -154,7 +153,7 @@ fun ProfileLowInfo(
 ) {
     val amountsState = amountStateFlow.collectAsState()
     val emptyValue: String = stringResource(id = R.string.empty_value)
-    val showValues = rememberSaveable { mutableStateOf(false) }
+    val showValues = remember { mutableStateOf(false) }
 
     val current = remember { mutableStateOf(emptyValue) }
     val future = remember { mutableStateOf(emptyValue) }

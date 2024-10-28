@@ -36,7 +36,7 @@ class CustomRepository<T>(
 		return db.collection(collection.path).document(document).get().await().toObject(type)
 	}
 
-	suspend fun delete(document: String): Task<Void> {
+	fun delete(document: String): Task<Void> {
 		return db.collection(collection.path).document(document).delete()
 	}
 
@@ -62,8 +62,10 @@ class CustomRepository<T>(
 		} else {
 			val tasks = mutableListOf<Task<QuerySnapshot>>()
 			ids.chunked(10).forEach { chunk ->
-				tasks.add(db.collection(collection.path).whereNotIn(FieldPath.documentId(), chunk)
-					.whereEqualTo("sync", false).get())
+				tasks.add(
+					db.collection(collection.path).whereNotIn(FieldPath.documentId(), chunk)
+						.whereEqualTo("sync", false).get()
+				)
 			}
 
 			return Tasks.whenAllSuccess<QuerySnapshot>(tasks)
@@ -78,7 +80,10 @@ class CustomRepository<T>(
 
 	suspend fun retrieveFile(document: String): ByteArray {
 		val fileReference = storage.child("comprovantes/$document")
-		return 	fileReference.getBytes(Long.MAX_VALUE).await()
+		return fileReference.getBytes(Long.MAX_VALUE).await()
 	}
 
+	fun deleteFile(path: String): Boolean {
+		return storage.child(path).delete().isSuccessful
+	}
 }

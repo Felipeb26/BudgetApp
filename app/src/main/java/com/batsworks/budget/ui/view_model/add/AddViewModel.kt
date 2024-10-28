@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.formatter.formatter
 import com.batsworks.budget.components.formatter.localDate
-import com.batsworks.budget.data.dao.AmountDao
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.AmountDAO
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountEntity
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
@@ -22,20 +22,18 @@ import com.batsworks.budget.domain.use_cases.amount.ValidateChargeValue
 import com.batsworks.budget.domain.use_cases.amount.ValidateFileVoucher
 import com.batsworks.budget.ui.components.menu.AJUST_TAG
 import com.batsworks.budget.utils.files.getFileType
-import com.batsworks.budget.utils.files.zip.writeToZip
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.io.ByteArrayInputStream
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-    private val userLocalRepository: UsersDao,
-    private val amountLocalRepository: AmountDao,
+    private val userLocalRepository: UsersDAO,
+    private val amountLocalRepository: AmountDAO,
     private val repository: CustomRepository<AmountFirebaseEntity>,
 ) : ViewModel() {
     private var chargeNameValidation: ValidateChargeName = ValidateChargeName()
@@ -136,11 +134,7 @@ class AddViewModel @Inject constructor(
     }
 
     private fun saveOnStorage(amout: AmountEntity, file: ByteArray) {
-        var zippedFile = file
-        val type = getFileType(file)
-        if(type.contains("zip")) zippedFile = writeToZip(ByteArrayInputStream(zippedFile), state.chargeName)
-
-        repository.saveFile(zippedFile, "${amout.chargeName}.${amout.extension}")
+        repository.saveFile(file, "${amout.chargeName}.${amout.extension}")
             .addOnSuccessListener { snapshot ->
                 Log.d(AJUST_TAG(tag), "ARQUIVO salvo com sucesso")
                 amout.withRef(snapshot.uploadSessionUri)

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.utils.files.getFileType
-import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.entity.AmountEntity
 import com.batsworks.budget.services.download.AndroidDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReceiptViewModel @Inject constructor(
-    private val localRepository: AmountDao,
-    private val download: AndroidDownloader,
+	private val localRepository: AmountDAO,
+	private val download: AndroidDownloader,
 ) : ViewModel() {
 
 

@@ -17,9 +17,9 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.dao.DeletedAmountDao
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
 import com.batsworks.budget.services.notification.NotificationDataCreation
@@ -86,8 +86,8 @@ class BudgetApplication : Application(), ImageLoaderFactory {
 
 
 class CustomWorkerFactory @Inject constructor(
-    private val usersDao: UsersDao,
-    private val amountDao: AmountDao,
+    private val usersDao: UsersDAO,
+    private val amountDao: AmountDAO,
     private val deletedAmountDao: DeletedAmountDao,
     private val amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : WorkerFactory() {

@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.ui.components.menu.AJUST_TAG
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.UserFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
 import com.batsworks.budget.domain.Resource
@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val repository: CustomRepository<UserFirebaseEntity>,
-    private val localRepository: UsersDao,
+	private val repository: CustomRepository<UserFirebaseEntity>,
+	private val localRepository: UsersDAO,
 ) : ViewModel() {
     private val validateEmail: ValidateEmail = ValidateEmail()
     private val validatePassword: ValidatePassword = ValidatePassword()

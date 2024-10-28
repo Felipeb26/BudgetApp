@@ -268,10 +268,7 @@ private fun Content(amount: AmountEntity, navController: NavController) {
                     containerColor = textColor.copy(0.4f),
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility),
                     onClick = {
-                        easyNavigate(
-                            navController,
-                            Screen.ReceiptScreen.withArgs(amount.id.toString())
-                        )
+                        easyNavigate(navController, Screen.ReceiptScreen.withArgs(amount.id.toString()))
                     })
             }
         }
@@ -293,8 +290,5 @@ fun PreviewHistorico() {
     )
     AmountHistoryScreen(
         navController = rememberNavController(),
-        resource.receiveAsFlow(),
-        amounts,
-        {},
-        {}) {}
+        resource.receiveAsFlow(), amounts, {}, {}) {}
 }

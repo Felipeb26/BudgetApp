@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.components.formatter.currency
-import com.batsworks.budget.data.dao.AmountDao
+import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.dto.AmountState
 import com.batsworks.budget.data.entity.AmountEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private var repository: AmountDao) : ViewModel() {
+class HomeViewModel @Inject constructor(private var repository: AmountDAO) : ViewModel() {
 
     private val _profileCardValues = MutableStateFlow<AmountState?>(null)
 

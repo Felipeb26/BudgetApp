@@ -15,9 +15,9 @@ abstract class Database : RoomDatabase() {
 		const val NAME = "BUDGET_DB"
 	}
 
-	abstract fun getUsersDao(): UsersDao
+	abstract fun getUsersDao(): UsersDAO
 
-	abstract fun getAmountDao(): AmountDao
+	abstract fun getAmountDao(): AmountDAO
 
 	abstract fun getDeletedAmountDao(): DeletedAmountDao
 

@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.batsworks.budget.data.entity.AmountEntity
 
 @Dao
-interface AmountDao {
+interface AmountDAO {
 
     @Query("SELECT * FROM AMOUNTENTITY ORDER BY amountDate DESC")
     suspend fun findAll(): List<AmountEntity>

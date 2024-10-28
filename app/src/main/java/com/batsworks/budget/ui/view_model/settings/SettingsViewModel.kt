@@ -10,7 +10,7 @@ import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.services.worker.SyncData
 import com.batsworks.budget.ui.components.menu.AJUST_TAG
@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val localRepository: UsersDao,
-    @ApplicationContext val context: Context
+	private val localRepository: UsersDAO,
+	@ApplicationContext val context: Context
 ) : ViewModel() {
 
     val tag: String = AJUST_TAG(SettingsViewModel::class.java.name)

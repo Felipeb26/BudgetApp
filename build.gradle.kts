@@ -16,8 +16,8 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Test>().configureEach {
 	maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
 	if (!project.hasProperty("createReports")) {
-		reports.html.required = false
-		reports.junitXml.required = false
+		reports.html.required.value(false)
+		reports.junitXml.required.value(false)
 	}
 }
 

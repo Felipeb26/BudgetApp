@@ -1,8 +1,8 @@
 package com.batsworks.budget.services.worker
 
 import android.util.Log
-import com.batsworks.budget.data.dao.AmountDao
-import com.batsworks.budget.data.dao.UsersDao
+import com.batsworks.budget.data.dao.AmountDAO
+import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.entity.toDTO
 import com.batsworks.budget.data.repository.CustomRepository
@@ -11,8 +11,8 @@ import kotlinx.coroutines.tasks.await
 
 
 class SyncAmountData(
-    private val userDao: UsersDao,
-    private val amountDao: AmountDao,
+    private val userDao: UsersDAO,
+    private val amountDao: AmountDAO,
     private val amountRepository: CustomRepository<AmountFirebaseEntity>
 ) : DataSyncFactory {
 
