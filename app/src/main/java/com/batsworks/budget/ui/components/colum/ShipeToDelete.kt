@@ -1,6 +1,5 @@
 package com.batsworks.budget.ui.components.colum
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.shrinkVertically
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.R
+import com.batsworks.budget.components.animations.infiniteBlink
 import com.batsworks.budget.ui.components.buttons.CustomButton
 import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.ui.theme.Color50
@@ -47,17 +47,24 @@ fun <T> SwipeToDeleteContainer(
 	content: @Composable (T) -> Unit,
 ) {
 	val (isRemoved, setToRemove) = remember { mutableStateOf(false) }
-	val (wasCancelled, setCancelled) = remember { mutableStateOf(true) }
+	val (wasCancelled, setCancelled) = remember { mutableStateOf(false) }
 	val state = rememberSwipeToDismissBoxState()
 
+	// Observe state to cancel deletion if needed
+	LaunchedEffect(wasCancelled) {
+		if (wasCancelled) {
+			state.reset()
+			setCancelled(false)
+		}
+	}
+
+	// Observe the swipe state to start deletion countdown
 	LaunchedEffect(state.currentValue) {
 		if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
 			delay(animationDuration.toLong())
-			if(wasCancelled) {
-				state.reset()
-			}else{
-				setToRemove(!isRemoved)
-                onDelete(item)
+			if (!wasCancelled) {
+				setToRemove(true)
+				onDelete(item)
 			}
 		}
 	}
@@ -99,7 +106,12 @@ private fun DeleteBackground(setCancelled: (Boolean) -> Unit) {
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			CustomText(
-				textStyle = MaterialTheme.typography.titleSmall.copy(letterSpacing = TextUnit(0.3f, TextUnitType.Sp)),
+				textStyle = MaterialTheme.typography.titleSmall.copy(
+					letterSpacing = TextUnit(
+						0.3f,
+						TextUnitType.Sp
+					)
+				),
 				textWeight = FontWeight.Bold,
 				text = stringResource(id = R.string.deleting_now)
 			)
@@ -109,11 +121,8 @@ private fun DeleteBackground(setCancelled: (Boolean) -> Unit) {
 					.height(40.dp)
 					.padding(horizontal = 10.dp),
 				text = "cancel", textColor = Color50,
-				containerColor = Color500.copy(0.4f), enable = true,
-				onClick = {
-					Log.d("SWIPPED", "CANCELANDO DELECAO")
-					setCancelled.invoke(true)
-				}
+				containerColor = infiniteBlink(initialColor = Color500), enable = true,
+				onClick = { setCancelled.invoke(true) }
 			)
 		}
 	}
@@ -121,7 +130,7 @@ private fun DeleteBackground(setCancelled: (Boolean) -> Unit) {
 
 @PreviewLightDark
 @Composable
-fun PreviewDeleteContainer(){
+fun PreviewDeleteContainer() {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
