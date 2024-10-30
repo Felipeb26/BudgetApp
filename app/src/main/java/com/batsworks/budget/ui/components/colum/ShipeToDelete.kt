@@ -50,7 +50,6 @@ fun <T> SwipeToDeleteContainer(
 	val (wasCancelled, setCancelled) = remember { mutableStateOf(false) }
 	val state = rememberSwipeToDismissBoxState()
 
-	// Observe state to cancel deletion if needed
 	LaunchedEffect(wasCancelled) {
 		if (wasCancelled) {
 			state.reset()
@@ -58,7 +57,6 @@ fun <T> SwipeToDeleteContainer(
 		}
 	}
 
-	// Observe the swipe state to start deletion countdown
 	LaunchedEffect(state.currentValue) {
 		if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
 			delay(animationDuration.toLong())

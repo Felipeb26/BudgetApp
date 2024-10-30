@@ -18,7 +18,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.batsworks.budget.data.dao.AmountDAO
-import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDAO
 import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
@@ -41,6 +41,7 @@ class BudgetApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         rollbar = Rollbar(this)
+//        ProtectionCheck(this)
         notification()
         WorkManager.initialize(
             this, Configuration.Builder()
@@ -81,14 +82,13 @@ class BudgetApplication : Application(), ImageLoaderFactory {
             .build()
     }
 
-
 }
 
 
 class CustomWorkerFactory @Inject constructor(
     private val usersDao: UsersDAO,
     private val amountDao: AmountDAO,
-    private val deletedAmountDao: DeletedAmountDao,
+    private val deletedAmountDao: DeletedAmountDAO,
     private val amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : WorkerFactory() {
     override fun createWorker(

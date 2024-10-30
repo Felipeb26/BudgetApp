@@ -4,7 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
-    kotlin("kapt")
+//    kotlin("kapt")
 }
 
 android {
@@ -91,8 +91,8 @@ dependencies {
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.dagger.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.dagger.compiler)
     //Lottie
     implementation(libs.lottie.compose)
     //Firebase
@@ -115,6 +115,4 @@ dependencies {
     implementation(libs.leakcanary.android)
 }
 
-kapt {
-    correctErrorTypes = true
-}
+//kapt { correctErrorTypes = true }

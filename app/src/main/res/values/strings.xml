@@ -57,6 +57,10 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="future_credit">entrada futura</string>
     <string name="future_outflow">saida futura</string>
     <string name="save">salvar</string>
+    <!-- amount history screen   -->
+    <string name="total_income">Total de Entradas</string>
+    <string name="total_outflow">Total de Saídas</string>
+    <string name="total">Total</string>
     <!--   home in  screen -->
     <!--   bill dowload / visualization  -->
     <string name="bill_name">"nome conta:  "</string>

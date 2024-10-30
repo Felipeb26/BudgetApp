@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batsworks.budget.data.dao.AmountDAO
-import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDAO
 import com.batsworks.budget.data.entity.AmountEntity
 import com.batsworks.budget.data.entity.DeletedAmount
 import com.batsworks.budget.domain.Resource
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
 	private val repository: AmountDAO,
-	private val deletedAmountDao: DeletedAmountDao,
+	private val deletedAmountDao: DeletedAmountDAO,
 ) : ViewModel() {
 
 	private val tag = HistoryViewModel::class.java.name

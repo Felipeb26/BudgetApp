@@ -122,12 +122,8 @@ class MainActivity : AppCompatActivity() {
 					promptManager.showBiometricPrompt(
 						capitalizeStrings(
 							"${stringResource(id = R.string.enterprise_name)} ${
-								stringResource(
-									id = R.string.app_name
-								)
-							}"
-						),
-						stringResource(id = R.string.biometric_description)
+								stringResource(id = R.string.app_name)}"
+						), stringResource(id = R.string.biometric_description)
 					)
 				}
 			}
@@ -236,7 +232,7 @@ class MainActivity : AppCompatActivity() {
 
 		val workerRequest = PeriodicWorkRequest.Builder(SyncData::class.java, Duration.ofHours(6))
 			.setConstraints(contraints)
-			.setInitialDelay(Duration.ofSeconds(15))
+			.setInitialDelay(Duration.ofMinutes(15))
 			.addTag(tag)
 			.build()
 

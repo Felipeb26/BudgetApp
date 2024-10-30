@@ -21,59 +21,61 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.batsworks.budget.R
 import com.batsworks.budget.ui.components.texts.CustomText
+import com.batsworks.budget.ui.theme.Color400
 import java.io.ByteArrayInputStream
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComposePDFViewer(byteArray: ByteArray) {
-    var isLoading by remember { mutableStateOf(false) }
-    var currentLoadingPage by remember { mutableStateOf<Int?>(null) }
-    var pageCount by remember { mutableStateOf<Int?>(null) }
-    if(byteArray.isEmpty()) return
+	var isLoading by remember { mutableStateOf(false) }
+	var currentLoadingPage by remember { mutableStateOf<Int?>(null) }
+	var pageCount by remember { mutableStateOf<Int?>(null) }
+	if (byteArray.isEmpty()) return
 
-    Box {
-        PdfViewer(
-            modifier = Modifier.fillMaxSize(),
-            pdfStream = ByteArrayInputStream(byteArray),
-            loadingListener = { loading, currentPage, maxPage ->
-                isLoading = loading
-                if (currentPage != null) currentLoadingPage = currentPage
-                if (maxPage != null) pageCount = maxPage
-            }
-        )
-        if (isLoading) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                LinearProgressIndicator(
-                    progress = {
-                        if (currentLoadingPage == null || pageCount == null) 0f
-                        else currentLoadingPage!!.toFloat() / pageCount!!.toFloat()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
-                )
-                CustomText(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 5.dp)
-                        .padding(horizontal = 30.dp),
-                    text = formatPagesLoaded(currentLoadingPage, pageCount),
-                    textWeight = FontWeight.Bold,
-                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
-        }
-    }
+	Box {
+		PdfViewer(
+			modifier = Modifier.fillMaxSize(),
+			pdfStream = ByteArrayInputStream(byteArray),
+			loadingListener = { loading, currentPage, maxPage ->
+				isLoading = loading
+				if (currentPage != null) currentLoadingPage = currentPage
+				if (maxPage != null) pageCount = maxPage
+			}
+		)
+		if (isLoading) {
+			Column(
+				modifier = Modifier.fillMaxSize(),
+				verticalArrangement = Arrangement.Center
+			) {
+				LinearProgressIndicator(
+					trackColor = Color400,
+					progress = {
+						if (currentLoadingPage == null || pageCount == null) 0f
+						else (currentLoadingPage ?: 0).toFloat() / (pageCount ?: 0).toFloat()
+					},
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(horizontal = 30.dp),
+				)
+				CustomText(
+					modifier = Modifier
+						.align(Alignment.End)
+						.padding(top = 5.dp)
+						.padding(horizontal = 30.dp),
+					text = formatPagesLoaded(currentLoadingPage, pageCount),
+					textWeight = FontWeight.Bold,
+					textStyle = MaterialTheme.typography.titleMedium.copy(
+						fontWeight = FontWeight.Bold
+					)
+				)
+			}
+		}
+	}
 }
 
 @Composable
 private fun formatPagesLoaded(curentPage: Int?, pageCount: Int?): String {
-    var string = stringResource(id = R.string.pdf_pages)
-    string = string.replace("-", "${pageCount ?: "-"}")
-    return "$curentPage $string"
+	var string = stringResource(id = R.string.pdf_pages)
+	string = string.replace("-", "${pageCount ?: "-"}")
+	return "$curentPage $string"
 }

@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.batsworks.budget.data.dao.AmountDAO
 import com.batsworks.budget.data.dao.Database
-import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDAO
 import com.batsworks.budget.data.dao.UsersDAO
+import com.batsworks.budget.data.dao.WorkerlogDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,8 +51,14 @@ object RoomModule {
 
 	@Provides
 	@Singleton
-	fun provideDeletedAmountDao(database: Database): DeletedAmountDao {
+	fun provideDeletedAmountDao(database: Database): DeletedAmountDAO {
 		return database.getDeletedAmountDao()
+	}
+
+	@Provides
+	@Singleton
+	fun providesWorkLogRegistryDao(database: Database): WorkerlogDAO{
+		return database.getWorkerLogDao()
 	}
 
 }

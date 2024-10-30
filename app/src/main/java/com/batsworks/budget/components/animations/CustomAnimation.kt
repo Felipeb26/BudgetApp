@@ -55,9 +55,7 @@ fun Visible(
 	),
 	content: @Composable () -> Unit,
 ) {
-	AnimatedVisibility(visible = show, enter = enter, exit = exit) {
-		content()
-	}
+	AnimatedVisibility(visible = show, enter = enter, exit = exit, content = { content() })
 }
 
 @Composable

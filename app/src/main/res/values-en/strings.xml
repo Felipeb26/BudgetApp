@@ -57,6 +57,9 @@ Marketing or selling to other companies or third parties.
     <string name="future_credit">future inflow</string>
     <string name="future_outflow">future outflow</string>
     <string name="save">save</string>
+    <string name="total_income">Total Inflows</string>
+    <string name="total_outflow">Total OutFlows</string>
+    <string name="total">Total</string>
     <string name="bill_name">bill name:  </string>
     <string name="update">update</string>
     <string name="not_yet_implemented">item not yet implemented!</string>

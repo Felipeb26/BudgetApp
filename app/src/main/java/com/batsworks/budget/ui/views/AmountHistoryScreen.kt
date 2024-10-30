@@ -66,229 +66,240 @@ import java.time.Duration
 
 @Composable
 fun AmountHistoryScreen(
-    navController: NavController,
-    resourceEventFlow: Flow<Resource<Any>>,
-    amounts: List<AmountEntity>,
-    setAmountList: (List<AmountEntity>) -> Unit,
-    deleteAmount: (Int) -> Unit,
-    searchAmount: () -> Unit,
+	navController: NavController,
+	resourceEventFlow: Flow<Resource<Any>>,
+	amounts: List<AmountEntity>,
+	setAmountList: (List<AmountEntity>) -> Unit,
+	deleteAmount: (Int) -> Unit,
+	searchAmount: () -> Unit,
 ) {
-    val coroutine = rememberCoroutineScope()
-    val context = LocalContext.current
-    val toast = NotificationToast(context)
+	val coroutine = rememberCoroutineScope()
+	val context = LocalContext.current
+	val toast = NotificationToast(context)
 
-    LaunchedEffect(key1 = context) {
-        resourceEventFlow.collect { event ->
-            when (event) {
-                is Resource.Loading -> {}
+	LaunchedEffect(key1 = context) {
+		resourceEventFlow.collect { event ->
+			when (event) {
+				is Resource.Loading -> {}
 
-                is Resource.Sucess -> toast.show("item deletado com sucesso")
+				is Resource.Sucess -> toast.show("item deletado com sucesso")
 
-                is Resource.Failure -> {
-                    toast.show(event.error ?: "Não foi possivel deletar o item")
-                }
-            }
-        }
-    }
+				is Resource.Failure -> {
+					toast.show(event.error ?: "Não foi possivel deletar o item")
+				}
+			}
+		}
+	}
 
-    val (moneyFlow, setMoneyFlow) = remember { mutableStateOf("") }
-    var isRefreshing by remember { mutableStateOf(false) }
+	val (moneyFlow, setMoneyFlow) = remember { mutableStateOf("") }
+	var isRefreshing by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(0.dp)
-            .background(if (amounts.isEmpty()) Color800.copy(0.6f) else customBackground)
-            .padding(horizontal = Padding.SMALL),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        DeafultSpacer(10)
-        CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
-        DataVisualization(amounts)
-        SwitchElementsView(start = amounts.isEmpty(), content = {
-            CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty(), speed = 0.4f)
-            CustomText(
-                modifier = Modifier
-                    .padding(vertical = Padding.LARGE)
-                    .fillMaxWidth(),
-                textStyle = MaterialTheme.typography.titleMedium,
-                text = stringResource(id = R.string.empty_transaction),
-                textAlign = TextAlign.Center, textWeight = FontWeight.Bold,
-                upperCase = true
-            )
-        }) {
-            PullToRefreshLazyColumn(itens = amounts,
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    isRefreshing = true
-                    searchAmount()
-                    coroutine.launch {
-                        delay(Duration.ofMillis(2500))
-                        isRefreshing = !isRefreshing
-                    }
-                },
-                content = { amount ->
-                    SwipeToDeleteContainer(item = amount,
-                        onDelete = { am -> deleteAmount(am.id) }) {
-                        Content(amount, navController)
-                    }
-                }
-            )
-        }
-    }
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(0.dp)
+			.background(if (amounts.isEmpty()) Color800.copy(0.6f) else customBackground)
+			.padding(horizontal = Padding.SMALL),
+		verticalArrangement = Arrangement.spacedBy(10.dp)
+	) {
+		DeafultSpacer(10)
+		CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
+		DataVisualization(amounts)
+		SwitchElementsView(start = amounts.isEmpty(), content = {
+			CustomLottieAnimation(R.raw.loading_cherry, amounts.isEmpty(), speed = 0.4f)
+			CustomText(
+				modifier = Modifier
+					.padding(vertical = Padding.LARGE)
+					.fillMaxWidth(),
+				textStyle = MaterialTheme.typography.titleMedium,
+				text = stringResource(id = R.string.empty_transaction),
+				textAlign = TextAlign.Center, textWeight = FontWeight.Bold,
+				upperCase = true
+			)
+		}) {
+			PullToRefreshLazyColumn(itens = amounts,
+				isRefreshing = isRefreshing,
+				onRefresh = {
+					isRefreshing = true
+					searchAmount()
+					coroutine.launch {
+						delay(Duration.ofMillis(2500))
+						isRefreshing = !isRefreshing
+					}
+				},
+				content = { amount ->
+					SwipeToDeleteContainer(item = amount,
+						onDelete = { am ->
+							isRefreshing = true
+							deleteAmount(am.id)
+						}) {
+						Content(amount, navController)
+					}
+				}
+			)
+		}
+	}
 }
 
 @Composable
 private fun DataVisualization(amounts: List<AmountEntity>) {
-    val scrollState = rememberScrollState()
-    var scrollingForward by remember { mutableStateOf(true) }
+	val scrollState = rememberScrollState()
+	var scrollingForward by remember { mutableStateOf(true) }
 
-    val style = MaterialTheme.typography.titleMedium
-    val totalEntrace = amounts.filter { it.entrance }
-        .map { it.value }.sumOf { it }
-    val totalExit = amounts.filter { !it.entrance }
-        .map { it.value }.sumOf { it }
+	val style = MaterialTheme.typography.titleMedium
+	val totalEntrace = amounts.filter { it.entrance }
+		.map { it.value }.sumOf { it }
+	val totalExit = amounts.filter { !it.entrance }
+		.map { it.value }.sumOf { it }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (scrollingForward) {
-                scrollState.scrollTo(scrollState.value + 3)
-                if (scrollState.value >= scrollState.maxValue) {
-                    scrollingForward = false
-                }
-            } else {
-                scrollState.scrollTo(scrollState.value - 3)
-                if (scrollState.value <= 0) {
-                    scrollingForward = true
-                }
-            }
-            delay(Duration.ofMillis(30))
-        }
-    }
+	LaunchedEffect(Unit) {
+		while (true) {
+			if (scrollingForward) {
+				scrollState.scrollTo(scrollState.value + 3)
+				if (scrollState.value >= scrollState.maxValue) {
+					scrollingForward = false
+				}
+			} else {
+				scrollState.scrollTo(scrollState.value - 3)
+				if (scrollState.value <= 0) {
+					scrollingForward = true
+				}
+			}
+			delay(Duration.ofMillis(30))
+		}
+	}
 
-    Row(
-        modifier = Modifier
-            .height(20.dp)
-            .padding(horizontal = Padding.BIG)
-            .horizontalScroll(scrollState),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        CustomText(
-            text = "Valor entrada: $totalEntrace",
-            textStyle = style.copy(fontWeight = FontWeight.Bold),
-        )
-        CustomText(
-            text = "Valor saida: $totalExit",
-            textStyle = style.copy(fontWeight = FontWeight.Bold),
-        )
+	Row(
+		modifier = Modifier
+			.height(20.dp)
+			.padding(horizontal = Padding.BIG)
+			.horizontalScroll(scrollState),
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(20.dp)
+	) {
+		CustomText(
+			text = ajustLabelValue(R.string.total).plus(": ${amounts.size}"),
+			textStyle = style,
+			textWeight = FontWeight.Bold
+		)
+		CustomText(
+			text = ajustLabelValue(R.string.total_income).plus(": $totalEntrace"),
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+		CustomText(
+			text = ajustLabelValue( R.string.total_outflow, false).plus(": $totalExit"),
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+		CustomText(
+			text = ajustLabelValue(R.string.total_income, true).plus(": ${amounts.filter { it.entrance }.size}"),
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+		CustomText(
+			text = ajustLabelValue(R.string.total_outflow, true).plus(": ${amounts.filter { !it.entrance }.size}"),
+			textStyle = style.copy(fontWeight = FontWeight.Bold),
+		)
+	}
+}
 
-        CustomText(
-            text = "Total: " + amounts.size.toString(),
-            textStyle = style,
-            textWeight = FontWeight.Bold
-        )
-        CustomText(
-            text = "Entradas: " + amounts.filter { it.entrance }.size,
-            textStyle = style.copy(fontWeight = FontWeight.Bold),
-        )
-        CustomText(
-            text = "Saidas: " + amounts.filter { !it.entrance }.size,
-            textStyle = style.copy(fontWeight = FontWeight.Bold),
-        )
-    }
+@Composable
+private fun ajustLabelValue(id: Int, split: Boolean = false): String {
+	val word = stringResource(id = id)
+	return if (split) word.split(" ")[1] else word
 }
 
 @Composable
 private fun CustomFilter(
-    setAmountList: (List<AmountEntity>) -> Unit,
-    moneyFlow: String, selectMoneyFlow: (String) -> Unit,
+	setAmountList: (List<AmountEntity>) -> Unit,
+	moneyFlow: String, selectMoneyFlow: (String) -> Unit,
 ) {
-    var expandedEntrance by remember { mutableStateOf(false) }
-    var expanded by remember { mutableStateOf(false) }
+	var expandedEntrance by remember { mutableStateOf(false) }
+	var expanded by remember { mutableStateOf(false) }
 
-    Row(Modifier.padding(horizontal = Padding.MEDIUM)) {
-        DropDownMenu(
-            modifier = Modifier.weight(1f),
-            itens = listOf("entrada", "saida"),
-            onExpandChage = { expandedEntrance = !expandedEntrance },
-            onDismiss = { expandedEntrance = !expandedEntrance },
-            expanded = expandedEntrance, selectText = moneyFlow,
-            onValueChange = {
-                selectMoneyFlow(it)
-                setAmountList.invoke(emptyList())
-            }
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        DropDownMenu(
-            modifier = Modifier.weight(1f),
-            onExpandChage = { expanded = !expanded },
-            onDismiss = { expanded = !expanded },
-            expanded = expanded, itens = listOf(""),
-            onValueChange = {}
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        DropDownMenu(
-            modifier = Modifier.weight(1f),
-            onExpandChage = { expanded = !expanded },
-            onDismiss = { expanded = !expanded },
-            expanded = expanded, itens = listOf(""),
-            onValueChange = {}
-        )
-    }
+	Row(Modifier.padding(horizontal = Padding.MEDIUM)) {
+		DropDownMenu(
+			modifier = Modifier.weight(1f),
+			itens = listOf("entrada", "saida"),
+			onExpandChage = { expandedEntrance = !expandedEntrance },
+			onDismiss = { expandedEntrance = !expandedEntrance },
+			expanded = expandedEntrance, selectText = moneyFlow,
+			onValueChange = {
+				selectMoneyFlow(it)
+				setAmountList.invoke(emptyList())
+			}
+		)
+		Spacer(modifier = Modifier.width(10.dp))
+		DropDownMenu(
+			modifier = Modifier.weight(1f),
+			onExpandChage = { expanded = !expanded },
+			onDismiss = { expanded = !expanded },
+			expanded = expanded, itens = listOf(""),
+			onValueChange = {}
+		)
+		Spacer(modifier = Modifier.width(10.dp))
+		DropDownMenu(
+			modifier = Modifier.weight(1f),
+			onExpandChage = { expanded = !expanded },
+			onDismiss = { expanded = !expanded },
+			expanded = expanded, itens = listOf(""),
+			onValueChange = {}
+		)
+	}
 }
 
 @Composable
 private fun Content(amount: AmountEntity, navController: NavController) {
-    val style = MaterialTheme.typography.labelLarge
-    val backgroundColor = isEntrance(amount)
+	val style = MaterialTheme.typography.labelLarge
+	val backgroundColor = isEntrance(amount)
 
-    Column {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .border(2.dp, color = backgroundColor.copy(0.6f), RoundedCornerShape(10))
-                .background(backgroundColor.copy(0.6f))
-                .padding(Padding.MEDIUM, Padding.X_MEDIUM),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CustomText(
-                text = amount.chargeName, capitalize = true,
-                textStyle = style.copy(letterSpacing = TextUnit(0.5f, TextUnitType.Sp)),
-                textWeight = FontWeight.Bold, wrap = true
-            )
-            CustomText(
-                text = currency(amount.value),
-                textStyle = style,
-                textWeight = FontWeight.Bold
-            )
-            if (amount.file != null) {
-                CustomIconButton(contentColor = backgroundColor.copy(0.8f),
-                    containerColor = textColor.copy(0.4f),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility),
-                    onClick = {
-                        easyNavigate(navController, Screen.ReceiptScreen.withArgs(amount.id.toString()))
-                    })
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-    }
+	Column {
+		Row(
+			Modifier
+				.fillMaxWidth()
+				.border(2.dp, color = backgroundColor.copy(0.6f), RoundedCornerShape(10))
+				.background(backgroundColor.copy(0.6f))
+				.padding(Padding.MEDIUM, Padding.X_MEDIUM),
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			CustomText(
+				text = amount.chargeName, capitalize = true,
+				textStyle = style.copy(letterSpacing = TextUnit(0.5f, TextUnitType.Sp)),
+				textWeight = FontWeight.Bold, wrap = true
+			)
+			CustomText(
+				text = currency(amount.value),
+				textStyle = style,
+				textWeight = FontWeight.Bold
+			)
+			if (amount.file != null) {
+				CustomIconButton(contentColor = backgroundColor.copy(0.8f),
+					containerColor = textColor.copy(0.4f),
+					imageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility),
+					onClick = {
+						easyNavigate(
+							navController, stateSave = false,
+							route = Screen.ReceiptScreen.withArgs(amount.id.toString())
+						)
+					})
+			}
+		}
+		Spacer(modifier = Modifier.height(10.dp))
+	}
 }
 
 @PreviewLightDark
 @Composable
 fun PreviewHistorico() {
-    val resource = Channel<Resource<Any>>()
-    val amounts = listOf(
-        AmountEntity(
-            chargeName = "conta de luz",
-            entrance = true,
-            file = "teste.".encodeToByteArray(),
-            value = BigDecimal.TEN
-        )
-    )
-    AmountHistoryScreen(
-        navController = rememberNavController(),
-        resource.receiveAsFlow(), amounts, {}, {}) {}
+	val resource = Channel<Resource<Any>>()
+	val amounts = listOf(
+		AmountEntity(
+			chargeName = "conta de luz",
+			entrance = true,
+			file = "teste.".encodeToByteArray(),
+			value = BigDecimal.TEN
+		)
+	)
+	AmountHistoryScreen(
+		navController = rememberNavController(),
+		resource.receiveAsFlow(), amounts, {}, {}) {}
 }

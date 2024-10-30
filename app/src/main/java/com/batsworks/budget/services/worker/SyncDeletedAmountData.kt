@@ -1,13 +1,13 @@
 package com.batsworks.budget.services.worker
 
 import com.batsworks.budget.data.dao.AmountDAO
-import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
 
 class SyncDeletedAmountData(
 	private val amountDao: AmountDAO,
-	private val deletedAmountDao: DeletedAmountDao,
+	private val deletedAmountDao: DeletedAmountDAO,
 	private val amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : DataSyncFactory {
 	override suspend fun save() {

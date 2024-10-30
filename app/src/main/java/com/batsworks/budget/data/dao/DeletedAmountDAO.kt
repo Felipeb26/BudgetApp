@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.batsworks.budget.data.entity.DeletedAmount
 
 @Dao
-interface DeletedAmountDao {
+interface DeletedAmountDAO {
 
     @Query("SELECT * FROM DELETEDAMOUNT")
     suspend fun findAll(): List<DeletedAmount>

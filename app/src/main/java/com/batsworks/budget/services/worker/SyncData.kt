@@ -11,7 +11,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.batsworks.budget.R
 import com.batsworks.budget.data.dao.AmountDAO
-import com.batsworks.budget.data.dao.DeletedAmountDao
+import com.batsworks.budget.data.dao.DeletedAmountDAO
 import com.batsworks.budget.data.dao.UsersDAO
 import com.batsworks.budget.data.entity.AmountFirebaseEntity
 import com.batsworks.budget.data.repository.CustomRepository
@@ -24,12 +24,12 @@ import dagger.assisted.AssistedInject
 
 @HiltWorker
 class SyncData @AssistedInject constructor(
-    @Assisted val context: Context,
-    @Assisted val params: WorkerParameters,
-    usersDAO: UsersDAO,
-    amountDAO: AmountDAO,
-    deletedAmountData: DeletedAmountDao,
-    amountRepository: CustomRepository<AmountFirebaseEntity>,
+	@Assisted val context: Context,
+	@Assisted val params: WorkerParameters,
+	usersDAO: UsersDAO,
+	amountDAO: AmountDAO,
+	deletedAmountData: DeletedAmountDAO,
+	amountRepository: CustomRepository<AmountFirebaseEntity>,
 ) : CoroutineWorker(context, params) {
 
 

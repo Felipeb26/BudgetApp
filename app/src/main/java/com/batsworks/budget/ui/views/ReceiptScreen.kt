@@ -139,7 +139,8 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
 		)
 		CustomText(
 			textStyle = MaterialTheme.typography.titleMedium,
-			text = stringResource(id = R.string.bill_value).plus(":\t").plus(currency(amount.value?.value))
+			text = stringResource(id = R.string.bill_value).plus(":\t")
+				.plus(currency(amount.value?.value))
 		)
 	}
 	Row(
@@ -152,10 +153,15 @@ private fun AmountInfo(amount: State<AmountEntity?>) {
 			text = stringResource(id = R.string.bill_date).plus(localDate(amount.value?.amountDate))
 		)
 		CustomText(
-			textAlign = TextAlign.Start, upperCase = true,
+			textAlign = TextAlign.Start,
+			upperCase = true,
 			textStyle = MaterialTheme.typography.titleMedium,
-			textWeight = FontWeight.Bold, color = composeBool(amount.value?.entrance?:false, Color.Green, Color.Red),
-			text = ajustTextIfEntrance(stringResource(id = R.string.entrance_exit), amount.value?.entrance?:true)
+			textWeight = FontWeight.Bold,
+			color = composeBool(amount.value?.entrance ?: false, Color.Green, Color.Red),
+			text = ajustTextIfEntrance(
+				stringResource(id = R.string.entrance_exit),
+				amount.value?.entrance ?: true
+			)
 		)
 	}
 	Spacer(modifier = Modifier.height(20.dp))
@@ -216,24 +222,22 @@ private fun AjustFilePreview(amount: State<AmountEntity?>) {
 			.padding(0.dp)
 			.padding(10.dp)
 	) {
-		if (fileType == "unknow" || fileType != "zip") {
-			CustomImageShow(
+		when (fileType) {
+			"zip" -> ComposePDFViewer(byteArray = file!!)
+			else -> CustomImageShow(
 				modifier = Modifier
 					.fillMaxWidth()
 					.border(1.dp, Color300, RoundedCornerShape(25f))
 					.height((configuration.screenHeightDp / 1.8).dp),
 				image = file
 			)
-		} else {
-			ComposePDFViewer(byteArray = file!!)
 		}
 	}
-
 }
 
-private fun ajustTextIfEntrance(value:String, isTrue:Boolean): String{
+private fun ajustTextIfEntrance(value: String, isTrue: Boolean): String {
 	val values = value.split("/")
-	return if(isTrue) values[0] else values[1]
+	return if (isTrue) values[0] else values[1]
 }
 
 @Composable

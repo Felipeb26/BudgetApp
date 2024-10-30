@@ -6,9 +6,10 @@ import androidx.room.TypeConverters
 import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.data.entity.AmountEntity
 import com.batsworks.budget.data.entity.DeletedAmount
+import com.batsworks.budget.data.entity.WorkerLogRegistry
 
 @TypeConverters(Converters::class)
-@Database(entities = [UserEntity::class, AmountEntity::class, DeletedAmount::class], version = 9, exportSchema = false)
+@Database(entities = [UserEntity::class, AmountEntity::class, DeletedAmount::class, WorkerLogRegistry::class], version = 10, exportSchema = false)
 abstract class Database : RoomDatabase() {
 
 	companion object {
@@ -19,6 +20,8 @@ abstract class Database : RoomDatabase() {
 
 	abstract fun getAmountDao(): AmountDAO
 
-	abstract fun getDeletedAmountDao(): DeletedAmountDao
+	abstract fun getDeletedAmountDao(): DeletedAmountDAO
+
+	abstract fun getWorkerLogDao(): WorkerlogDAO
 
 }
