@@ -15,6 +15,7 @@ import com.batsworks.budget.ui.view_model.settings.SettingsViewModel
 import com.batsworks.budget.ui.views.Accounts
 import com.batsworks.budget.ui.views.Add
 import com.batsworks.budget.ui.views.AmountHistoryScreen
+import com.batsworks.budget.ui.views.GroupScreen
 import com.batsworks.budget.ui.views.Home
 import com.batsworks.budget.ui.views.Main
 import com.batsworks.budget.ui.views.PlusScreen
@@ -81,5 +82,9 @@ fun NavGraphBuilder.homeNavigation(navController: NavController) {
 		val model = hiltViewModel<SettingsViewModel>()
 		val coroutine = rememberCoroutineScope()
 		Setting(model.user, coroutine, model::saveTheme, model::forceDataToSync)
+	}
+
+	composable<Screen.GroupScreen> {
+		GroupScreen(navController)
 	}
 }

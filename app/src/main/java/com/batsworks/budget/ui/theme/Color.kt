@@ -26,7 +26,7 @@ val Gray = Color(0xFF909090)
 
 val customBackground
     @Composable
-    get() = if (isSystemInDarkTheme()) Color500 else Color.White
+    get() = if (isSystemInDarkTheme()) Color500.copy(0.9f) else Color.White
 
 val textColor
     @Composable
