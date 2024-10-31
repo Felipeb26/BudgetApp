@@ -35,22 +35,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.batsworks.budget.R
-import com.batsworks.budget.ui.components.menu.DropDownMenu
 import com.batsworks.budget.components.animations.Loading
-import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.language.LanguageSettings
 import com.batsworks.budget.ui.components.buttons.swicthColors
+import com.batsworks.budget.ui.components.menu.DropDownMenu
+import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.ui.theme.Padding
-import com.batsworks.budget.ui.theme.custom.CustomTheme
 import com.batsworks.budget.ui.theme.SpaceWithDivider
+import com.batsworks.budget.ui.theme.custom.CustomTheme
 import com.batsworks.budget.ui.theme.custom.THEME
-import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.custom.findTheme
 import com.batsworks.budget.ui.theme.custom.themes
-import com.batsworks.budget.ui.view_model.settings.SettingsViewModel
+import com.batsworks.budget.ui.theme.customBackground
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
@@ -58,15 +56,14 @@ import java.time.Duration
 
 
 @Composable
-fun Setting(user: UserEntity?, coroutine: CoroutineScope, saveTheme: (THEME) -> Unit) {
-    val viewModel = viewModel<SettingsViewModel>()
+fun Setting(user: UserEntity?, coroutine: CoroutineScope, saveTheme: (THEME) -> Unit, forceDataSync: () -> Unit) {
     val (loading, setLoading) = remember { mutableStateOf(false) }
 
     val configurationItens: List<@Composable () -> Unit> = listOf(
         { LanguageContent(setLoading, coroutine) },
         { ThemeContent(user, saveTheme, setLoading, coroutine) },
         { UpdateTime() },
-        { ForceToBringData(viewModel::forceDataToSync) }
+        { ForceToBringData(forceDataSync) }
     )
 
     if (loading) Loading()
@@ -235,5 +232,5 @@ private fun resetScreen(reloadScreen: (Boolean) -> Unit, coroutineScope: Corouti
 @PreviewLightDark
 fun SettingWhite() {
     val coroutine = rememberCoroutineScope()
-    Setting(UserEntity(theme = THEME.CHERRY.theme), coroutine) {}
+    Setting(UserEntity(theme = THEME.CHERRY.theme), coroutine,{}) {}
 }

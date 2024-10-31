@@ -28,9 +28,9 @@ class ReceiptViewModel @Inject constructor(
 	private val _mutableEntityAmount = MutableStateFlow<AmountEntity?>(null)
 	var entityAmount = _mutableEntityAmount.asStateFlow()
 
-	fun showImage(id: String) {
+	fun showImage(id: Int) {
 		viewModelScope.launch {
-			val amount = localRepository.findById(id.toInt())
+			val amount = localRepository.findById(id)
 			_mutableEntityAmount.emit(amount)
 		}
 	}

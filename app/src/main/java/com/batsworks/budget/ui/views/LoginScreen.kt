@@ -102,7 +102,7 @@ fun Login(
 
         ) {
             CustomText(
-                modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen.route) },
+                modifier = Modifier.clickable { navController.navigate(Screen.SignUpScreen) },
                 text = stringResource(id = R.string.register),
                 textDecoration = TextDecoration.Underline,
                 upperCase = true, textWeight = FontWeight.SemiBold
@@ -147,7 +147,7 @@ fun LoginExecution(
                     toast.show(context.getString(R.string.entering))
                     easyNavigate(
                         navController,
-                        Screen.MainScreen.route,
+                        Screen.MainScreen,
                         stateSave = false,
                         restore = false,
                         include = true

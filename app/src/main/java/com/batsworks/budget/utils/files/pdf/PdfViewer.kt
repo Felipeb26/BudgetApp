@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Gray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -62,7 +63,7 @@ fun PdfViewer(
 fun PdfViewer(
     pdfStream: InputStream,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = Gray,
+    backgroundColor: Color = Color400,
     pageColor: Color = Color.White,
     listDirection: PdfListDirection = PdfListDirection.VERTICAL,
     arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(16.dp),
@@ -104,9 +105,7 @@ fun PdfViewer(
     page: @Composable (LazyListState, ImageBitmap) -> Unit
 ) {
     val context = LocalContext.current
-    val pagePaths = remember {
-        mutableStateListOf<String>()
-    }
+    val pagePaths = remember { mutableStateListOf<String>() }
     LaunchedEffect(true) {
         if (pagePaths.isEmpty()) {
             val paths = context.loadPdf(pdfStream, loadingListener)

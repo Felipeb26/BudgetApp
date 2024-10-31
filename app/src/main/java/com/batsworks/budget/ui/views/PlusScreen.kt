@@ -29,18 +29,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.components.animations.CustomLottieAnimation
-import com.batsworks.budget.ui.components.menu.formatScreenTitle
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.navigation.iconForScreen
+import com.batsworks.budget.ui.components.texts.CustomText
+import com.batsworks.budget.ui.components.texts.formatScreenTitle
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color800
@@ -53,10 +53,10 @@ import kotlin.concurrent.schedule
 
 @Composable
 fun PlusScreen(
-	navController: NavHostController,
+	navController: NavController,
 	dontLoginWhenStart: () -> Unit,
 ) {
-	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen)
+	val screens = listOf(Screen.SettingScreen, Screen.AccountsScreen, Screen.GroupScreen)
 	val (exit, makeExit) = remember { mutableStateOf(false) }
 
 	if (exit) ExitAnimation(true)
@@ -69,12 +69,12 @@ fun PlusScreen(
 	) {
 		Spacer(modifier = Modifier.height(10.dp))
 		screens.forEachIndexed { _, screen ->
-			CardFunction(navController, screen, screen.icon, screen.resource)
+			CardFunction(navController, screen, iconForScreen(screen)){ easyNavigate(navController, screen, include = true) }
 		}
 		CardFunction(
 			navController,
 			screenRoute = null,
-			icon = Icons.AutoMirrored.Filled.ExitToApp,
+			image = Icons.AutoMirrored.Filled.ExitToApp,
 			function = {
 				dontLoginWhenStart()
 				makeExit(true)
@@ -84,10 +84,9 @@ fun PlusScreen(
 
 @Composable
 fun CardFunction(
-	navController: NavHostController,
+	navController: NavController,
 	screenRoute: Screen?,
-	icon: ImageVector? = null,
-	resource: Int? = null,
+	image: ImageVector,
 	function: (() -> Unit)? = null,
 ) {
 	Card(
@@ -103,7 +102,7 @@ fun CardFunction(
 		onClick = function ?: {
 			easyNavigate(
 				navController,
-				screenRoute?.route ?: Screen.HomeScreen.route
+				screenRoute ?: Screen.HomeScreen
 			)
 		}
 	) {
@@ -115,13 +114,11 @@ fun CardFunction(
 			horizontalArrangement = Arrangement.Start
 		) {
 			Spacer(modifier = Modifier.width(35.dp))
-			(icon ?: resource?.let { ImageVector.vectorResource(it) })?.let {
-				Icon(
-					imageVector = it,
-					contentDescription = "",
-					tint = Color50
-				)
-			}
+			Icon(
+				imageVector = image,
+				contentDescription = "",
+				tint = Color50
+			)
 			Spacer(modifier = Modifier.width(35.dp))
 			CustomText(
 				text = formatScreenTitle(screenRoute),

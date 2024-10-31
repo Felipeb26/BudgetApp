@@ -63,7 +63,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.animations.SwitchElementsView
@@ -102,7 +101,7 @@ import java.math.BigDecimal
 
 @Composable
 fun Home(
-    navController: NavHostController,
+    navController: NavController,
     amounts: StateFlow<List<AmountEntity>>,
     amountStateFlow: StateFlow<AmountState?>,
     showAmount: (BigDecimal?, Boolean, MutableState<String>) -> String,
@@ -305,7 +304,7 @@ fun Cards(navController: NavController) {
                         setCardColor(card).copy(0.8f),
                         setCardColor(card).copy(0.6f)
                     )
-                ), onClick = { easyNavigate(navController, card.screen.route) }
+                ), onClick = { easyNavigate(navController, card.screen) }
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Icon(

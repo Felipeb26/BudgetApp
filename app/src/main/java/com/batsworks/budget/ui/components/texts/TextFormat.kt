@@ -26,15 +26,12 @@ fun formatScreenTitle(screen: Screen?): String {
     return when (screen) {
         Screen.AccountsScreen -> stringResource(id = R.string.account)
         Screen.AdicionarScreen -> stringResource(id = R.string.add)
-        Screen.HistoryScreen -> stringResource(id = R.string.history)
+        Screen.HistoryScreen-> stringResource(id = R.string.history)
         Screen.HomeScreen -> stringResource(id = R.string.home)
         Screen.PlusScreen -> stringResource(id = R.string.plus)
         Screen.ProfileScreen -> stringResource(id = R.string.profile)
         Screen.SettingScreen -> stringResource(id = R.string.settings)
+        Screen.GroupScreen -> stringResource(id = R.string.enterprise_name)
         else -> stringResource(id = R.string.exit)
     }.toUpperCase(Locale.current)
-}
-
-fun formatScreenTitle(title: String): String {
-    return title.replace("_screen", "").toUpperCase(Locale.current)
 }

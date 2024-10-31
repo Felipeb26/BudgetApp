@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization")
 //    kotlin("kapt")
 }
 
@@ -82,6 +83,8 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.material3)
     implementation(libs.androidx.navigation.compose)
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
     //AsyncImage
     implementation(libs.coil.compose)
     //Worker

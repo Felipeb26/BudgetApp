@@ -117,21 +117,3 @@ fun <T> DropDownMenu(
 fun AJUST_TAG(tag: String): String {
 	return tag.substring(tag.lastIndexOf(".") + 1)
 }
-
-@Composable
-fun formatScreenTitle(screen: Screen?): String {
-	return when (screen) {
-		Screen.AccountsScreen -> stringResource(id = R.string.account)
-		Screen.AdicionarScreen -> stringResource(id = R.string.add)
-		Screen.HistoryScreen -> stringResource(id = R.string.history)
-		Screen.HomeScreen -> stringResource(id = R.string.home)
-		Screen.PlusScreen -> stringResource(id = R.string.plus)
-		Screen.ProfileScreen -> stringResource(id = R.string.profile)
-		Screen.SettingScreen -> stringResource(id = R.string.settings)
-		else -> stringResource(id = R.string.exit)
-	}.toUpperCase(Locale.current)
-}
-
-fun formatScreenTitle(title: String): String {
-	return title.replace("_screen", "").toUpperCase(Locale.current)
-}

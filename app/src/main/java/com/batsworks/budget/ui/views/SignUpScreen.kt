@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
@@ -57,7 +58,7 @@ import com.batsworks.budget.ui.view_model.login.LoginViewModel
 import com.batsworks.budget.ui.view_model.login.RegistrationFormEvent
 
 @Composable
-fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
+fun SignUp(navController: NavController, viewModel: LoginViewModel) {
     val (isLoading, setLoading) = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val toast = NotificationToast(context)
@@ -96,7 +97,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
 
                 is Resource.Sucess -> {
                     toast.show(context.getString(R.string.adding_user_sucess))
-                    easyNavigate(navController, Screen.LoginScreen.route)
+                    easyNavigate(navController, Screen.LoginScreen)
                 }
             }
         }

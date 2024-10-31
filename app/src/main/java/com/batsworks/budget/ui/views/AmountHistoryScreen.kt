@@ -52,7 +52,7 @@ import com.batsworks.budget.ui.components.colum.SwipeToDeleteContainer
 import com.batsworks.budget.ui.components.menu.DropDownMenu
 import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.ui.theme.Color800
-import com.batsworks.budget.ui.theme.DeafultSpacer
+import com.batsworks.budget.ui.theme.DefaultSpacer
 import com.batsworks.budget.ui.theme.Padding
 import com.batsworks.budget.ui.theme.customBackground
 import com.batsworks.budget.ui.theme.textColor
@@ -102,7 +102,7 @@ fun AmountHistoryScreen(
 			.padding(horizontal = Padding.SMALL),
 		verticalArrangement = Arrangement.spacedBy(10.dp)
 	) {
-		DeafultSpacer(10)
+		DefaultSpacer(10)
 		CustomFilter(setAmountList, moneyFlow, setMoneyFlow)
 		DataVisualization(amounts)
 		SwitchElementsView(start = amounts.isEmpty(), content = {
@@ -278,7 +278,7 @@ private fun Content(amount: AmountEntity, navController: NavController) {
 					onClick = {
 						easyNavigate(
 							navController, stateSave = false,
-							route = Screen.ReceiptScreen.withArgs(amount.id.toString())
+							route = Screen.ReceiptScreen(idReceipt = amount.id)
 						)
 					})
 			}

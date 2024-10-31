@@ -60,7 +60,7 @@ Marketing or selling to other companies or third parties.
     <string name="total_income">Total Inflows</string>
     <string name="total_outflow">Total OutFlows</string>
     <string name="total">Total</string>
-    <string name="bill_name">bill name:  </string>
+    <string name="bill_name">name:  </string>
     <string name="update">update</string>
     <string name="not_yet_implemented">item not yet implemented!</string>
     <string name="enterprise_name">BatsWorks</string>
@@ -71,7 +71,7 @@ Marketing or selling to other companies or third parties.
     <string name="adding_user_error">There was an error creating the user!</string>
     <string name="adding_user_sucess">User created with sucess!</string>
     <string name="bill_value">"Value:  "</string>
-    <string name="bill_date">"bill date:  "</string>
+    <string name="bill_date">"date:  "</string>
     <string name="download">download</string>
     <string name="biometric_description">Use your fingerprint to enter</string>
     <string name="biometric_auth_error">There was a error to authenticate</string>

@@ -14,6 +14,10 @@ fun SpaceWithDivider(size: Int = 40, dividerThickness: Int = 2) {
     Spacer(modifier = Modifier.height((size / 2).dp))
 }
 @Composable
-fun DeafultSpacer(size: Int = 40) {
+fun DefaultSpacer(size: Int = 40) {
+    Spacer(modifier = Modifier.height(size.dp))
+}
+@Composable
+fun DefaultSpacer(size: Float = 40.0F) {
     Spacer(modifier = Modifier.height(size.dp))
 }

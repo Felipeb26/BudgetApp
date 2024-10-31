@@ -6,8 +6,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -54,7 +53,10 @@ import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color400
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color700
+import com.batsworks.budget.ui.theme.DefaultSpacer
+import com.batsworks.budget.ui.theme.Padding
 import com.batsworks.budget.ui.theme.customBackground
+import com.batsworks.budget.utils.common.UiText
 import com.batsworks.budget.utils.files.image.CustomImageShow
 import com.batsworks.budget.utils.files.image.getImageUriFromByteArray
 import com.batsworks.budget.utils.files.pdf.ComposePDFViewer
@@ -106,65 +108,68 @@ fun ReceiptScreen(
 			)
 		})
 	}) { padding ->
-		LazyColumn(
+		Column(
 			modifier = Modifier
+				.fillMaxSize()
 				.background(customBackground)
 				.padding(padding)
-				.fillMaxSize(),
-			horizontalAlignment = Alignment.CenterHorizontally,
-			verticalArrangement = Arrangement.spacedBy(15.dp)
 		) {
-			item { AmountInfo(amount) }
-			item { AjustFilePreview(amount) }
-			item { ActionButtons(amount, downloadReceipt) }
+			AmountInfo(amount)
+			DefaultSpacer(10)
+			AjustFilePreview(amount)
+			DefaultSpacer(10)
+			ActionButtons(amount, downloadReceipt)
 		}
 	}
 
 	Loading(isLoading)
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AmountInfo(amount: State<AmountEntity?>) {
-	Spacer(modifier = Modifier.height(15.dp))
-	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceAround,
+	FlowRow(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = Padding.MEDIUM),
+		maxItemsInEachRow = 3,
+		maxLines = 2
 	) {
 		CustomText(
+			modifier = Modifier.padding(end = Padding.MEDIUM),
 			textStyle = MaterialTheme.typography.titleMedium,
-			textAlign = TextAlign.Center, capitalize = true,
-			textDecoration = TextDecoration.Underline,
+			capitalize = true, textDecoration = TextDecoration.Underline,
 			text = stringResource(id = R.string.bill_name).plus("\t")
 				.plus(amount.value?.chargeName),
 		)
 		CustomText(
+			Modifier.padding(end = Padding.X_MEDIUM),
 			textStyle = MaterialTheme.typography.titleMedium,
-			text = stringResource(id = R.string.bill_value).plus(":\t")
-				.plus(currency(amount.value?.value))
+			text = UiText.StringResource(R.string.bill_value).asString()
+				.plus("\t").plus(currency(amount.value?.value))
 		)
-	}
-	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceEvenly
-	) {
 		CustomText(
+			modifier = Modifier.padding(end = Padding.X_MEDIUM),
 			textAlign = TextAlign.Start, capitalize = true,
 			textStyle = MaterialTheme.typography.titleMedium,
-			text = stringResource(id = R.string.bill_date).plus(localDate(amount.value?.amountDate))
+			text = UiText.StringResource(R.string.bill_date).asString()
+				.plus(localDate(amount.value?.amountDate))
 		)
 		CustomText(
 			textAlign = TextAlign.Start,
 			upperCase = true,
 			textStyle = MaterialTheme.typography.titleMedium,
 			textWeight = FontWeight.Bold,
-			color = composeBool(amount.value?.entrance ?: false, Color.Green, Color.Red),
+			color = composeBool(
+				amount.value?.entrance ?: false,
+				Color.Green, Color.Red
+			),
 			text = ajustTextIfEntrance(
 				stringResource(id = R.string.entrance_exit),
 				amount.value?.entrance ?: true
 			)
 		)
 	}
-	Spacer(modifier = Modifier.height(20.dp))
 }
 
 @Composable
@@ -218,17 +223,15 @@ private fun AjustFilePreview(amount: State<AmountEntity?>) {
 
 	Column(
 		modifier = Modifier
-			.fillMaxSize()
-			.padding(0.dp)
-			.padding(10.dp)
+			.fillMaxWidth()
+			.padding(Padding.X_BIG)
+			.height((configuration.screenHeightDp / 1.6).dp)
+			.border(1.dp, Color300, RoundedCornerShape(25f))
 	) {
 		when (fileType) {
 			"zip" -> ComposePDFViewer(byteArray = file!!)
 			else -> CustomImageShow(
-				modifier = Modifier
-					.fillMaxWidth()
-					.border(1.dp, Color300, RoundedCornerShape(25f))
-					.height((configuration.screenHeightDp / 1.8).dp),
+				modifier = Modifier.fillMaxSize(),
 				image = file
 			)
 		}
@@ -236,7 +239,7 @@ private fun AjustFilePreview(amount: State<AmountEntity?>) {
 }
 
 private fun ajustTextIfEntrance(value: String, isTrue: Boolean): String {
-	val values = value.split("/")
+	val values = value.replace(":", "").split("/")
 	return if (isTrue) values[0] else values[1]
 }
 

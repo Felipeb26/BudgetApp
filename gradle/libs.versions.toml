@@ -1,26 +1,27 @@
 [versions]
-activityCompose = "1.9.2"
+activityCompose = "1.9.3"
 appcompat = "1.7.0"
 biometric = "1.1.0"
 coilCompose = "2.7.0"
-commomDaggerHiltVersion = "2.48"
-composeBom = "2024.09.03"
-coreKtx = "1.13.1"
+commomDaggerHiltVersion = "2.50"
+composeBom = "2024.10.01"
+coreKtx = "1.13.0"
 coreSplashscreen = "1.0.1"
 daggerHiltVersion = "1.2.0"
 datetime = "0.9.0"
 espressoCore = "3.6.1"
-firebaseBom = "33.1.1"
-firebaseFirestore = "25.1.0"
+firebaseBom = "33.5.1"
+firebaseFirestore = "25.1.1"
 firebaseStorage = "21.0.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+kotlinxSerializationJson = "1.6.2"
 leakcanaryAndroid = "2.8.1"
-lifecycleRuntimeKtx = "2.8.6"
+lifecycleRuntimeKtx = "2.8.7"
 lottieCompose = "6.5.2"
-material3 = "1.3.0"
-material3Android = "1.3.0"
-navigationCompose = "2.8.2"
+material3 = "1.3.1"
+material3Android = "1.3.1"
+navigationCompose = "2.8.3"
 rollbarAndroid = "1.10.3"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
@@ -65,6 +66,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "commo
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "commomDaggerHiltVersion" }
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }

@@ -37,9 +37,9 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.batsworks.budget.navigation.Navigate
+import com.batsworks.budget.navigation.FileType
+import com.batsworks.budget.navigation.MainNavigate
 import com.batsworks.budget.navigation.Screen
-import com.batsworks.budget.navigation.formatNavigation
 import com.batsworks.budget.services.biometric.BiometricPromptManager
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.services.worker.SyncData
@@ -78,12 +78,12 @@ class MainActivity : AppCompatActivity() {
 		setContent {
 			val	customTheme = CustomTheme(LocalView.current)
 
-			val (whereToGo, setWhereToGo) = remember { mutableStateOf<String?>(null) }
+			val (whereToGo, setWhereToGo) = remember { mutableStateOf<Screen?>(null) }
 			HandlePermissionsRequest()
 			HandleBiometricPrompt(context, notificationToast, setWhereToGo)
 
 			val (sharedFile, setSharedFileInfo) = remember {
-				mutableStateOf<Pair<Uri?, String>?>(
+				mutableStateOf<Pair<Uri?, FileType>?>(
 					null
 				)
 			}
@@ -94,12 +94,13 @@ class MainActivity : AppCompatActivity() {
 
 				sharedFile?.let {
 					val encodedUri = Uri.encode(it.first.toString())
-					Navigate(screen = Screen.SharedReceiptScreen.withArgs(encodedUri, it.second))
+					val shared = Screen.SharedReceiptScreen(fileUri = encodedUri, fileType = it.second)
+					MainNavigate(screen = shared)
 					return@BudgetTheme
 				}
 
 				whereToGo?.let { to ->
-					Navigate(screen = to)
+					MainNavigate(screen = to)
 					return@BudgetTheme
 				}
 
@@ -112,11 +113,11 @@ class MainActivity : AppCompatActivity() {
 				) {}
 
 				if (user == null) {
-					Navigate(screen = formatNavigation(Screen.LoginScreen.route))
+					MainNavigate(screen = Screen.LoginScreen)
 					return@BudgetTheme
 				} else if (user?.loginWhenEnter == true) {
 					syncData()
-					Navigate(screen = formatNavigation(Screen.MainScreen.route))
+					MainNavigate(screen = Screen.MainScreen)
 					return@BudgetTheme
 				} else if (user?.loginWhenEnter == false) {
 					promptManager.showBiometricPrompt(
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 	private fun HandleBiometricPrompt(
 		context: Context,
 		notificationToast: NotificationToast,
-		whereToGo: (String) -> Unit,
+		whereToGo: (Screen) -> Unit,
 	) {
 		val biometricResult by promptManager.promptResults.collectAsState(initial = null)
 		val enrollLauncher = rememberLauncherForActivityResult(
@@ -151,28 +152,26 @@ class MainActivity : AppCompatActivity() {
 						)
 					}
 					enrollLauncher.launch(enrollIntent)
-				} else whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+				} else whereToGo.invoke(Screen.LoginScreen)
 			}
 		}
 
 		biometricResult?.let { result ->
 			when (result) {
-				is BiometricPromptManager.BiometricResult.AuthenticationSucess -> whereToGo.invoke(
-					formatNavigation(Screen.MainScreen.route)
-				)
+				is BiometricPromptManager.BiometricResult.AuthenticationSucess -> whereToGo.invoke(Screen.MainScreen)
 
 				is BiometricPromptManager.BiometricResult.AuthenticationErro -> {
 					notificationToast.show((biometricResult as BiometricPromptManager.BiometricResult.AuthenticationErro).error)
-					whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+					whereToGo.invoke(Screen.LoginScreen)
 				}
 
 				is BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
 					Log.d("biometria", context.getString(R.string.biometric_auth_error))
 					notificationToast.show(context.getString(R.string.biometric_auth_error))
-					whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+					whereToGo.invoke(Screen.LoginScreen)
 				}
 
-				else -> whereToGo.invoke(formatNavigation(Screen.LoginScreen.route))
+				else -> whereToGo.invoke(Screen.LoginScreen)
 			}
 		}
 	}
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	@Composable
-	private fun HandleIntent(intent: Intent, onImageUriReceived: (Pair<Uri?, String>) -> Unit) {
+	private fun HandleIntent(intent: Intent, onImageUriReceived: (Pair<Uri?, FileType>) -> Unit) {
 		LaunchedEffect(intent) {
 			if (intent.action == Intent.ACTION_SEND && intent.type != null) {
 				val type = intent.type
@@ -198,14 +197,14 @@ class MainActivity : AppCompatActivity() {
 					onImageUriReceived(
 						Pair(
 							intent.clipData?.getItemAt(0)?.uri ?: intent.data,
-							"IMG"
+							FileType.IMG
 						)
 					)
 				} else if (type?.endsWith("pdf") == true) {
 					onImageUriReceived(
 						Pair(
 							intent.clipData?.getItemAt(0)?.uri ?: intent.data,
-							"PDF"
+							FileType.PDF
 						)
 					)
 				}
@@ -223,7 +222,6 @@ class MainActivity : AppCompatActivity() {
 			permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
 		}
 	}
-
 
 	private fun syncData() {
 		val contraints = Constraints.Builder()

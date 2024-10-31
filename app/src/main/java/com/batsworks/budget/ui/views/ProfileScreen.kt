@@ -40,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.fields.CustomOutlineTextField
@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun Profile(
-    navController: NavHostController,
+    navController: NavController,
     user: StateFlow<UserEntity?>,
     state: RegistrationFormState,
     resourceEventFlow: Flow<Resource<Any>>,
@@ -90,7 +90,7 @@ fun Profile(
                     toast.show(context.getString(R.string.adding_user_sucess))
                     delay(800)
                     canNavigate = !canNavigate
-                    easyNavigate(navController, Screen.HomeScreen.route)
+                    easyNavigate(navController, Screen.HomeScreen)
                 }
             }
         }

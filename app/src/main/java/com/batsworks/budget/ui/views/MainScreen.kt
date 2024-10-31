@@ -15,8 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -25,11 +23,12 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.batsworks.budget.ui.components.texts.CustomText
-import com.batsworks.budget.ui.components.menu.formatScreenTitle
-import com.batsworks.budget.navigation.MainNavigation
+import com.batsworks.budget.navigation.MainNavigate
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.navigation.easyNavigate
+import com.batsworks.budget.navigation.iconForScreen
+import com.batsworks.budget.ui.components.texts.CustomText
+import com.batsworks.budget.ui.components.texts.formatScreenTitle
 import com.batsworks.budget.ui.theme.Color300
 import com.batsworks.budget.ui.theme.Color50
 import com.batsworks.budget.ui.theme.Color700
@@ -40,17 +39,18 @@ import com.batsworks.budget.ui.theme.Color950
 fun Main(navController: NavHostController = rememberNavController()) {
 	Scaffold(
 		bottomBar = { BottomBar(navController) }) { padding ->
-		MainNavigation(navController, screen = Screen.HomeScreen.route, paddingValues = padding)
+		MainNavigate(navController, screen = Screen.HomeScreen, paddingValues = padding)
 	}
 }
 
 @Composable
 fun BottomBar(navController: NavController) {
+
 	val screens = listOf(
-		Screen.HomeScreen,
-		Screen.HistoryScreen,
-		Screen.ProfileScreen,
-		Screen.PlusScreen
+		Pair(Screen.HomeScreen, iconForScreen(Screen.HomeScreen)),
+		Pair(Screen.HistoryScreen, iconForScreen(Screen.HistoryScreen)),
+		Pair(Screen.ProfileScreen, iconForScreen(Screen.ProfileScreen)),
+		Pair(Screen.PlusScreen, iconForScreen(Screen.PlusScreen))
 	)
 	val navBackStackEntry by navController.currentBackStackEntryAsState()
 	val currentDestination = navBackStackEntry?.destination
@@ -67,22 +67,22 @@ fun BottomBar(navController: NavController) {
 					unselectedTextColor = Color300,
 					unselectedIconColor = Color300
 				),
-				selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+				selected = currentDestination?.hierarchy?.any { it.route == screen.first.toString() } == true,
 				icon = {
 					Icon(
-						imageVector = screen.icon ?: ImageVector.vectorResource(screen.resource),
+						imageVector = screen.second,
 						contentDescription = "icon bar"
 					)
 				},
 				label = {
 					CustomText(
-						text = formatScreenTitle(screen),
+						text = formatScreenTitle(screen.first),
 						textStyle = MaterialTheme.typography.labelSmall,
 						textWeight = FontWeight.Bold,
 						color = Color50
 					)
 				},
-				onClick = { easyNavigate(navController, screen.route) })
+				onClick = { easyNavigate(navController, screen.first) })
 		}
 	}
 }
@@ -95,7 +95,7 @@ fun FloatingButton(navController: NavController, modifier: Modifier = Modifier) 
 		elevation = FloatingActionButtonDefaults.elevation(2.dp, 3.dp),
 		containerColor = Color300,
 		contentColor = Color950,
-		onClick = { easyNavigate(navController, Screen.AdicionarScreen.route) }) {
+		onClick = { easyNavigate(navController, Screen.AdicionarScreen) }) {
 		Icon(imageVector = Icons.Filled.Add, contentDescription = "", tint = Color50)
 	}
 }

@@ -37,9 +37,9 @@ import com.batsworks.budget.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.domain.Resource
-import com.batsworks.budget.navigation.Navigate
+import com.batsworks.budget.navigation.FileType
+import com.batsworks.budget.navigation.MainNavigate
 import com.batsworks.budget.navigation.Screen
-import com.batsworks.budget.navigation.formatNavigation
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.components.buttons.CustomButton
 import com.batsworks.budget.ui.components.buttons.CustomCheckBox
@@ -65,7 +65,7 @@ import java.time.LocalDate
 @Composable
 fun SharedReceipt(
 	file: Uri,
-	type: String,
+	type: FileType,
 	resourceEventFlow: Flow<Resource<Any>>,
 	state: AmountFormState,
 	onEvent: (AmountFormEvent) -> Unit,
@@ -106,7 +106,7 @@ fun SharedReceipt(
 			}
 		}
 	}
-	sucess.apply { Navigate(screen = formatNavigation(Screen.LoginScreen.route)) }
+	sucess.apply { MainNavigate(screen = Screen.LoginScreen) }
 
 	LazyColumn(
 		modifier = Modifier
@@ -174,7 +174,7 @@ fun SharedReceipt(
 	                .height(400.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                PreviewContentFile(type.equals("img", true), file)
+                PreviewContentFile(type == FileType.IMG, file)
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
@@ -283,5 +283,5 @@ private fun PreviewContentFile(image: Boolean, file: Uri?) {
 @Composable
 private fun Preview() {
 	val resource = Channel<Resource<Any>>()
-	SharedReceipt(Uri.EMPTY, "img", resource.receiveAsFlow(),AmountFormState()) {}
+	SharedReceipt(Uri.EMPTY, FileType.IMG, resource.receiveAsFlow(),AmountFormState()) {}
 }
