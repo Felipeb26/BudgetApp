@@ -18,6 +18,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -98,6 +99,7 @@ dependencies {
     ksp(libs.dagger.compiler)
     //Lottie
     implementation(libs.lottie.compose)
+
     //Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
@@ -116,6 +118,8 @@ dependencies {
     //Analytics
     implementation(libs.rollbar.android)
     implementation(libs.leakcanary.android)
+    // QrCode
+    implementation(libs.core)
 }
 
 //kapt { correctErrorTypes = true }

@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
-import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.ui.components.fields.CustomOutlineTextField
 import com.batsworks.budget.data.entity.UserEntity
 import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.navigation.Screen

@@ -53,9 +53,11 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <data android:scheme="https" />
+                <data android:host="budget"/>
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="*/*" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <meta-data

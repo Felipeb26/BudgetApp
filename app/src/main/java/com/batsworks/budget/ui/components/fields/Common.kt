@@ -1,4 +1,4 @@
-package com.batsworks.budget.components.fields
+package com.batsworks.budget.ui.components.fields
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

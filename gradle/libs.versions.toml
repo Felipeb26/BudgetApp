@@ -5,6 +5,7 @@ biometric = "1.1.0"
 coilCompose = "2.7.0"
 commomDaggerHiltVersion = "2.50"
 composeBom = "2024.10.01"
+core = "3.5.2"
 coreKtx = "1.13.0"
 coreSplashscreen = "1.0.1"
 daggerHiltVersion = "1.2.0"
@@ -57,6 +58,7 @@ androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "commomDaggerHiltVersion" }
 datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }

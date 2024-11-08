@@ -24,7 +24,7 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.batsworks.budget.R
-import com.batsworks.budget.components.fields.CustomTextField
+import com.batsworks.budget.ui.components.fields.CustomTextField
 import com.batsworks.budget.ui.components.texts.CustomText
 import com.batsworks.budget.navigation.Screen
 import com.batsworks.budget.ui.theme.Color400

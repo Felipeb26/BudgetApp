@@ -40,8 +40,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.batsworks.budget.R
 import com.batsworks.budget.components.animations.Loading
-import com.batsworks.budget.components.fields.CustomOutlineTextField
-import com.batsworks.budget.components.fields.CustomPasswordOutlineTextField
+import com.batsworks.budget.ui.components.fields.CustomOutlineTextField
+import com.batsworks.budget.ui.components.fields.CustomPasswordOutlineTextField
 import com.batsworks.budget.components.visual_transformation.PhoneTransformation
 import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.navigation.Screen

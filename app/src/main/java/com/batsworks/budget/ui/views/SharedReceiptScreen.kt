@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.batsworks.budget.R
-import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.ui.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.formatter.localDate
 import com.batsworks.budget.components.visual_transformation.CurrencyTransformation
 import com.batsworks.budget.domain.Resource

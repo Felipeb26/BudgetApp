@@ -47,7 +47,7 @@ import com.batsworks.budget.domain.Resource
 import com.batsworks.budget.components.animations.Loading
 import com.batsworks.budget.ui.components.buttons.CustomButton
 import com.batsworks.budget.ui.components.buttons.CustomCheckBox
-import com.batsworks.budget.components.fields.CustomOutlineTextField
+import com.batsworks.budget.ui.components.fields.CustomOutlineTextField
 import com.batsworks.budget.components.functions.composeBool
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.navigation.Screen
