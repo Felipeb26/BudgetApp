@@ -1,5 +1,6 @@
 package com.batsworks.budget.ui.view_model.main
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.batsworks.budget.services.connection.NetworkConnectivityObserver
 import com.batsworks.budget.services.notification.NotificationToast
 import com.batsworks.budget.ui.theme.custom.CustomTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +23,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 	private val repository: UsersDAO,
 	isConnected: NetworkConnectivityObserver,
-	private val notificationToast: NotificationToast,
+	@ApplicationContext context: Context,
 ) : ViewModel() {
 
 	private val _isReady = MutableStateFlow(false)
@@ -31,6 +33,7 @@ class MainViewModel @Inject constructor(
 	val userStateFlow = userEntityStateFlow.asStateFlow()
 
 	init {
+		val notificationToast = NotificationToast(context)
 		runBlocking {
 			userEntityStateFlow.emit(repository.findUser())
 		}
