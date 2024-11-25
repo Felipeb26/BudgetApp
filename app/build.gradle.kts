@@ -5,7 +5,6 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
-//    kotlin("kapt")
 }
 
 android {
@@ -41,11 +40,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all"
+        )
     }
     buildFeatures {
         compose = true
@@ -53,7 +56,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.11"
     }
+
     packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -78,7 +85,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
     //Material 3
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
@@ -99,7 +107,6 @@ dependencies {
     ksp(libs.dagger.compiler)
     //Lottie
     implementation(libs.lottie.compose)
-
     //Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
@@ -121,5 +128,3 @@ dependencies {
     // QrCode
     implementation(libs.core)
 }
-
-//kapt { correctErrorTypes = true }

@@ -69,7 +69,7 @@ fun PlusScreen(
 	) {
 		Spacer(modifier = Modifier.height(10.dp))
 		screens.forEachIndexed { _, screen ->
-			CardFunction(navController, screen, iconForScreen(screen)){ easyNavigate(navController, screen, include = true) }
+			CardFunction(navController, screen, iconForScreen(screen)){ easyNavigate(navController, screen) }
 		}
 		CardFunction(
 			navController,

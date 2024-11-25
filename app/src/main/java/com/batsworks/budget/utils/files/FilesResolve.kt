@@ -11,9 +11,10 @@ fun getFileType(context: Context, uri: Uri): String {
 		Log.d("TPath", uri.path ?: "vazio p")
 		Log.d("THost", uri.host ?: "vazio h")
 
-		val `is` = context.contentResolver.openInputStream(uri)
+		val finalURI = Uri.parse(Uri.decode(uri.toString()))
+		val `is` = context.contentResolver.openInputStream(finalURI)
 		val mimeType = URLConnection.guessContentTypeFromStream(`is`)
-		if (mimeType.isNullOrBlank()) extension(uri.path) else mimeType
+		if (mimeType.isNullOrBlank()) extension(finalURI.path) else mimeType
 	} catch (e: Exception) {
 		Log.d("FILE_TYPE", e.message ?: "erro ao ver tipo do arquivo")
 		"break"

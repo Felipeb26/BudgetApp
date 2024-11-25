@@ -99,5 +99,6 @@ Comercialização ou venda a outras empresas ou terceiros.
     <string name="loans">emprestimos</string>
     <string name="cards">cartões</string>
     <string name="investiments">investimentos</string>
+    <string name="groups">grupos</string>
     <!--  telas   -->
 </resources>

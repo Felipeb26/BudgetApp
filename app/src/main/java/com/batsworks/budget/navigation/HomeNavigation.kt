@@ -5,6 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.batsworks.budget.ui.view_model.add.AddViewModel
 import com.batsworks.budget.ui.view_model.history.HistoryViewModel
@@ -22,6 +23,7 @@ import com.batsworks.budget.ui.views.PlusScreen
 import com.batsworks.budget.ui.views.Profile
 import com.batsworks.budget.ui.views.ReceiptScreen
 import com.batsworks.budget.ui.views.Setting
+
 
 fun NavGraphBuilder.homeNavigation(navController: NavController) {
 	composable<Screen.MainScreen> { Main() }
@@ -84,7 +86,13 @@ fun NavGraphBuilder.homeNavigation(navController: NavController) {
 		Setting(model.user, coroutine, model::saveTheme, model::forceDataToSync)
 	}
 
-	composable<Screen.GroupScreen> {
+	composable<Screen.GroupScreen>(
+		deepLinks = listOf(
+			navDeepLink<Screen.GroupScreen> (
+				basePath = "https://budget/details/"
+			)
+		)
+	){
 		GroupScreen(navController)
 	}
 }

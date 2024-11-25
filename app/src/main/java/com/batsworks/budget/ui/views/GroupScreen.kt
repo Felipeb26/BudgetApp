@@ -36,79 +36,99 @@ import com.batsworks.budget.ui.theme.DefaultSpacer
 import com.batsworks.budget.ui.theme.Padding
 import com.batsworks.budget.ui.theme.customBackground
 
+private const val BASE_PATH = "https://budget/details/"
+
 @Composable
 fun GroupScreen(navController: NavController) {
-	val configuration = LocalConfiguration.current
-	val height = configuration.screenHeightDp.toFloat()
+    val configuration = LocalConfiguration.current
+    val height = configuration.screenHeightDp.toFloat()
 
-	var groupName by remember { mutableStateOf("https://budget/details") }
-	Column(
-		modifier = Modifier
-			.background(customBackground)
-			.fillMaxSize()
-			.padding(Padding.X_MEDIUM),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
+    var groupName by remember { mutableStateOf("") }
+    val (showQrCode, setToShowQrCode) = remember { mutableStateOf(false) }
+    val (showLink, setLinkToShow) = remember { mutableStateOf(false) }
 
-		CustomTextField(
-			modifier = Modifier.fillMaxWidth(),
-			labelText = "Nome do grupo",
-			value = groupName, readOnly = false,
-			onValueChange = { groupName = it })
+    Column(
+        modifier = Modifier
+            .background(customBackground)
+            .fillMaxSize()
+            .padding(top = Padding.XX_LARGE, start = Padding.X_MEDIUM, end = Padding.X_MEDIUM),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-		ShareGroupButton(groupName)
-		DefaultSpacer(Padding.EXTREM.value)
-		
-		CustomText(text = "")
-		Box(
-			modifier = Modifier
-				.background(customBackground)
-				.height((height / 3).dp)
-				.width((height / 3).dp)
-				.border(2.dp, Color400, RoundedCornerShape(10)),
-		) {
-			QRCodeImage(content = groupName, (height * 3).toInt())
-		}
-	}
+        CustomTextField(
+            modifier = Modifier.fillMaxWidth(),
+            labelText = "Nome do grupo",
+            value = groupName, readOnly = false,
+            onValueChange = { groupName = it })
+
+        ShareGroupButton(BASE_PATH.plus(groupName), setToShowQrCode, setLinkToShow)
+        DefaultSpacer(Padding.EXTREM.value)
+
+        if (showLink)
+            CustomText(text = BASE_PATH.plus(groupName))
+        if (showQrCode) {
+            Box(
+                modifier = Modifier
+                    .background(customBackground)
+                    .height((height / 3).dp)
+                    .width((height / 3).dp)
+                    .border(2.dp, Color400, RoundedCornerShape(10)),
+            ) {
+                QRCodeImage(content = BASE_PATH.plus(groupName), (height * 3).toInt())
+            }
+        }
+
+    }
 }
 
 @Composable
-private fun ShareGroupButton(groupName: String) {
-	val context = LocalContext.current
+private fun ShareGroupButton(
+    groupName: String,
+    showQrCode: (Boolean) -> Unit,
+    setLinkToShow: (Boolean) -> Unit
+) {
+    val context = LocalContext.current
 
-	Row(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(Padding.NONE, vertical = Padding.X_MEDIUM)
-			.padding(horizontal = Padding.MEDIUM),
-		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.spacedBy(Padding.X_MEDIUM)
-	) {
-		CustomButton(
-			modifier = Modifier.weight(1f),
-			enable = true,
-			onClick = { shareQRCode(context, groupName) },
-			text = "gerar qr code"
-		)
-		CustomButton(
-			modifier = Modifier.weight(1f),
-			enable = true,
-			onClick = { /*TODO*/ },
-			text = "gerar link "
-		)
-	}
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Padding.NONE, vertical = Padding.X_MEDIUM)
+            .padding(horizontal = Padding.MEDIUM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Padding.X_MEDIUM)
+    ) {
+        CustomButton(
+            modifier = Modifier.weight(1f),
+            enable = true,
+            onClick = {
+                shareQRCode(context, groupName)
+                showQrCode.invoke(true)
+                setLinkToShow.invoke(false)
+            },
+            text = "gerar qr code"
+        )
+        CustomButton(
+            modifier = Modifier.weight(1f),
+            enable = true,
+            onClick = {
+                showQrCode.invoke(false)
+                setLinkToShow.invoke(true)
+            },
+            text = "gerar link "
+        )
+    }
 }
 
 private fun shareQRCode(context: Context, uri: String) {
-	val intent = Intent(Intent.ACTION_SEND)
-	intent.type = "text/plain"
-	intent.putExtra(Intent.EXTRA_TEXT, uri)
-	context.startActivity(Intent.createChooser(intent, "Share QR Code"))
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "text/plain"
+    intent.putExtra(Intent.EXTRA_TEXT, uri)
+    context.startActivity(Intent.createChooser(intent, "Share QR Code"))
 }
 
 
 @Composable
 @PreviewLightDark
 fun GroupScreenPreview() {
-	GroupScreen(rememberNavController())
+    GroupScreen(rememberNavController())
 }

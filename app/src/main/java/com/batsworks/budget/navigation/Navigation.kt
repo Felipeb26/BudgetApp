@@ -1,5 +1,9 @@
 package com.batsworks.budget.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -20,7 +24,18 @@ fun MainNavigate(
 	NavHost(
 		navController = navController,
 		startDestination = screen,
-		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier
+		modifier = if (paddingValues != null) Modifier.padding(paddingValues) else Modifier,
+		exitTransition = {
+			slideOutOfContainer(
+				AnimatedContentTransitionScope.SlideDirection.Left,
+				tween(1500)
+			) + fadeOut()
+		}, popEnterTransition = {
+			slideIntoContainer(
+				AnimatedContentTransitionScope.SlideDirection.Right,
+				tween(1500)
+			) + fadeIn()
+		}
 	){
 		authNavigation(navController)
 		homeNavigation(navController)
@@ -45,27 +60,3 @@ fun easyNavigate(
 		restoreState = restore
 	}
 }
-
-//fun easyNavigate(
-//	navController: NavController,
-//	route: String,
-//	stateSave: Boolean = true,
-//	singleTop: Boolean = stateSave,
-//	restore: Boolean = stateSave,
-//	include: Boolean = false,
-//) {
-//	navController.navigate(route) {
-//		popUpTo(navController.graph.findStartDestination().id) {
-//			inclusive = include
-//			saveState = stateSave
-//		}
-//		launchSingleTop = singleTop
-//		restoreState = restore
-//	}
-//}
-//
-//
-//fun formatNavigation(route: String): String {
-//	val r = route.split("_")[0]
-//	return r.plus("_graph")
-//}
